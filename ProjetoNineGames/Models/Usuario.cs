@@ -13,6 +13,8 @@
         // O Secret é a chave que o App Flutter usará para gerar os códigos
         public string TwoFactorSecret { get; set; }
         public bool TwoFactorEnabled { get; set; }
+        public string Role { get; set; }
+        public int Ativo { get; set; }
 
         public DateTime CriadoEm { get; set; }
     }
