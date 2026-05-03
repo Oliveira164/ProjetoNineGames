@@ -9,7 +9,7 @@ CREATE TABLE usuarios (
     senha_hash VARCHAR(255) NOT NULL,
     two_factor_secret VARCHAR(255), -- Chave do Steam Guard (TOTP)
     two_factor_enabled BOOLEAN DEFAULT FALSE,
-	role ENUM("Bibliotecario", "Admin"),
+	role ENUM("Funcionario", "Admin"),
     ativo TINYINT(1) DEFAULT 1,
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
