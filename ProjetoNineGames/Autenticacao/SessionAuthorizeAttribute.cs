@@ -7,7 +7,7 @@ namespace ProjetoNineGames.Autenticacao
     /// Protege actions exigindo sessão autenticada.
     /// Uso sem parâmetro  → qualquer usuário logado.
     /// Uso com RoleAnyOf  → apenas as roles listadas (CSV).
-    /// Exemplo: [SessionAuthorize(RoleAnyOf = "Admin,Gerente")]
+    /// Exemplo: [SessionAuthorize(RoleAnyOf = "Funcionario,Admin")]
     /// </summary>
     public class SessionAuthorizeAttribute : ActionFilterAttribute
     {
