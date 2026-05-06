@@ -7,9 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+    <!-- Banco de dados -->
     <PackageReference Include="MySql.Data" Version="9.7.0" />
-    <PackageReference Include="Otp.NET" Version="1.4.1" />
+
+    <!-- Hash de senha (mesmo que a Biblioteca) -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
+
+    <!-- TOTP para autenticação em 2 fatores (SteamGuard style) -->
+    <PackageReference Include="Otp.NET" Version="1.4.0" />
   </ItemGroup>
 
 </Project>
