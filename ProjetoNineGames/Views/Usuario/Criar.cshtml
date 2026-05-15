@@ -1,0 +1,59 @@
+@model ProjetoNineGames.Models.Usuario
+@{
+    ViewData["Title"] = "Novo Usuário";
+}
+
+<style>
+    .form-card { max-width: 480px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 5px; }
+    .field input, .field select { width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+    .field input:focus, .field select:focus { outline: none; border-color: #7c3aed; box-shadow: 0 0 0 3px rgba(124,58,237,.15); }
+    .form-actions { display: flex; gap: 10px; margin-top: 6px; }
+    .btn-salvar  { padding: 9px 20px; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-salvar:hover { background: #6d28d9; }
+    .btn-cancel  { padding: 9px 16px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none; color: #374151; }
+    .alert-erro  { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:13px; }
+</style>
+
+<h2 style="margin-bottom:20px">Novo Usuário</h2>
+
+<div class="form-card">
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert-erro">
+            @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            { <div>@e.ErrorMessage</div> }
+        </div>
+    }
+
+    <form asp-action="Criar" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="field">
+            <label>Nome</label>
+            <input asp-for="Nome" required />
+        </div>
+        <div class="field">
+            <label>E-mail</label>
+            <input asp-for="Email" type="email" required />
+        </div>
+        <div class="field">
+            <label>Senha</label>
+            <input name="senha" type="password" required />
+        </div>
+        <div class="field">
+            <label>Role</label>
+            <select asp-for="Role" required>
+                <option value="Cliente">Cliente</option>
+                <option value="Funcionario">Funcionário</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-salvar">Salvar</button>
+            <a asp-action="Index" class="btn-cancel">Cancelar</a>
+        </div>
+    </form>
+</div>

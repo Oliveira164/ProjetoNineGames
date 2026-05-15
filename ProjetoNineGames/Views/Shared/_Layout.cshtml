@@ -1,49 +1,76 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@using ProjetoNineGames.Autenticacao
+@{
+    var isLogged  = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
+    var role      = Context.Session.GetString(SessionKeys.UserRole) ?? "";
+    var userName  = Context.Session.GetString(SessionKeys.UserName) ?? "";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProjetoNineGames</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] — NineGames</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ProjetoNineGames.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body { font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #111827; }
+        .topnav { display: flex; gap: 4px; align-items: center; padding: 0 20px; background: #18181b; height: 52px; position: sticky; top: 0; z-index: 100; }
+        .topnav-brand { color: #a78bfa; font-weight: 700; font-size: 16px; text-decoration: none; margin-right: 12px; }
+        .topnav a { color: #d4d4d8; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
+        .topnav a:hover { background: #27272a; color: #fff; }
+        .spacer { flex: 1; }
+        .topnav-user { color: #a1a1aa; font-size: 13px; padding: 0 8px; }
+        .btn-sair { background: none; border: 1px solid #52525b; color: #a1a1aa; border-radius: 6px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+        .btn-sair:hover { border-color: #a78bfa; color: #a78bfa; }
+        .container { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProjetoNineGames</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <nav class="topnav">
+            <a class="topnav-brand" asp-controller="Jogo" asp-action="Index">🎮 NineGames</a>
+
+            <a asp-controller="Jogo" asp-action="Index">Vitrine</a>
+
+            @if (isLogged)
+            {
+                <a asp-controller="Carrinho"   asp-action="Index">🛒 Carrinho</a>
+                <a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a>
+                <a asp-controller="Biblioteca" asp-action="Wishlist">❤️ Wishlist</a>
+
+                @if (role is "Admin" or "Funcionario")
+                {
+                    <a asp-controller="Jogo"      asp-action="Gerenciar">Gerenciar Jogos</a>
+                    <a asp-controller="Categoria" asp-action="Index">Categorias</a>
+                }
+                @if (role == "Admin")
+                {
+                    <a asp-controller="Usuario" asp-action="Index">Usuários</a>
+                }
+            }
+
+            <span class="spacer"></span>
+
+            @if (isLogged)
+            {
+                <a asp-controller="Usuario" asp-action="Perfil" class="topnav-user">👤 @userName</a>
+                <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-sair">Sair</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login">Entrar</a>
+            }
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ProjetoNineGames - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <main class="container">
+        @RenderBody()
+    </main>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

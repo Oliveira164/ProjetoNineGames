@@ -1,0 +1,68 @@
+@model ProjetoNineGames.Models.Usuario
+@{
+    ViewData["Title"] = "Meu Perfil";
+}
+
+<style>
+    .perfil-card { max-width: 500px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; }
+    .perfil-info p { font-size: 14px; color: #4b5563; margin: 0 0 10px; }
+    .perfil-info strong { color: #111827; }
+    .badge { display:inline-block; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:500; }
+    .badge-admin  { background:#ede9fe; color:#5b21b6; }
+    .badge-func   { background:#dbeafe; color:#1e40af; }
+    .badge-cli    { background:#d1fae5; color:#065f46; }
+    .secao { margin-top: 24px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+    .secao h3 { font-size: 15px; font-weight: 600; margin: 0 0 12px; }
+    .twofa-ativo { background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #92400e; margin-bottom: 12px; }
+    .twofa-inativo { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #4b5563; margin-bottom: 12px; }
+    .btn-ativar2fa  { padding: 9px 18px; background: #d97706; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-ativar2fa:hover { background: #b45309; }
+    .btn-desativar2fa { padding: 9px 18px; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .alert-ok { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
+</style>
+
+<h2 style="margin-bottom:20px">Meu Perfil</h2>
+
+@if (TempData["ok"] != null) { <div class="alert-ok">@TempData["ok"]</div> }
+
+<div class="perfil-card">
+    <div class="perfil-info">
+        <p><strong>Nome:</strong> @Model.Nome</p>
+        <p><strong>E-mail:</strong> @Model.Email</p>
+        <p>
+            <strong>Role:</strong>
+            <span class="badge @(Model.Role == "Admin" ? "badge-admin" : Model.Role == "Funcionario" ? "badge-func" : "badge-cli")">
+                @Model.Role
+            </span>
+        </p>
+    </div>
+
+    <!-- Seção 2FA -->
+    <div class="secao">
+        <h3>🔐 Autenticação em 2 Etapas</h3>
+
+        @if (Model.TwoFactorEnabled)
+        {
+            <div class="twofa-ativo">
+                🔒 O 2FA está <strong>ativado</strong> na sua conta. Ao fazer login, você precisará confirmar com o app.
+            </div>
+            <form asp-action="Desativar2Fa" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-desativar2fa"
+                        onclick="return confirm('Desativar o 2FA? Sua conta ficará menos protegida.')">
+                    Desativar 2FA
+                </button>
+            </form>
+        }
+        else
+        {
+            <div class="twofa-inativo">
+                🔓 O 2FA está <strong>desativado</strong>. Ative para proteger sua conta com o app NineGames.
+            </div>
+            <form asp-action="Ativar2Fa" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-ativar2fa">Ativar 2FA</button>
+            </form>
+        }
+    </div>
+</div>
