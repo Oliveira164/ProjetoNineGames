@@ -11,9 +11,7 @@ namespace ProjetoNineGames.Controllers
     {
         private readonly Database _db = new();
 
-        // ────────────────────────────────────────────────────────────────────
-        // ETAPA 1 — Login (email + senha)
-        // ────────────────────────────────────────────────────────────────────
+        // ETAPA 1 — Login
 
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
@@ -81,9 +79,7 @@ namespace ProjetoNineGames.Controllers
             return RedirectLocal(returnUrl);
         }
 
-        // ────────────────────────────────────────────────────────────────────
         // ETAPA 2 — Verificação do código TOTP (SteamGuard style)
-        // ────────────────────────────────────────────────────────────────────
 
         [HttpGet]
         public IActionResult Verificar2Fa(string? returnUrl = null)
@@ -153,9 +149,7 @@ namespace ProjetoNineGames.Controllers
             return RedirectLocal(returnUrl);
         }
 
-        // ────────────────────────────────────────────────────────────────────
         // Logout
-        // ────────────────────────────────────────────────────────────────────
 
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Logout()
@@ -167,9 +161,7 @@ namespace ProjetoNineGames.Controllers
         [HttpGet]
         public IActionResult AcessoNegado() => View();
 
-        // ────────────────────────────────────────────────────────────────────
         // Helpers privados
-        // ────────────────────────────────────────────────────────────────────
 
         private void SetarSessao(int id, string nome, string email, string role)
         {
