@@ -17,4 +17,8 @@
     <PackageReference Include="Otp.NET" Version="1.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\jogos\" />
+  </ItemGroup>
+
 </Project>
