@@ -296,3 +296,114 @@ BEGIN
         id_categoria = v_cat_id, imagem_url = p_imagem_url
     WHERE id = p_id;
 END$$
+
+-- ===========================================================
+-- VENDA
+-- ────────────────────────────────────────────────────────────
+
+DROP PROCEDURE IF EXISTS sp_venda_criar;
+DELIMITER $$
+CREATE PROCEDURE sp_venda_criar(
+    IN  p_id_usuario      INT,
+    IN  p_valor_total     DECIMAL(12,2),
+    IN  p_forma_pagamento VARCHAR(30),
+    OUT p_id_gerado       INT
+)
+BEGIN
+    INSERT INTO venda (id_usuario, valor_total, forma_pagamento, status)
+    VALUES (p_id_usuario, p_valor_total, p_forma_pagamento, 'Aberta');
+    SET p_id_gerado = LAST_INSERT_ID();
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_venda_adicionar_item;
+DELIMITER $$
+CREATE PROCEDURE sp_venda_adicionar_item(
+    IN p_id_venda       INT,
+    IN p_id_jogo        INT,
+    IN p_quantidade     INT,
+    IN p_preco_unitario DECIMAL(10,2)
+)
+BEGIN
+    DECLARE v_estoque INT;
+    SELECT estoque INTO v_estoque FROM jogos WHERE id = p_id_jogo FOR UPDATE;
+
+    IF v_estoque < p_quantidade THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Estoque insuficiente para o jogo solicitado.';
+    END IF;
+
+    INSERT INTO venda_itens (id_venda, id_jogo, quantidade, preco_unitario)
+    VALUES (p_id_venda, p_id_jogo, p_quantidade, p_preco_unitario);
+
+    UPDATE jogos SET estoque = estoque - p_quantidade WHERE id = p_id_jogo;
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_venda_finalizar;
+DELIMITER $$
+CREATE PROCEDURE sp_venda_finalizar(IN p_id_venda INT)
+BEGIN
+    DECLARE v_usuario INT;
+
+    -- Marca venda como finalizada
+    UPDATE venda SET status = 'Finalizada' WHERE id = p_id_venda;
+
+    -- Registra os jogos na biblioteca do usuário (ignora duplicatas)
+    SELECT id_usuario INTO v_usuario FROM venda WHERE id = p_id_venda;
+
+    INSERT IGNORE INTO biblioteca (usuario_id, jogo_id)
+    SELECT v_usuario, id_jogo FROM venda_itens WHERE id_venda = p_id_venda;
+END$$
+DELIMITER ;
+
+-- ────────────────────────────────────────────────────────────
+-- BIBLIOTECA
+-- ────────────────────────────────────────────────────────────
+
+DROP PROCEDURE IF EXISTS sp_biblioteca_listar;
+DELIMITER $$
+CREATE PROCEDURE sp_biblioteca_listar(IN p_id_usuario INT)
+BEGIN
+    SELECT j.id, j.titulo, j.descricao, j.preco, j.imagem_url,
+           c.nome AS categoria, b.data_aquisicao
+    FROM   biblioteca b
+    JOIN   jogos      j ON j.id = b.jogo_id
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    WHERE  b.usuario_id = p_id_usuario
+    ORDER BY b.data_aquisicao DESC;
+END$$
+DELIMITER ;
+
+-- ────────────────────────────────────────────────────────────
+-- WISHLIST
+-- ────────────────────────────────────────────────────────────
+
+DROP PROCEDURE IF EXISTS sp_wishlist_listar;
+DELIMITER $$
+CREATE PROCEDURE sp_wishlist_listar(IN p_id_usuario INT)
+BEGIN
+    SELECT j.id, j.titulo, j.preco, j.imagem_url, c.nome AS categoria
+    FROM   lista_desejos ld
+    JOIN   jogos j ON j.id = ld.jogo_id
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    WHERE  ld.usuario_id = p_id_usuario
+    ORDER BY ld.adicionado_em DESC;
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_wishlist_adicionar;
+DELIMITER $$
+CREATE PROCEDURE sp_wishlist_adicionar(IN p_id_usuario INT, IN p_id_jogo INT)
+BEGIN
+    INSERT IGNORE INTO lista_desejos (usuario_id, jogo_id) VALUES (p_id_usuario, p_id_jogo);
+END$$
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_wishlist_remover;
+DELIMITER $$
+CREATE PROCEDURE sp_wishlist_remover(IN p_id_usuario INT, IN p_id_jogo INT)
+BEGIN
+    DELETE FROM lista_desejos WHERE usuario_id = p_id_usuario AND jogo_id = p_id_jogo;
+END$$
+DELIMITER ;
