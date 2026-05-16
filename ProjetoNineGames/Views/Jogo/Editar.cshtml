@@ -56,11 +56,6 @@
             </div>
 
             <div class="field">
-                <label>Estoque</label>
-                <input asp-for="Estoque" type="number" min="0" />
-            </div>
-
-            <div class="field">
                 <label>Nova imagem</label>
                 @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
                 {
