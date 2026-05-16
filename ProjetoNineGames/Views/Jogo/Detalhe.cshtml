@@ -1,0 +1,69 @@
+@model ProjetoNineGames.Models.Jogo
+@{
+    ViewData["Title"] = Model.Titulo;
+}
+
+<style>
+    .detalhe-wrap { display: grid; grid-template-columns: 240px 1fr; gap: 32px; margin-top: 10px; max-width: 760px; }
+    .detalhe-capa { width: 240px; height: 300px; border-radius: 12px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 64px; overflow: hidden; border: 1px solid #e5e7eb; }
+    .detalhe-capa img { width: 100%; height: 100%; object-fit: cover; }
+    .detalhe-info h1 { font-size: 22px; margin: 0 0 6px; color: #111827; }
+    .detalhe-cat { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; background: #ede9fe; color: #5b21b6; margin-bottom: 14px; }
+    .detalhe-preco { font-size: 30px; font-weight: 700; color: #7c3aed; margin: 0 0 8px; }
+    .detalhe-desc { font-size: 14px; color: #4b5563; line-height: 1.7; margin-bottom: 16px; }
+    .estoque-ok  { color: #059669; font-size: 13px; margin-bottom: 14px; }
+    .estoque-off { color: #ef4444; font-size: 13px; margin-bottom: 14px; }
+    .acoes { display: flex; flex-direction: column; gap: 8px; }
+    .btn-carrinho { padding: 11px 0; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+    .btn-carrinho:hover { background: #6d28d9; }
+    .btn-wish { padding: 9px 0; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; border-radius: 8px; font-size: 14px; cursor: pointer; width: 100%; }
+    .btn-wish:hover { background: #fee2e2; }
+    .btn-voltar { font-size: 13px; color: #7c3aed; text-decoration: none; display: inline-block; margin-bottom: 18px; }
+</style>
+
+<a asp-action="Index" class="btn-voltar">← Voltar à vitrine</a>
+
+<div class="detalhe-wrap">
+    <div class="detalhe-capa">
+        @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
+        { <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" /> }
+        else { <span>🎮</span> }
+    </div>
+
+    <div class="detalhe-info">
+        <h1>@Model.Titulo</h1>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Categoria))
+        { <span class="detalhe-cat">@Model.Categoria</span> }
+
+        <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Descricao))
+        { <p class="detalhe-desc">@Model.Descricao</p> }
+
+        @if (Model.Estoque > 0)
+        { <p class="estoque-ok">● Em estoque (@Model.Estoque unidades)</p> }
+        else
+        { <p class="estoque-off">● Fora de estoque</p> }
+
+        <div class="acoes">
+            @if (Model.Estoque > 0)
+            {
+                <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="jogoId" value="@Model.Id" />
+                    <button class="btn-carrinho">🛒 Adicionar ao Carrinho</button>
+                </form>
+            }
+
+            @if (Context.Session.GetInt32("UserId").HasValue)
+            {
+                <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="jogoId" value="@Model.Id" />
+                    <button class="btn-wish">❤️ Adicionar à Wishlist</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
