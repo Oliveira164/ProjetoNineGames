@@ -1,0 +1,63 @@
+@* ─────────────────── Categoria/Index.cshtml ─────────────────── *@
+@model IEnumerable<ProjetoNineGames.Models.Categoria>
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<style>
+    .tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .tbl th, .tbl td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; text-align: left; }
+    .tbl thead th { background: #f9fafb; font-weight: 600; border-bottom: 2px solid #d1d5db; }
+    .tbl tbody tr:hover { background: #fafafa; }
+    .acoes { display: flex; gap: 6px; }
+    .btn-sm { padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; border: 1px solid; text-decoration: none; display: inline-block; }
+    .btn-editar  { border-color:#3b82f6; color:#1d4ed8; background:#eff6ff; }
+    .btn-editar:hover  { background:#dbeafe; }
+    .btn-excluir { border-color:#ef4444; color:#b91c1c; background:#fef2f2; }
+    .btn-excluir:hover { background:#fee2e2; }
+    .btn-novo { padding:8px 16px; background:#7c3aed; color:#fff; border:none; border-radius:7px; font-size:14px; font-weight:500; cursor:pointer; text-decoration:none; }
+    .header-bar { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+    .header-bar h2 { margin:0; flex:1; }
+    .alert-ok   { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
+    .alert-erro { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
+</style>
+
+<div class="header-bar">
+    <h2>Categorias</h2>
+    <a asp-action="Criar" class="btn-novo">+ Nova Categoria</a>
+</div>
+
+@if (TempData["ok"]   != null) { <div class="alert-ok">@TempData["ok"]</div> }
+@if (TempData["erro"] != null) { <div class="alert-erro">@TempData["erro"]</div> }
+
+<table class="tbl">
+    <thead>
+        <tr><th>#</th><th>Nome</th><th>Descrição</th><th>Criado em</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td style="color:#9ca3af">@c.Id</td>
+                <td style="font-weight:500">@c.Nome</td>
+                <td style="color:#6b7280">@(c.Descricao ?? "—")</td>
+                <td style="color:#6b7280;font-size:12px">@c.CriadoEm.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <div class="acoes">
+                        <a asp-action="Editar" asp-route-id="@c.Id" class="btn-sm btn-editar">Editar</a>
+                        <form asp-action="Excluir" method="post"
+                              onsubmit="return confirm('Excluir categoria @c.Nome?')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@c.Id" />
+                            <button type="submit" class="btn-sm btn-excluir">Excluir</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        }
+        @if (!Model.Any())
+        {
+            <tr><td colspan="5" style="text-align:center;color:#9ca3af;padding:40px 0">Nenhuma categoria cadastrada.</td></tr>
+        }
+    </tbody>
+</table>
