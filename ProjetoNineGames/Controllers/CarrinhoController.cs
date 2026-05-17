@@ -35,8 +35,8 @@ namespace ProjetoNineGames.Controllers
         {
             // Busca dados do jogo no banco para garantir preço correto
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_obter", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_jogo_obter", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_id", jogoId);
             using var rd = cmd.ExecuteReader();
 
@@ -48,25 +48,19 @@ namespace ProjetoNineGames.Controllers
 
             var jogo = new ItemCarrinho
             {
-                JogoId        = rd.GetInt32("id"),
-                Titulo        = rd.GetString("titulo"),
-                ImagemUrl     = rd["imagem_url"] as string,
+                JogoId = rd.GetInt32("id"),
+                Titulo = rd.GetString("titulo"),
+                ImagemUrl = rd["imagem_url"] as string,
                 PrecoUnitario = rd.GetDecimal("preco"),
-                Quantidade    = quantidade
+                Quantidade = quantidade
             };
-            var estoque = rd.GetInt32("estoque");
             rd.Close();
-
-            if (estoque <= 0)
-            {
-                TempData["erro"] = "Jogo fora de estoque.";
-                return RedirectToAction("Index", "Jogo");
-            }
 
             var cart = GetCart();
             var existente = cart.FirstOrDefault(i => i.JogoId == jogoId);
+
             if (existente != null)
-                existente.Quantidade = Math.Min(existente.Quantidade + quantidade, estoque);
+                existente.Quantidade += quantidade; // Soma a quantidade sem limitar pelo estoque
             else
                 cart.Add(jogo);
 
@@ -125,43 +119,43 @@ namespace ProjetoNineGames.Controllers
             }
 
             var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
-            var total     = cart.Sum(i => i.Subtotal);
+            var total = cart.Sum(i => i.Subtotal);
 
             using var conn = _db.GetConnection();
-            using var tx   = conn.BeginTransaction();
+            using var tx = conn.BeginTransaction();
 
             try
             {
                 // 1) Cria cabeçalho da venda
                 int idVenda;
                 using (var cmd = new MySqlCommand("sp_venda_criar", conn, tx)
-                                 { CommandType = CommandType.StoredProcedure })
+                { CommandType = CommandType.StoredProcedure })
                 {
-                    cmd.Parameters.AddWithValue("p_id_usuario",       idUsuario);
-                    cmd.Parameters.AddWithValue("p_valor_total",       total);
-                    cmd.Parameters.AddWithValue("p_forma_pagamento",   (object?)formaPagamento ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                    cmd.Parameters.AddWithValue("p_valor_total", total);
+                    cmd.Parameters.AddWithValue("p_forma_pagamento", (object?)formaPagamento ?? DBNull.Value);
                     var pOut = new MySqlParameter("p_id_gerado", MySqlDbType.Int32)
-                               { Direction = ParameterDirection.Output };
+                    { Direction = ParameterDirection.Output };
                     cmd.Parameters.Add(pOut);
                     cmd.ExecuteNonQuery();
                     idVenda = Convert.ToInt32(pOut.Value);
                 }
 
-                // 2) Insere cada item + baixa estoque via SP
+                // 2) Insere cada item
                 foreach (var item in cart)
                 {
                     using var cmdI = new MySqlCommand("sp_venda_adicionar_item", conn, tx)
-                                    { CommandType = CommandType.StoredProcedure };
-                    cmdI.Parameters.AddWithValue("p_id_venda",       idVenda);
-                    cmdI.Parameters.AddWithValue("p_id_jogo",        item.JogoId);
-                    cmdI.Parameters.AddWithValue("p_quantidade",     item.Quantidade);
+                    { CommandType = CommandType.StoredProcedure };
+                    cmdI.Parameters.AddWithValue("p_id_venda", idVenda);
+                    cmdI.Parameters.AddWithValue("p_id_jogo", item.JogoId);
+                    cmdI.Parameters.AddWithValue("p_quantidade", item.Quantidade);
                     cmdI.Parameters.AddWithValue("p_preco_unitario", item.PrecoUnitario);
                     cmdI.ExecuteNonQuery();
                 }
 
                 // 3) Finaliza venda
                 using (var cmdF = new MySqlCommand("sp_venda_finalizar", conn, tx)
-                                  { CommandType = CommandType.StoredProcedure })
+                { CommandType = CommandType.StoredProcedure })
                 {
                     cmdF.Parameters.AddWithValue("p_id_venda", idVenda);
                     cmdF.ExecuteNonQuery();
