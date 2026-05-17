@@ -297,6 +297,20 @@ BEGIN
     WHERE id = p_id;
 END$$
 
+DROP PROCEDURE IF EXISTS sp_jogo_excluir;
+DELIMITER $$
+CREATE PROCEDURE sp_jogo_excluir(IN p_id INT)
+BEGIN
+    -- Verifica se o jogo já possui vendas registradas
+    IF EXISTS (SELECT 1 FROM venda_itens WHERE id_jogo = p_id) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Não é possível excluir: o jogo já possui vendas registradas.';
+    END IF;
+
+    -- Deleta o jogo (Wishlist e Biblioteca serão apagados automaticamente devido ao ON DELETE CASCADE)
+    DELETE FROM jogos WHERE id = p_id;
+END$$
+DELIMITER ;
+
 -- ===========================================================
 -- VENDA
 -- ────────────────────────────────────────────────────────────
@@ -319,24 +333,15 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS sp_venda_adicionar_item;
 DELIMITER $$
 CREATE PROCEDURE sp_venda_adicionar_item(
-    IN p_id_venda       INT,
-    IN p_id_jogo        INT,
-    IN p_quantidade     INT,
-    IN p_preco_unitario DECIMAL(10,2)
+    IN p_id_venda        INT,
+    IN p_id_jogo         INT,
+    IN p_quantidade      INT,
+    IN p_preco_unitario  DECIMAL(10,2)
 )
 BEGIN
-    DECLARE v_estoque INT;
-    SELECT estoque INTO v_estoque FROM jogos WHERE id = p_id_jogo FOR UPDATE;
-
-    IF v_estoque < p_quantidade THEN
-        SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Estoque insuficiente para o jogo solicitado.';
-    END IF;
-
+    -- Apenas insere o item na venda, sem validação ou baixa de estoque
     INSERT INTO venda_itens (id_venda, id_jogo, quantidade, preco_unitario)
     VALUES (p_id_venda, p_id_jogo, p_quantidade, p_preco_unitario);
-
-    UPDATE jogos SET estoque = estoque - p_quantidade WHERE id = p_id_jogo;
 END$$
 DELIMITER ;
 
