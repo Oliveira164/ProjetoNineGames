@@ -35,9 +35,9 @@
 
             @if (isLogged)
             {
-                <a asp-controller="Carrinho"   asp-action="Index">🛒 Carrinho</a>
+                <a asp-controller="Carrinho"   asp-action="Index">Carrinho</a>
                 <a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a>
-                <a asp-controller="Biblioteca" asp-action="Wishlist">❤️ Wishlist</a>
+                <a asp-controller="Biblioteca" asp-action="Wishlist">Wishlist</a>
 
                 @if (role is "Admin" or "Funcionario")
                 {
@@ -54,7 +54,7 @@
 
             @if (isLogged)
             {
-                <a asp-controller="Usuario" asp-action="Perfil" class="topnav-user">👤 @userName</a>
+                <a asp-controller="Usuario" asp-action="Perfil" class="topnav-user"> @userName</a>
                 <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="btn-sair">Sair</button>
