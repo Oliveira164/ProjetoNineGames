@@ -17,12 +17,41 @@
     .btn-rem:hover { background: #fee2e2; }
     .resumo h3 { font-size: 16px; font-weight: 600; margin: 0 0 16px; }
     .resumo-linha { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #4b5563; }
-    .resumo-total { display: flex; justify-content: space-between; font-size: 17px; font-weight: 700; color: #7c3aed; border-top: 1px solid #e5e7eb; padding-top: 12px; margin-top: 6px; }
+
+    .resumo-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 17px;
+        font-weight: 700;
+        color: #F96300;
+        border-top: 1px solid #e5e7eb;
+        padding-top: 12px;
+        margin-top: 6px;
+    }
     .select-pgto { width: 100%; padding: 9px 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; margin: 14px 0 16px; }
-    .btn-finalizar { width: 100%; padding: 11px; background: #7c3aed; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
-    .btn-finalizar:hover { background: #6d28d9; }
+
+    .btn-finalizar {
+        width: 100%;
+        padding: 11px;
+        background: #F96300;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .btn-finalizar:hover {
+            background: #e05800;
+        }
     .vazio { text-align: center; padding: 60px 0; color: #9ca3af; }
-    .vazio a { color: #7c3aed; text-decoration: none; font-weight: 500; }
+
+        .vazio a {
+            color: #F96300;
+            text-decoration: none;
+            font-weight: 500;
+        }
     .alert-ok   { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
     .alert-erro { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
 </style>
@@ -79,7 +108,7 @@ else
                                            onchange="this.form.submit()" />
                                 </form>
                             </td>
-                            <td style="font-weight:600;color:#7c3aed">R$ @item.Subtotal.ToString("N2")</td>
+                            <td style="font-weight:600;color:#F96300">R$ @item.Subtotal.ToString("N2")</td>
                             <td>
                                 <form asp-action="Remover" method="post">
                                     @Html.AntiForgeryToken()
@@ -124,7 +153,7 @@ else
 
             <div style="text-align:center;margin-top:12px">
                 <a asp-controller="Jogo" asp-action="Index"
-                   style="font-size:13px;color:#7c3aed;text-decoration:none">← Continuar comprando</a>
+                   style="font-size:13px;color:#F96300;text-decoration:none">← Continuar comprando</a>
             </div>
         </div>
 

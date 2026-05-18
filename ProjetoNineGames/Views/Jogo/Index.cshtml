@@ -33,7 +33,7 @@
 
     .btn-buscar {
         padding: 7px 16px;
-        background: #7c3aed;
+        background: #F96300;
         color: #fff;
         border: none;
         border-radius: 8px;
@@ -59,8 +59,8 @@
     }
 
         .cat-btn:hover, .cat-btn.ativo {
-            background: #7c3aed;
-            border-color: #7c3aed;
+            background: #F96300;
+            border-color: #F96300;
             color: #fff;
         }
 
@@ -120,15 +120,15 @@
         padding: 2px 8px;
         border-radius: 12px;
         font-size: 11px;
-        background: #ede9fe;
-        color: #5b21b6;
+        background: #fc8f47;
+        color: #fff;
         margin-bottom: 8px;
     }
 
     .jogo-preco {
         font-size: 16px;
         font-weight: 700;
-        color: #7c3aed;
+        color: #000;
         margin: auto 0 10px;
     }
 
@@ -140,13 +140,13 @@
         font-size: 12px;
         font-weight: 500;
         text-decoration: none;
-        background: #ede9fe;
-        color: #5b21b6;
+        background: #F96300;
+        color: #fff;
         margin-bottom: 6px;
     }
 
         .btn-detalhe:hover {
-            background: #ddd6fe;
+            background: #e05800;
         }
 
     .btn-wish {
@@ -154,19 +154,22 @@
         width: 100%;
         padding: 6px;
         border: 1px solid #fca5a5;
-        background: #fef2f2;
-        color: #b91c1c;
+        background: #F96300;
+        color: #fff;
         border-radius: 6px;
         font-size: 12px;
         cursor: pointer;
         margin-bottom: 6px;
     }
+        .btn-wish:hover{
+            background: #e05800;
+        }
 
     .btn-carrinho {
         display: block;
         width: 100%;
         padding: 8px;
-        background: #7c3aed;
+        background: #F96300;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -176,7 +179,7 @@
     }
 
         .btn-carrinho:hover {
-            background: #6d28d9;
+            background: #e05800;
         }
 
     .vazio {
@@ -263,7 +266,7 @@ else
                     }
                     @if (j.Preco == 0)
                     {
-                        <p class="jogo-preco">Gratuito pra jogar</p>
+                        <p class="jogo-preco">Gratuito para jogar</p>
                     }
                     else
                     {

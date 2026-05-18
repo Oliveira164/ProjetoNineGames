@@ -14,15 +14,16 @@
     @RenderSection("Styles", required: false)
     <style>
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #f9fafb; color: #111827; }
+        body { font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background: #000; color: #000; }
+        body h2 { color: #F96300;}
         .topnav { display: flex; gap: 4px; align-items: center; padding: 0 20px; background: #18181b; height: 52px; position: sticky; top: 0; z-index: 100; }
         .topnav-brand { color: #a78bfa; font-weight: 700; font-size: 16px; text-decoration: none; margin-right: 12px; }
         .topnav a { color: #d4d4d8; text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: 13px; }
-        .topnav a:hover { background: #27272a; color: #fff; }
+        .topnav a:hover { background: #e05800; color: #fff; }
         .spacer { flex: 1; }
         .topnav-user { color: #a1a1aa; font-size: 13px; padding: 0 8px; }
         .btn-sair { background: none; border: 1px solid #52525b; color: #a1a1aa; border-radius: 6px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
-        .btn-sair:hover { border-color: #a78bfa; color: #a78bfa; }
+        .btn-sair:hover { border-color: #e05800; color: #e05800; }
         .container { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
     </style>
 </head>
