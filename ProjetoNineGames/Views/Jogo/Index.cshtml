@@ -205,7 +205,7 @@
 </style>
 
 <div class="vitrine-header">
-    <h2>🎮 Vitrine de Jogos</h2>
+    <h2> Vitrine de Jogos</h2>
     <form class="busca-form" method="get" asp-action="Index">
         <input type="hidden" name="categoria" value="@ViewBag.CategoriaAtual" />
         <input type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar jogo..." />
@@ -271,7 +271,7 @@ else
                         <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="jogoId" value="@j.Id" />
-                            <button class="btn-wish">❤️ Wishlist</button>
+                            <button class="btn-wish"> Wishlist</button>
                         </form>
                     }
 
