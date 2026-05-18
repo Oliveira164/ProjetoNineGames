@@ -175,7 +175,16 @@
                         <span style="color:#9ca3af">—</span>
                     }
                 </td>
-                <td>R$ @j.Preco.ToString("N2")</td>
+                <td>
+                    @if (j.Preco == 0)
+                    {
+                        <span>Grátis</span>
+                    }
+                    else
+                    {
+                        <span>R$ @j.Preco.ToString("N2")</span>
+                    }
+                    </td>
                 <td>
                     <div class="acoes">
                         <a asp-action="Editar" asp-route-id="@j.Id" class="btn-sm btn-editar">Editar</a>

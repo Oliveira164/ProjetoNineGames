@@ -128,8 +128,14 @@
         {
             <span class="detalhe-cat">@Model.Categoria</span>
         }
-
-        <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
+        @if(Model.Preco == 0)
+        {
+            <p class="detalhe-preco">Gratuito pra jogar</p>
+        }
+        else
+        {
+            <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
+        }
 
         @if (!string.IsNullOrWhiteSpace(Model.Descricao))
         {

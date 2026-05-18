@@ -261,7 +261,14 @@ else
                     {
                         <span class="jogo-cat">@j.Categoria</span>
                     }
-                    <p class="jogo-preco">R$ @j.Preco.ToString("N2")</p>
+                    @if (j.Preco == 0)
+                    {
+                        <p class="jogo-preco">Gratuito pra jogar</p>
+                    }
+                    else
+                    {
+                        <p class="jogo-preco">R$ @j.Preco.ToString("N2")</p>
+                    }
 
                     <a class="btn-detalhe" asp-action="Detalhe" asp-route-id="@j.Id">Ver detalhes</a>
 
@@ -275,7 +282,6 @@ else
                         </form>
                     }
 
-                    @* Removida a condicional if (j.Estoque > 0) *@
                     <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="jogoId" value="@j.Id" />

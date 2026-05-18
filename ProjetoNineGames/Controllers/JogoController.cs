@@ -93,7 +93,7 @@ namespace ProjetoNineGames.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Criar(Jogo model, IFormFile? imagem)
         {
-            if (string.IsNullOrWhiteSpace(model.Titulo) || model.Preco <= 0)
+            if (string.IsNullOrWhiteSpace(model.Titulo))
             {
                 using var conn2 = _db.GetConnection();
                 ViewBag.Categorias = CarregarSelectCategorias(conn2);
@@ -140,7 +140,7 @@ namespace ProjetoNineGames.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Editar(Jogo model, IFormFile? imagem)
         {
-            if (string.IsNullOrWhiteSpace(model.Titulo) || model.Preco <= 0)
+            if (string.IsNullOrWhiteSpace(model.Titulo))
             {
                 using var conn2 = _db.GetConnection();
                 ViewBag.Categorias = CarregarSelectCategorias(conn2);
