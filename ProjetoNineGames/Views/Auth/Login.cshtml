@@ -1,39 +1,194 @@
 @{
-    ViewData["Title"] = "Login";
+    Layout = null; // Remove a navbar padrão para a tela de login
+    ViewData["Title"] = "Entrar — NineGames";
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h4 class="card-title mb-4 text-center">NineGames — Login</h4>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
 
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+        }
+
+        body {
+            background-image: url('/images/fundo-tela-login.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #000; 
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .login-container {
+            background-color: #161616; 
+            padding: 40px 50px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-img {
+            height: 45px;
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
+        .login-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .login-subtitle {
+            font-size: 13px;
+            color: #d4d4d8;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .form-control {
+            width: 100%;
+            background-color: #3f3f3f;
+            border: 1px solid #71717a;
+            color: #ffffff;
+            padding: 12px 14px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+            .form-control::placeholder {
+                color: #ffffff;
+                font-weight: 500;
+            }
+
+            .form-control:focus {
+                border-color: #F96300;
+            }
+
+        .forgot-link {
+            display: block;
+            color: #F96300;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: -5px;
+            margin-bottom: 25px;
+        }
+
+            .forgot-link:hover {
+                text-decoration: underline;
+            }
+
+        .btn-orange {
+            background-color: #F96300;
+            color: #ffffff;
+            border: none;
+            border-radius: 25px; /* Botão arredondado estilo pílula */
+            padding: 12px;
+            width: 100%;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e05800;
+            }
+
+        .register-text {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #d4d4d8;
+        }
+
+            .register-text a {
+                color: #F96300;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .register-text a:hover {
+                    text-decoration: underline;
                 }
 
-                <form method="post" asp-action="Login" asp-controller="Auth">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        .alert-error {
+            background-color: #ef4444;
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-mail</label>
-                        <input type="email" id="email" name="email"
-                               class="form-control" required autofocus />
-                    </div>
+        .btn-outline {
+            display: block; 
+            background-color: transparent;
+            color: #F96300;
+            border: 2px solid #F96300;
+            border-radius: 25px;
+            padding: 10px; 
+            width: 100%;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
 
-                    <div class="mb-3">
-                        <label for="senha" class="form-label">Senha</label>
-                        <input type="password" id="senha" name="senha"
-                               class="form-control" required />
-                    </div>
+            .btn-outline:hover {
+                background-color: #F96300;
+                color: #ffffff;
+            }
+    </style>
+</head>
+<body>
 
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Entrar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <div class="login-container">
+        <img src="~/images/Nine.png" alt="Logo NineGames" class="logo-img" />
+
+        <h1 class="login-title">Entrar</h1>
+        <p class="login-subtitle">faça o Login na sua conta</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert-error">@ViewBag.Error</div>
+        }
+
+        <form method="post" asp-action="Login" asp-controller="Auth">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+            <input type="email" id="email" name="email" class="form-control" placeholder="Email" required autofocus />
+            <input type="password" id="senha" name="senha" class="form-control" placeholder="Senha" required />
+
+            <button type="submit" class="btn-orange">Avançar</button>
+        </form>
+        <a asp-action="Index" asp-controller="Home" class="btn-outline">Voltar</a>
     </div>
-</div>
+
+</body>
+</html>
