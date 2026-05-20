@@ -4,7 +4,6 @@
 
 @section Styles {
     <style>
-        /* ===== RESET & BASE ===== */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
@@ -16,7 +15,6 @@
             color: #e8e8ee;
         }
 
-        /* ===== LAYOUT ===== */
         .home-wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -24,7 +22,6 @@
             font-family: 'Segoe UI', system-ui, sans-serif;
         }
 
-        /* ===== HERO BANNER ===== */
         .hero {
             position: relative;
             width: 100%;
@@ -137,7 +134,6 @@
                 background: #fff;
             }
 
-        /* ===== SECTION HEADERS ===== */
         .section-header {
             display: flex;
             align-items: center;
@@ -173,13 +169,11 @@
                 background: rgba(249,115,22,0.06);
             }
 
-        /* ===== SECTION WRAPPERS ===== */
         .section {
             margin-bottom: 44px;
             padding: 0 8px;
         }
 
-        /* ===== GAME GRID - EM ALTA ===== */
         .grid-em-alta {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -195,7 +189,6 @@
                     height: 280px;
                 }
 
-        /* ===== GAME GRID - LANÇAMENTOS ===== */
         .grid-lancamentos {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -211,7 +204,6 @@
                     height: 280px;
                 }
 
-        /* ===== GAME GRID - EM BREVE ===== */
         .grid-em-breve {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -226,7 +218,6 @@
                 grid-column: span 1;
             }
 
-        /* ===== GAME GRID - FREE ===== */
         .grid-free {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -252,7 +243,6 @@
                 grid-row: 2;
             }
 
-        /* ===== CARD GAME ===== */
         .card-game {
             cursor: pointer;
         }
@@ -308,7 +298,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Placeholder visuals for cards without images */
         .card-placeholder {
             width: 100%;
             height: 100%;
@@ -325,7 +314,6 @@
             text-transform: uppercase;
         }
 
-        /* ===== GENRE LISTS ===== */
         .genre-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -406,7 +394,6 @@
                 color: #22c55e;
             }
 
-        /* ===== FOOTER ===== */
         .home-footer {
             background: #111113;
             border-top: 1px solid #1f1f23;
@@ -496,7 +483,6 @@
             line-height: 1.6;
         }
 
-        /* ===== RESPONSIVE ===== */
         @@media (max-width: 900px) {
             .grid-em-alta {
                 grid-template-columns: repeat(2, 1fr);
@@ -545,7 +531,6 @@
 
 <div class="home-wrapper">
 
-    <!-- ===== HERO BANNER ===== -->
     <div class="hero">
         <img class="hero-bg" src="/images/fundo-tela-home-cod.png" alt="Call of Duty Warzone" onerror="this.style.background='linear-gradient(135deg,#1a0a00,#0a0a0c)';this.style.height='100%';this.removeAttribute('src')" />
         <div class="hero-overlay"></div>
@@ -573,7 +558,6 @@
         </div>
     </div>
 
-    <!-- ===== EM ALTA ===== -->
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Em alta</h2>
@@ -625,7 +609,6 @@
         </div>
     </section>
 
-    <!-- ===== LANÇAMENTOS ===== -->
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Lançamentos</h2>
@@ -671,7 +654,6 @@
         </div>
     </section>
 
-    <!-- ===== EM BREVE ===== -->
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Em breve</h2>
@@ -705,7 +687,6 @@
         </div>
     </section>
 
-    <!-- ===== MELHORES JOGOS GRÁTIS ===== -->
     <section class="section">
         <div class="section-header">
             <h2 class="section-title">Melhores Jogos gratis</h2>
@@ -750,9 +731,7 @@
         </div>
     </section>
 
-    <!-- ===== GÊNEROS ===== -->
     <div class="genre-section">
-        <!-- Ação/Aventura -->
         <div class="genre-column">
             <h3>Ação/Aventura</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
@@ -766,7 +745,7 @@
                 <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Red Dead Redemption 2</div>
-                    <div class="genre-item-price">R$82,99</div>
+                    <div class="genre-item-price">R$279,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
@@ -785,7 +764,6 @@
             </a>
         </div>
 
-        <!-- RPGs -->
         <div class="genre-column">
             <h3>RPGs</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
@@ -818,7 +796,6 @@
             </a>
         </div>
 
-        <!-- História -->
         <div class="genre-column">
             <h3>História</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
@@ -852,7 +829,6 @@
         </div>
     </div>
 
-    <!-- ===== FOOTER ===== -->
     <footer class="home-footer">
         <div class="footer-top">
             <span class="footer-brand">STORE</span>
