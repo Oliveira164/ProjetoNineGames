@@ -1,70 +1,46 @@
 @model List<ProjetoNineGames.Models.Jogo>
-@{
-    ViewData["Title"] = "Lista de Desejos";
-}
+@{ ViewData["Title"] = "Lista de Desejos"; }
 
-<style>
-    .wish-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
-    .wish-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; }
-    .wish-thumb { height: 120px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 38px; }
-    .wish-thumb img { width: 100%; height: 120px; object-fit: cover; }
-    .wish-body { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; }
-    .wish-titulo { font-weight: 600; font-size: 13px; margin: 0 0 4px; }
-
-    .wish-preco {
-        color: #F96300;
-        font-weight: 700;
-        font-size: 15px;
-        margin: 4px 0 10px;
-    }
-    .btn-carr { display: block; width: 100%; padding: 7px; background: #F96300; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; margin-bottom: 6px; }
-    .btn-rem  { display: block; width: 100%; padding: 6px; background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 6px; font-size: 12px; cursor: pointer; }
-    .vazio { text-align: center; padding: 60px 0; color: #9ca3af; }
-
-        .vazio a {
-            color: #F96300;
-            text-decoration: none;
-            font-weight: 500;
-        }
-</style>
-
-<h2 style="margin-bottom:6px">Lista de Desejos</h2>
-<p style="color:#6b7280;font-size:14px;margin-bottom:20px">Jogos que você quer comprar futuramente</p>
+<h2 style="margin-bottom:4px">Lista de Desejos</h2>
+<p class="text-muted" style="font-size:14px;margin-bottom:22px">Jogos que você quer comprar futuramente</p>
 
 @if (!Model.Any())
 {
-    <div class="vazio">
-        <p style="font-size:40px">❤️</p>
+    <div class="ng-vazio">
+        <div class="icon">❤️</div>
         <p>Sua lista de desejos está vazia.</p>
-        <a asp-controller="Jogo" asp-action="Index">Explorar jogos</a>
+        <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">Explorar jogos</a>
     </div>
 }
 else
 {
-    <div class="wish-grid">
+    <div class="ng-bib-grid">
         @foreach (var j in Model)
         {
-            <div class="wish-card">
-                <div class="wish-thumb">
+            <div class="ng-bib-card">
+                <div class="ng-bib-thumb">
                     @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
                     { <img src="~/@j.ImagemUrl" alt="@j.Titulo" /> }
                     else { <span>🎮</span> }
                 </div>
-                <div class="wish-body">
-                    <p class="wish-titulo">@j.Titulo</p>
-                    <p class="wish-preco">R$ @j.Preco.ToString("N2")</p>
-
-                    <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="jogoId" value="@j.Id" />
-                        <button class="btn-carr">+ Carrinho</button>
-                    </form>
-
-                    <form asp-controller="Biblioteca" asp-action="RemoverWishlist" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="jogoId" value="@j.Id" />
-                        <button class="btn-rem" onclick="return confirm('Remover da wishlist?')">✕ Remover</button>
-                    </form>
+                <div class="ng-bib-body">
+                    <p class="ng-bib-titulo">@j.Titulo</p>
+                    <p class="ng-bib-preco">
+                        @(j.Preco == 0 ? "Gratuito" : "R$ " + j.Preco.ToString("N2"))
+                    </p>
+                    <div class="ng-bib-acoes">
+                        <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jogoId" value="@j.Id" />
+                            <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
+                        </form>
+                        <form asp-controller="Biblioteca" asp-action="RemoverWishlist" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="jogoId" value="@j.Id" />
+                            <button class="btn-ng btn-ng-danger btn-ng-sm btn-ng-full"
+                                    onclick="return confirm('Remover da wishlist?')">✕ Remover</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         }

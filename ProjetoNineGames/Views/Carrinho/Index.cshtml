@@ -4,78 +4,26 @@
     var total = Model.Sum(i => i.Subtotal);
 }
 
-<style>
-    .cart-wrap { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
-    .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; }
-    .cart-table { width: 100%; border-collapse: collapse; }
-    .cart-table th, .cart-table td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; font-size: 14px; }
-    .cart-table thead th { font-weight: 600; color: #374151; background: #f9fafb; }
-    .jogo-thumb { width: 56px; height: 56px; border-radius: 8px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 24px; overflow: hidden; }
-    .jogo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .qty-input { width: 60px; padding: 5px 8px; border: 1px solid #d1d5db; border-radius: 6px; text-align: center; font-size: 14px; }
-    .btn-rem { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
-    .btn-rem:hover { background: #fee2e2; }
-    .resumo h3 { font-size: 16px; font-weight: 600; margin: 0 0 16px; }
-    .resumo-linha { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; color: #4b5563; }
+<h2 style="margin-bottom:20px">Carrinho</h2>
 
-    .resumo-total {
-        display: flex;
-        justify-content: space-between;
-        font-size: 17px;
-        font-weight: 700;
-        color: #F96300;
-        border-top: 1px solid #e5e7eb;
-        padding-top: 12px;
-        margin-top: 6px;
-    }
-    .select-pgto { width: 100%; padding: 9px 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; margin: 14px 0 16px; }
-
-    .btn-finalizar {
-        width: 100%;
-        padding: 11px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-    }
-
-        .btn-finalizar:hover {
-            background: #e05800;
-        }
-    .vazio { text-align: center; padding: 60px 0; color: #9ca3af; }
-
-        .vazio a {
-            color: #F96300;
-            text-decoration: none;
-            font-weight: 500;
-        }
-    .alert-ok   { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
-    .alert-erro { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; }
-</style>
-
-<h2 style="margin-bottom:20px"> Carrinho</h2>
-
-@if (TempData["ok"]   != null) { <div class="alert-ok">@TempData["ok"]</div> }
-@if (TempData["erro"] != null) { <div class="alert-erro">@TempData["erro"]</div> }
+@if (TempData["ok"]   != null) { <div class="ng-alert ng-alert-ok">@TempData["ok"]</div> }
+@if (TempData["erro"] != null) { <div class="ng-alert ng-alert-erro">@TempData["erro"]</div> }
 
 @if (!Model.Any())
 {
-    <div class="vazio">
-        <p style="font-size:40px">🛒</p>
+    <div class="ng-vazio">
+        <div class="icon">🛒</div>
         <p>Seu carrinho está vazio.</p>
-        <a asp-controller="Jogo" asp-action="Index">Explorar jogos</a>
+        <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">Explorar jogos</a>
     </div>
 }
 else
 {
-    <div class="cart-wrap">
+    <div class="ng-cart-wrap">
 
         <!-- Itens -->
-        <div class="card">
-            <table class="cart-table">
+        <div class="ng-card" style="padding:0;overflow:hidden">
+            <table class="ng-cart-table">
                 <thead>
                     <tr>
                         <th></th>
@@ -90,30 +38,31 @@ else
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>
-                                <div class="jogo-thumb">
+                            <td style="padding-left:16px">
+                                <div class="ng-thumb">
                                     @if (!string.IsNullOrWhiteSpace(item.ImagemUrl))
                                     { <img src="~/@item.ImagemUrl" alt="@item.Titulo" /> }
                                     else { <span>🎮</span> }
                                 </div>
                             </td>
-                            <td style="font-weight:500">@item.Titulo</td>
-                            <td>R$ @item.PrecoUnitario.ToString("N2")</td>
+                            <td style="font-weight:600">@item.Titulo</td>
+                            <td class="text-muted">R$ @item.PrecoUnitario.ToString("N2")</td>
                             <td>
                                 <form asp-action="AlterarQtd" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="jogoId" value="@item.JogoId" />
-                                    <input type="number" name="quantidade" value="@item.Quantidade"
-                                           min="1" class="qty-input"
+                                    <input class="ng-qty" type="number" name="quantidade"
+                                           value="@item.Quantidade" min="1"
                                            onchange="this.form.submit()" />
                                 </form>
                             </td>
-                            <td style="font-weight:600;color:#F96300">R$ @item.Subtotal.ToString("N2")</td>
-                            <td>
+                            <td style="font-weight:700;color:var(--ng-orange)">R$ @item.Subtotal.ToString("N2")</td>
+                            <td style="padding-right:16px">
                                 <form asp-action="Remover" method="post">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="jogoId" value="@item.JogoId" />
-                                    <button class="btn-rem" onclick="return confirm('Remover?')">✕</button>
+                                    <button class="btn-ng btn-ng-danger btn-ng-sm"
+                                            onclick="return confirm('Remover?')">✕</button>
                                 </form>
                             </td>
                         </tr>
@@ -122,38 +71,44 @@ else
             </table>
         </div>
 
-        <!-- Resumo + finalizar -->
-        <div class="card resumo">
-            <h3>Resumo do pedido</h3>
+        <!-- Resumo -->
+        <div class="ng-card">
+            <p class="ng-resumo-h">Resumo do pedido</p>
 
             @foreach (var item in Model)
             {
-                <div class="resumo-linha">
+                <div class="ng-resumo-linha">
                     <span>@item.Titulo × @item.Quantidade</span>
                     <span>R$ @item.Subtotal.ToString("N2")</span>
                 </div>
             }
 
-            <div class="resumo-total">
+            <div class="ng-resumo-total">
                 <span>Total</span>
                 <span>R$ @total.ToString("N2")</span>
             </div>
 
-            <form asp-action="Finalizar" method="post">
+            <form asp-action="Finalizar" method="post" style="margin-top:16px">
                 @Html.AntiForgeryToken()
-                <select name="formaPagamento" class="select-pgto" required>
-                    <option value="">Forma de pagamento...</option>
-                    <option value="Cartão de Crédito">Cartão de Crédito</option>
-                    <option value="Cartão de Débito">Cartão de Débito</option>
-                    <option value="Pix">Pix</option>
-                    <option value="Boleto">Boleto</option>
-                </select>
-                <button type="submit" class="btn-finalizar">Finalizar compra</button>
+                <div class="ng-field">
+                    <label class="ng-label">Forma de pagamento</label>
+                    <select class="ng-select" name="formaPagamento" required>
+                        <option value="">Selecione...</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Boleto">Boleto</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">
+                    Finalizar compra
+                </button>
             </form>
 
-            <div style="text-align:center;margin-top:12px">
-                <a asp-controller="Jogo" asp-action="Index"
-                   style="font-size:13px;color:#F96300;text-decoration:none">← Continuar comprando</a>
+            <div style="text-align:center;margin-top:14px">
+                <a asp-controller="Jogo" asp-action="Index" class="text-muted" style="font-size:13px">
+                    ← Continuar comprando
+                </a>
             </div>
         </div>
 

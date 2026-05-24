@@ -1,47 +1,48 @@
 @{
-    ViewData["Title"] = "Verificação em 2 Etapas";
+    Layout = null;
+    ViewData["Title"] = "Verificação — NineGames";
 }
-
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-warning">
-            <div class="card-body p-4">
-                <h4 class="card-title mb-1 text-center">🔐 Verificação em 2 Etapas</h4>
-                <p class="text-muted text-center small mb-4">
-                    Abra o app <strong>NineGames</strong> no seu celular
-                    e informe o código de 6 dígitos exibido.
-                </p>
-
-                @if (ViewBag.Error != null)
-                {
-                    <div class="alert alert-danger">@ViewBag.Error</div>
-                }
-
-                <form method="post" asp-action="Verificar2Fa" asp-controller="Auth">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
-
-                    <div class="mb-3">
-                        <label for="codigo" class="form-label">Código do aplicativo</label>
-                        <input type="text" id="codigo" name="codigo"
-                               class="form-control form-control-lg text-center fw-bold"
-                               maxlength="6" pattern="\d{6}" inputmode="numeric"
-                               placeholder="000000" required autofocus
-                               autocomplete="one-time-code" />
-                        <div class="form-text text-center">O código expira em 30 segundos.</div>
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-warning fw-bold">Confirmar</button>
-                    </div>
-                </form>
-
-                <div class="text-center mt-3">
-                    <a asp-action="Login" asp-controller="Auth" class="small text-muted">
-                        ← Voltar ao login
-                    </a>
-                </div>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="ng-auth-page">
+        <div class="ng-twofa-card">
+            <div class="ng-auth-logo">
+                <img src="~/images/Nine.png" alt="NineGames" />
             </div>
+            <h1 class="ng-auth-title">Verificação</h1>
+            <p class="ng-auth-sub">
+                Abra o app <strong>NineGames</strong> no celular<br />
+                e informe o código de 6 dígitos.
+            </p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="ng-alert ng-alert-erro">@ViewBag.Error</div>
+            }
+
+            <form method="post" asp-action="Verificar2Fa" asp-controller="Auth">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                <div class="ng-field">
+                    <input class="ng-code-input" type="text" name="codigo"
+                           maxlength="6" pattern="\d{6}" inputmode="numeric"
+                           placeholder="000000" required autofocus autocomplete="one-time-code" />
+                    <p class="ng-code-hint">⏱ O código expira em 30 segundos</p>
+                </div>
+
+                <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">Confirmar</button>
+            </form>
+
+            <a asp-action="Login" asp-controller="Auth" class="ng-auth-link">← Voltar ao login</a>
         </div>
     </div>
-</div>
+</body>
+</html>

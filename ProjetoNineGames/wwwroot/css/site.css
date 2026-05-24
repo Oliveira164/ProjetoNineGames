@@ -1,23 +1,1075 @@
-html {
-  font-size: 14px;
-}
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    font-size: 15px;
+    scroll-behavior: smooth;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Barlow', system-ui, sans-serif;
+    background: #0d0d0d;
+    color: #f0f0f0;
+    min-height: 100vh;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
 }
 
+a {
+    color: #F96300;
+    text-decoration: none;
+    transition: color .15s ease;
+}
+
+    a:hover {
+        color: #ff8533;
+    }
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    color: #f0f0f0;
+    line-height: 1.15;
+    letter-spacing: .02em;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+.topnav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    padding: 0 28px;
+    gap: 2px;
+    background: rgba(13,13,13,.96);
+    border-bottom: 1px solid #2a2a2a;
+    backdrop-filter: blur(12px);
+}
+
+.topnav-brand {
+    display: flex;
+    align-items: center;
+    margin-right: 18px;
+    flex-shrink: 0;
+}
+
+    .topnav-brand img {
+        height: 30px;
+        width: auto;
+    }
+
+.topnav > a {
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 11px;
+    border-radius: 6px;
+    transition: background .15s ease, color .15s ease;
+}
+
+    .topnav > a:hover {
+        background: rgba(249,99,0,.08);
+        color: #F96300;
+    }
+
+.spacer {
+    flex: 1;
+}
+
+.topnav-user {
+    font-size: 13px;
+    font-weight: 500;
+    color: #888;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+    .topnav-user:hover {
+        color: #f0f0f0;
+    }
+
+.btn-sair {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    color: #888;
+    border-radius: 6px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'Barlow', system-ui, sans-serif;
+    cursor: pointer;
+    letter-spacing: .04em;
+    transition: border-color .15s ease, color .15s ease;
+}
+
+    .btn-sair:hover {
+        border-color: #F96300;
+        color: #F96300;
+    }
+
+/* ── Container ──────────────────────────────────────────────── */
+.container {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+/* ── Botões ─────────────────────────────────────────────────── */
+.btn-ng {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: 'Barlow', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    cursor: pointer;
+    border: none;
+    transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .btn-ng:active {
+        transform: scale(.97);
+    }
+
+.btn-ng-primary {
+    background: #F96300;
+    color: #fff;
+}
+
+    .btn-ng-primary:hover {
+        background: #d95500;
+        box-shadow: 0 0 18px rgba(249,99,0,.22);
+        color: #fff;
+    }
+
+.btn-ng-outline {
+    background: transparent;
+    border: 1px solid rgba(249,99,0,.3);
+    color: #F96300;
+}
+
+    .btn-ng-outline:hover {
+        background: rgba(249,99,0,.08);
+        border-color: #F96300;
+        color: #F96300;
+    }
+
+.btn-ng-ghost {
+    background: #222;
+    border: 1px solid #2a2a2a;
+    color: #888;
+}
+
+    .btn-ng-ghost:hover {
+        background: #2a2a2a;
+        color: #f0f0f0;
+    }
+
+.btn-ng-danger {
+    background: transparent;
+    border: 1px solid #4a1515;
+    color: #e05555;
+}
+
+    .btn-ng-danger:hover {
+        background: rgba(224,85,85,.08);
+        border-color: #e05555;
+    }
+
+.btn-ng-sm {
+    padding: 5px 12px;
+    font-size: 12px;
+}
+
+.btn-ng-lg {
+    padding: 12px 28px;
+    font-size: 15px;
+}
+
+.btn-ng-full {
+    width: 100%;
+}
+
+/* ── Formulários ────────────────────────────────────────────── */
+.ng-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+}
+
+.ng-input, .ng-select, .ng-textarea {
+    width: 100%;
+    background: #222;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #f0f0f0;
+    font-family: 'Barlow', system-ui, sans-serif;
+    font-size: 14px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+    .ng-input::placeholder, .ng-textarea::placeholder {
+        color: #555;
+    }
+
+    .ng-input:focus, .ng-select:focus, .ng-textarea:focus {
+        border-color: #F96300;
+        box-shadow: 0 0 0 3px rgba(249,99,0,.22);
+    }
+
+.ng-select {
+    appearance: none;
+    cursor: pointer;
+}
+
+.ng-textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.ng-field {
+    margin-bottom: 18px;
+}
+
+.ng-field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+    .ng-field-grid .full {
+        grid-column: 1 / -1;
+    }
+
+.ng-hint {
+    font-size: 11px;
+    color: #555;
+    margin-top: 4px;
+}
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+.ng-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 18px;
+    border: 1px solid;
+}
+
+.ng-alert-ok {
+    background: rgba(34,197,94,.07);
+    border-color: rgba(34,197,94,.2);
+    color: #4ade80;
+}
+
+.ng-alert-erro {
+    background: rgba(239,68,68,.07);
+    border-color: rgba(239,68,68,.2);
+    color: #f87171;
+}
+
+.ng-alert-info {
+    background: rgba(249,99,0,.08);
+    border-color: rgba(249,99,0,.3);
+    color: #F96300;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.ng-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+}
+
+.ng-badge-orange {
+    background: rgba(249,99,0,.12);
+    color: #F96300;
+    border: 1px solid rgba(249,99,0,.3);
+}
+
+.ng-badge-green {
+    background: rgba(34,197,94,.1);
+    color: #4ade80;
+    border: 1px solid rgba(34,197,94,.25);
+}
+
+.ng-badge-red {
+    background: rgba(239,68,68,.1);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,.25);
+}
+
+.ng-badge-gray {
+    background: rgba(255,255,255,.05);
+    color: #888;
+    border: 1px solid #2a2a2a;
+}
+
+.ng-badge-blue {
+    background: rgba(59,130,246,.1);
+    color: #60a5fa;
+    border: 1px solid rgba(59,130,246,.25);
+}
+
+.ng-badge-amber {
+    background: rgba(245,158,11,.1);
+    color: #fbbf24;
+    border: 1px solid rgba(245,158,11,.25);
+}
+
+/* ── Card genérico ──────────────────────────────────────────── */
+.ng-card {
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    padding: 22px;
+    transition: border-color .15s ease;
+}
+
+    .ng-card:hover {
+        border-color: rgba(249,99,0,.3);
+    }
+
+/* ── Tabelas (admin) ────────────────────────────────────────── */
+.ng-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+}
+
+    .ng-table th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: #888;
+        padding: 10px 14px;
+        border-bottom: 1px solid #2a2a2a;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .ng-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+        color: #f0f0f0;
+        vertical-align: middle;
+    }
+
+    .ng-table tbody tr {
+        transition: background .15s ease;
+    }
+
+        .ng-table tbody tr:hover {
+            background: rgba(249,99,0,.04);
+        }
+
+/* ── Section header (admin) ─────────────────────────────────── */
+.ng-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+    .ng-section-header h2 {
+        flex: 1;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+/* ── Form card ──────────────────────────────────────────────── */
+.ng-form-card {
+    max-width: 560px;
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    padding: 30px;
+}
+
+.ng-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+/* ── Vitrine ────────────────────────────────────────────────── */
+.ng-vitrine-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+    .ng-vitrine-header h2 {
+        flex: 1;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 1.9rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: .05em;
+    }
+
+.ng-cats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.ng-cat {
+    padding: 5px 15px;
+    border: 1px solid #2a2a2a;
+    border-radius: 20px;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #888;
+    transition: all .15s ease;
+}
+
+    .ng-cat:hover {
+        border-color: rgba(249,99,0,.3);
+        color: #F96300;
+    }
+
+    .ng-cat.ativo {
+        background: #F96300;
+        border-color: #F96300;
+        color: #fff;
+    }
+
+.ng-busca {
+    display: flex;
+    gap: 8px;
+}
+
+    .ng-busca .ng-input {
+        width: 210px;
+    }
+
+.ng-jogos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.ng-jogo-card {
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+    .ng-jogo-card:hover {
+        border-color: rgba(249,99,0,.3);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(0,0,0,.5);
+    }
+
+.ng-jogo-capa {
+    width: 100%;
+    height: 135px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    overflow: hidden;
+}
+
+    .ng-jogo-capa img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .3s ease;
+    }
+
+.ng-jogo-card:hover .ng-jogo-capa img {
+    transform: scale(1.04);
+}
+
+.ng-jogo-body {
+    padding: 13px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ng-jogo-titulo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f0f0f0;
+    line-height: 1.2;
+}
+
+.ng-jogo-preco {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #F96300;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.ng-jogo-gratis {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #4ade80;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.ng-jogo-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+/* ── Detalhe ────────────────────────────────────────────────── */
+.ng-detalhe-wrap {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 36px;
+    max-width: 820px;
+}
+
+.ng-detalhe-capa {
+    width: 260px;
+    height: 320px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a2a2a;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+}
+
+    .ng-detalhe-capa img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.ng-detalhe-titulo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.ng-detalhe-preco {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: #F96300;
+    margin: 10px 0;
+}
+
+.ng-detalhe-gratis {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #4ade80;
+    margin: 10px 0;
+}
+
+.ng-detalhe-desc {
+    font-size: 14px;
+    color: #888;
+    line-height: 1.75;
+    margin-bottom: 18px;
+}
+
+.ng-detalhe-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ng-btn-voltar {
+    font-size: 13px;
+    color: #F96300;
+    display: inline-block;
+    margin-bottom: 18px;
+}
+
+/* ── Carrinho ───────────────────────────────────────────────── */
+.ng-cart-wrap {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+}
+
+.ng-cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .ng-cart-table th, .ng-cart-table td {
+        padding: 12px 10px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+        vertical-align: middle;
+        font-size: 14px;
+    }
+
+    .ng-cart-table thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #888;
+    }
+
+.ng-thumb {
+    width: 54px;
+    height: 54px;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    overflow: hidden;
+}
+
+    .ng-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.ng-qty {
+    width: 58px;
+    padding: 6px 8px;
+    background: #222;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 14px;
+    color: #f0f0f0;
+    outline: none;
+}
+
+    .ng-qty:focus {
+        border-color: #F96300;
+    }
+
+.ng-resumo-linha {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.ng-resumo-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #F96300;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 14px;
+    margin-top: 6px;
+}
+
+.ng-resumo-h {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #888;
+    margin-bottom: 16px;
+}
+
+/* ── Biblioteca / Wishlist ──────────────────────────────────── */
+.ng-bib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 18px;
+}
+
+.ng-bib-card {
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color .15s ease, transform .15s ease;
+}
+
+    .ng-bib-card:hover {
+        border-color: rgba(249,99,0,.3);
+        transform: translateY(-2px);
+    }
+
+.ng-bib-thumb {
+    height: 110px;
+    background: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    overflow: hidden;
+}
+
+    .ng-bib-thumb img {
+        width: 100%;
+        height: 110px;
+        object-fit: cover;
+    }
+
+.ng-bib-body {
+    padding: 10px 12px;
+}
+
+.ng-bib-titulo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0f0f0;
+    margin-bottom: 4px;
+}
+
+.ng-bib-preco {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #F96300;
+    margin: 4px 0 10px;
+}
+
+.ng-bib-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* ── Auth ───────────────────────────────────────────────────── */
+.ng-auth-page {
+    min-height: calc(100vh - 58px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('/images/fundo-tela-login.png');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+    .ng-auth-page::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,.65);
+    }
+
+.ng-auth-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(18,18,18,.93);
+    border: 1px solid rgba(249,99,0,.18);
+    border-radius: 18px;
+    padding: 38px 36px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 80px rgba(0,0,0,.7);
+}
+
+.ng-auth-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+    .ng-auth-logo img {
+        height: 36px;
+        width: auto;
+    }
+
+.ng-auth-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    color: #f0f0f0;
+    margin-bottom: 4px;
+    letter-spacing: .04em;
+}
+
+.ng-auth-sub {
+    text-align: center;
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 28px;
+}
+
+.ng-auth-link {
+    font-size: 12px;
+    color: #F96300;
+    text-align: center;
+    display: block;
+    margin-top: 16px;
+}
+
+/* ── 2FA tela ───────────────────────────────────────────────── */
+.ng-twofa-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 380px;
+    background: rgba(18,18,18,.93);
+    border: 1px solid rgba(249,99,0,.28);
+    border-radius: 18px;
+    padding: 38px 34px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 80px rgba(0,0,0,.7);
+}
+
+.ng-code-input {
+    width: 100%;
+    background: #222;
+    border: 2px solid rgba(249,99,0,.4);
+    border-radius: 10px;
+    padding: 14px 10px;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 12px;
+    text-align: center;
+    color: #F96300;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+    box-sizing: border-box;
+}
+
+    .ng-code-input:focus {
+        border-color: #F96300;
+        box-shadow: 0 0 0 3px rgba(249,99,0,.22);
+    }
+
+.ng-code-hint {
+    font-size: 12px;
+    color: #555;
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* ── Perfil / 2FA setup ─────────────────────────────────────── */
+.ng-twofa-box {
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    margin-bottom: 14px;
+    border: 1px solid;
+}
+
+.ng-twofa-on {
+    background: rgba(249,99,0,.08);
+    border-color: rgba(249,99,0,.3);
+    color: #ffb07a;
+}
+
+.ng-twofa-off {
+    background: #222;
+    border-color: #2a2a2a;
+    color: #888;
+}
+
+.ng-qr-wrap {
+    display: inline-block;
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 18px;
+}
+
+.ng-secret-box {
+    background: #222;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-family: monospace;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: #F96300;
+    word-break: break-all;
+    margin-bottom: 20px;
+}
+
+.ng-setup-steps {
+    list-style: none;
+    counter-reset: s;
+    margin-bottom: 22px;
+}
+
+    .ng-setup-steps li {
+        counter-increment: s;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        font-size: 13.5px;
+        color: #888;
+        border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+
+        .ng-setup-steps li::before {
+            content: counter(s);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            background: #F96300;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+/* ── Vazio ──────────────────────────────────────────────────── */
+.ng-vazio {
+    text-align: center;
+    padding: 80px 20px;
+    color: #555;
+}
+
+    .ng-vazio .icon {
+        font-size: 42px;
+        margin-bottom: 12px;
+    }
+
+    .ng-vazio p {
+        font-size: 15px;
+        margin-bottom: 18px;
+    }
+
+/* ── Utilitários ────────────────────────────────────────────── */
+.text-orange {
+    color: #F96300;
+}
+
+.text-muted {
+    color: #888;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #2a2a2a;
+    margin: 24px 0;
+}
+
+/* ── Responsivo ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .ng-cart-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .ng-detalhe-wrap {
+        grid-template-columns: 1fr;
+    }
+
+    .ng-detalhe-capa {
+        width: 100%;
+        height: 220px;
+    }
+
+    .ng-field-grid {
+        grid-template-columns: 1fr;
+    }
+
+        .ng-field-grid .full {
+            grid-column: 1;
+        }
+}
+
+@media (max-width: 640px) {
+    .topnav {
+        padding: 0 14px;
+    }
+
+        .topnav > a:not(.topnav-brand) {
+            display: none;
+        }
+
+    .container {
+        padding: 20px 14px;
+    }
+
+    .ng-jogos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+        gap: 14px;
+    }
+
+    .ng-auth-card, .ng-twofa-card {
+        padding: 28px 20px;
+    }
+}

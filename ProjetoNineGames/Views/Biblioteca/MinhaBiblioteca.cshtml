@@ -1,58 +1,34 @@
 @model List<ProjetoNineGames.Models.Jogo>
-@{
-    ViewData["Title"] = "Minha Biblioteca";
-}
+@{ ViewData["Title"] = "Minha Biblioteca"; }
 
-<style>
-    .bib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; }
-    .bib-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
-    .bib-thumb { height: 120px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 38px; }
-    .bib-thumb img { width: 100%; height: 120px; object-fit: cover; }
-    .bib-body { padding: 10px 12px; }
-    .bib-titulo { font-weight: 600; font-size: 13px; margin: 0 0 4px; }
+<h2 style="margin-bottom:4px">Minha Biblioteca</h2>
+<p class="text-muted" style="font-size:14px;margin-bottom:22px">Seus jogos adquiridos</p>
 
-    .bib-cat {
-        font-size: 11px;
-        color: #F96300;
-    }
-    .alert-ok { background:#ecfdf5; border:1px solid #6ee7b7; color:#065f46; padding:10px 14px; border-radius:8px; margin-bottom:16px; }
-    .vazio { text-align: center; padding: 60px 0; color: #9ca3af; }
-
-        .vazio a {
-            color: #F96300;
-            text-decoration: none;
-            font-weight: 500;
-        }
-</style>
-
-<h2 style="margin-bottom:6px">Minha Biblioteca</h2>
-<p style="color:#6b7280;font-size:14px;margin-bottom:20px">Seus jogos adquiridos</p>
-
-@if (ViewBag.Ok != null) { <div class="alert-ok">@ViewBag.Ok</div> }
+@if (ViewBag.Ok != null) { <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div> }
 
 @if (!Model.Any())
 {
-    <div class="vazio">
-        <p style="font-size:40px">📦</p>
+    <div class="ng-vazio">
+        <div class="icon">📦</div>
         <p>Você ainda não tem jogos.</p>
-        <a asp-controller="Jogo" asp-action="Index">Explorar a vitrine</a>
+        <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">Explorar a vitrine</a>
     </div>
 }
 else
 {
-    <div class="bib-grid">
+    <div class="ng-bib-grid">
         @foreach (var j in Model)
         {
-            <div class="bib-card">
-                <div class="bib-thumb">
+            <div class="ng-bib-card">
+                <div class="ng-bib-thumb">
                     @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
                     { <img src="~/@j.ImagemUrl" alt="@j.Titulo" /> }
                     else { <span>🎮</span> }
                 </div>
-                <div class="bib-body">
-                    <p class="bib-titulo">@j.Titulo</p>
+                <div class="ng-bib-body">
+                    <p class="ng-bib-titulo">@j.Titulo</p>
                     @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    { <span class="bib-cat">@j.Categoria</span> }
+                    { <span class="ng-badge ng-badge-orange">@j.Categoria</span> }
                 </div>
             </div>
         }

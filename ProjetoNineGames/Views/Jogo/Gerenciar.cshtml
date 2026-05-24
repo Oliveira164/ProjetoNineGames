@@ -1,214 +1,65 @@
 @model IEnumerable<ProjetoNineGames.Models.Jogo>
-@{
-    ViewData["Title"] = "Gerenciar Jogos";
-}
+@{ ViewData["Title"] = "Gerenciar Jogos"; }
 
-<style>
-    .tbl {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 14px;
-    }
-
-        .tbl th, .tbl td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e5e7eb;
-            text-align: left;
-        }
-
-        .tbl thead th {
-            background: #f9fafb;
-            font-weight: 600;
-            border-bottom: 2px solid #d1d5db;
-        }
-
-        .tbl tbody tr:hover {
-            background: #fafafa;
-        }
-
-            tbody {
-        background: #f9fafb;
-    }
-
-    .badge-cat {
-        background: #fc8f47;
-        color: #fff;
-        padding: 2px 9px;
-        border-radius: 12px;
-        font-size: 11px;
-        font-weight: 500;
-    }
-
-    .acoes {
-        display: flex;
-        gap: 6px;
-    }
-
-    .btn-sm {
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 12px;
-        cursor: pointer;
-        border: 1px solid;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-editar {
-        border-color: #3b82f6;
-        color: #1d4ed8;
-        background: #eff6ff;
-    }
-
-        .btn-editar:hover {
-            background: #dbeafe;
-        }
-
-    .btn-excluir {
-        border-color: #ef4444;
-        color: #b91c1c;
-        background: #fef2f2;
-    }
-
-        .btn-excluir:hover {
-            background: #fee2e2;
-        }
-
-    .btn-novo {
-        padding: 8px 16px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 7px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-        .btn-novo:hover {
-            background: #e05800;
-        }
-
-    .header-bar {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-    }
-
-        .header-bar h2 {
-            margin: 0;
-            flex: 1;
-        }
-
-    .busca-form {
-        display: flex;
-        gap: 8px;
-    }
-
-        .busca-form input {
-            padding: 7px 10px;
-            border: 1px solid #d1d5db;
-            border-radius: 7px;
-            font-size: 13px;
-            width: 180px;
-        }
-
-    .alert-ok {
-        background: #ecfdf5;
-        border: 1px solid #6ee7b7;
-        color: #065f46;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 14px;
-    }
-
-    .alert-erro {
-        background: #fef2f2;
-        border: 1px solid #fca5a5;
-        color: #991b1b;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 14px;
-    }
-</style>
-
-<div class="header-bar">
+<div class="ng-section-header">
     <h2>Gerenciar Jogos</h2>
-    <form class="busca-form" method="get">
-        <input type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar..." />
-        <button type="submit" class="btn-novo" style="padding:7px 14px">Buscar</button>
+    <form class="ng-busca" method="get">
+        <input class="ng-input" type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar..." />
+        <button type="submit" class="btn-ng btn-ng-ghost btn-ng-sm">Buscar</button>
     </form>
-    <a asp-action="Criar" class="btn-novo">+ Novo Jogo</a>
+    <a asp-action="Criar" class="btn-ng btn-ng-primary">+ Novo Jogo</a>
 </div>
 
-@if (ViewBag.Ok != null)
-{
-     <div class="alert-ok">@ViewBag.Ok</div>
-}
-@if (ViewBag.Erro != null)
-{
-     <div class="alert-erro">@ViewBag.Erro</div>
-}
+@if (ViewBag.Ok   != null) { <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div> }
+@if (ViewBag.Erro != null) { <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div> }
 
-<table class="tbl">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Título</th>
-            <th>Categoria</th>
-            <th>Preço</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var j in Model)
-        {
+<div class="ng-card" style="padding:0;overflow:hidden">
+    <table class="ng-table">
+        <thead>
             <tr>
-                <td style="color:#9ca3af">@j.Id</td>
-                <td style="font-weight:500">@j.Titulo</td>
-                <td>
-                    @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    {
-                        <span class="badge-cat">@j.Categoria</span>
-                    }
-                    else
-                    {
-                        <span style="color:#9ca3af">—</span>
-                    }
-                </td>
-                <td>
-                    @if (j.Preco == 0)
-                    {
-                        <span>Grátis</span>
-                    }
-                    else
-                    {
-                        <span>R$ @j.Preco.ToString("N2")</span>
-                    }
+                <th>#</th>
+                <th>Título</th>
+                <th>Categoria</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var j in Model)
+            {
+                <tr>
+                    <td class="text-muted">@j.Id</td>
+                    <td style="font-weight:600">@j.Titulo</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(j.Categoria))
+                        { <span class="ng-badge ng-badge-orange">@j.Categoria</span> }
+                        else { <span class="text-muted">—</span> }
                     </td>
-                <td>
-                    <div class="acoes">
-                        <a asp-action="Editar" asp-route-id="@j.Id" class="btn-sm btn-editar">Editar</a>
-                        <form asp-action="Excluir" method="post"
-                              onsubmit="return confirm('Excluir @Html.Raw(j.Titulo.Replace("'","\\'")??"")? Esta ação não pode ser desfeita.')">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@j.Id" />
-                            <button type="submit" class="btn-sm btn-excluir">Excluir</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        }
-        @if (!Model.Any())
-        {
-            <tr>
-                <td colspan="5" style="text-align:center;color:#9ca3af;padding:40px 0">
-                    Nenhum jogo cadastrado.
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                    <td>
+                        @if (j.Preco == 0) { <span class="ng-badge ng-badge-green">Grátis</span> }
+                        else               { <span>R$ @j.Preco.ToString("N2")</span> }
+                    </td>
+                    <td>
+                        <div style="display:flex;gap:6px">
+                            <a asp-action="Editar" asp-route-id="@j.Id" class="btn-ng btn-ng-ghost btn-ng-sm">Editar</a>
+                            <form asp-action="Excluir" method="post"
+                                  onsubmit="return confirm('Excluir @Html.Raw(j.Titulo.Replace("'","\\'") ?? "")?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@j.Id" />
+                                <button type="submit" class="btn-ng btn-ng-danger btn-ng-sm">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:40px 0;color:var(--ng-text-dim)">
+                        Nenhum jogo cadastrado.
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

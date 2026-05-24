@@ -1,45 +1,12 @@
 @model ProjetoNineGames.Models.Categoria
-@{
-    ViewData["Title"] = "Nova Categoria";
-}
-
-<style>
-    .form-card { max-width: 460px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; }
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 5px; }
-    .field input, .field textarea { width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; box-sizing: border-box; font-family: inherit; }
-
-            .field input:focus, .field textarea:focus {
-                outline: none;
-                border-color: #e05800;
-                box-shadow: 0 0 0 3px rgba(124,58,237,.15);
-            }
-    .form-actions { display: flex; gap: 10px; margin-top: 6px; }
-
-    .btn-salvar {
-        padding: 9px 22px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-
-        .btn-salvar:hover {
-            background: #e05800;
-        }
-    .btn-cancel { padding: 9px 16px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none; color: #374151; }
-    .alert-erro { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:13px; }
-</style>
+@{ ViewData["Title"] = "Nova Categoria"; }
 
 <h2 style="margin-bottom:20px">Nova Categoria</h2>
 
-<div class="form-card">
+<div class="ng-form-card">
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert-erro">
+        <div class="ng-alert ng-alert-erro">
             @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
             { <div>@e.ErrorMessage</div> }
         </div>
@@ -48,18 +15,18 @@
     <form asp-action="Criar" method="post">
         @Html.AntiForgeryToken()
 
-        <div class="field">
-            <label>Nome *</label>
-            <input asp-for="Nome" required placeholder="Ex: RPG, Ação, FPS..." />
+        <div class="ng-field">
+            <label class="ng-label">Nome *</label>
+            <input class="ng-input" asp-for="Nome" required placeholder="Ex: RPG, Ação, FPS..." />
         </div>
-        <div class="field">
-            <label>Descrição</label>
-            <textarea asp-for="Descricao" rows="3" placeholder="Descrição opcional..."></textarea>
+        <div class="ng-field">
+            <label class="ng-label">Descrição</label>
+            <textarea class="ng-textarea" asp-for="Descricao" rows="3" placeholder="Descrição opcional..."></textarea>
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <a asp-action="Index" class="btn-cancel">Cancelar</a>
+        <div class="ng-form-actions">
+            <button type="submit" class="btn-ng btn-ng-primary">Salvar</button>
+            <a asp-action="Index" class="btn-ng btn-ng-ghost">Cancelar</a>
         </div>
     </form>
 </div>

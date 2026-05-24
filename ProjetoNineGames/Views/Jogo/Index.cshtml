@@ -1,295 +1,78 @@
 @model IEnumerable<ProjetoNineGames.Models.Jogo>
-@{
-    ViewData["Title"] = "Vitrine";
-}
+@{ ViewData["Title"] = "Vitrine"; }
 
-<style>
-    .vitrine-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-        .vitrine-header h2 {
-            margin: 0;
-            flex: 1;
-            font-size: 20px;
-        }
-
-    .busca-form {
-        display: flex;
-        gap: 8px;
-    }
-
-        .busca-form input {
-            padding: 7px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 13px;
-            width: 200px;
-        }
-
-    .btn-buscar {
-        padding: 7px 16px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 13px;
-        cursor: pointer;
-    }
-
-    .categorias {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 22px;
-    }
-
-    .cat-btn {
-        padding: 5px 14px;
-        border: 1px solid #d1d5db;
-        border-radius: 20px;
-        background: #fff;
-        font-size: 13px;
-        text-decoration: none;
-        color: #374151;
-    }
-
-        .cat-btn:hover, .cat-btn.ativo {
-            background: #F96300;
-            border-color: #F96300;
-            color: #fff;
-        }
-
-    .jogos-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-    }
-
-    .jogo-card {
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        overflow: hidden;
-        background: #fff;
-        display: flex;
-        flex-direction: column;
-        transition: box-shadow .15s;
-    }
-
-        .jogo-card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,.1);
-        }
-
-    .jogo-capa {
-        width: 100%;
-        height: 130px;
-        background: #f3f4f6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 42px;
-        overflow: hidden;
-    }
-
-        .jogo-capa img {
-            width: 100%;
-            height: 130px;
-            object-fit: cover;
-        }
-
-    .jogo-body {
-        padding: 12px;
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .jogo-titulo {
-        font-weight: 600;
-        font-size: 14px;
-        margin: 0 0 4px;
-        color: #111827;
-    }
-
-    .jogo-cat {
-        display: inline-block;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 11px;
-        background: #fc8f47;
-        color: #fff;
-        margin-bottom: 8px;
-    }
-
-    .jogo-preco {
-        font-size: 16px;
-        font-weight: 700;
-        color: #000;
-        margin: auto 0 10px;
-    }
-
-    .btn-detalhe {
-        display: block;
-        text-align: center;
-        padding: 7px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: 500;
-        text-decoration: none;
-        background: #F96300;
-        color: #fff;
-        margin-bottom: 6px;
-    }
-
-        .btn-detalhe:hover {
-            background: #e05800;
-        }
-
-    .btn-wish {
-        display: block;
-        width: 100%;
-        padding: 6px;
-        border: 1px solid #fca5a5;
-        background: #F96300;
-        color: #fff;
-        border-radius: 6px;
-        font-size: 12px;
-        cursor: pointer;
-        margin-bottom: 6px;
-    }
-        .btn-wish:hover{
-            background: #e05800;
-        }
-
-    .btn-carrinho {
-        display: block;
-        width: 100%;
-        padding: 8px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-
-        .btn-carrinho:hover {
-            background: #e05800;
-        }
-
-    .vazio {
-        text-align: center;
-        padding: 60px 0;
-        color: #9ca3af;
-    }
-
-    .alert-ok {
-        background: #ecfdf5;
-        border: 1px solid #6ee7b7;
-        color: #065f46;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-    }
-
-    .alert-erro {
-        background: #fef2f2;
-        border: 1px solid #fca5a5;
-        color: #991b1b;
-        padding: 10px 14px;
-        border-radius: 8px;
-        margin-bottom: 16px;
-    }
-</style>
-
-<div class="vitrine-header">
-    <h2> Vitrine de Jogos</h2>
-    <form class="busca-form" method="get" asp-action="Index">
+<div class="ng-vitrine-header">
+    <h2>Vitrine de Jogos</h2>
+    <form class="ng-busca" method="get" asp-action="Index">
         <input type="hidden" name="categoria" value="@ViewBag.CategoriaAtual" />
-        <input type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar jogo..." />
-        <button type="submit" class="btn-buscar">Buscar</button>
+        <input class="ng-input" type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar jogo..." />
+        <button type="submit" class="btn-ng btn-ng-primary">Buscar</button>
     </form>
 </div>
 
-<div class="categorias">
-    <a class="cat-btn @(string.IsNullOrEmpty(ViewBag.CategoriaAtual as string) ? "ativo" : "")"
+<div class="ng-cats">
+    <a class="ng-cat @(string.IsNullOrEmpty(ViewBag.CategoriaAtual as string) ? "ativo" : "")"
        asp-action="Index" asp-route-busca="@ViewBag.Busca">Todos</a>
     @foreach (var cat in (List<string>)ViewBag.Categorias)
     {
-        <a class="cat-btn @(ViewBag.CategoriaAtual == cat ? "ativo" : "")"
+        <a class="ng-cat @(ViewBag.CategoriaAtual == cat ? "ativo" : "")"
            asp-action="Index" asp-route-categoria="@cat" asp-route-busca="@ViewBag.Busca">@cat</a>
     }
 </div>
 
-@if (ViewBag.Ok != null)
-{
-     <div class="alert-ok">@ViewBag.Ok</div>
-}
-@if (ViewBag.Erro != null)
-{
-     <div class="alert-erro">@ViewBag.Erro</div>
-}
+@if (ViewBag.Ok   != null) { <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div> }
+@if (ViewBag.Erro != null) { <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div> }
 
 @if (!Model.Any())
 {
-    <div class="vazio">
-        <p style="font-size:36px">🎮</p>
+    <div class="ng-vazio">
+        <div class="icon">🎮</div>
         <p>Nenhum jogo encontrado.</p>
+        <a class="btn-ng btn-ng-outline" asp-action="Index">Ver todos</a>
     </div>
 }
 else
 {
-    <div class="jogos-grid">
+    <div class="ng-jogos-grid">
         @foreach (var j in Model)
         {
-            <div class="jogo-card">
-                <div class="jogo-capa">
+            <div class="ng-jogo-card">
+                <div class="ng-jogo-capa">
                     @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
-                    {
-                        <img src="~/@j.ImagemUrl" alt="@j.Titulo" />
-                    }
-                    else
-                    {
-                        <span>🎮</span>
-                    }
+                    { <img src="~/@j.ImagemUrl" alt="@j.Titulo" /> }
+                    else { <span>🎮</span> }
                 </div>
-                <div class="jogo-body">
-                    <p class="jogo-titulo">@j.Titulo</p>
+                <div class="ng-jogo-body">
+                    <p class="ng-jogo-titulo">@j.Titulo</p>
+
                     @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    {
-                        <span class="jogo-cat">@j.Categoria</span>
-                    }
+                    { <span class="ng-badge ng-badge-orange">@j.Categoria</span> }
+
                     @if (j.Preco == 0)
-                    {
-                        <p class="jogo-preco">Gratuito para jogar</p>
-                    }
+                    { <p class="ng-jogo-gratis">Gratuito</p> }
                     else
-                    {
-                        <p class="jogo-preco">R$ @j.Preco.ToString("N2")</p>
-                    }
+                    { <p class="ng-jogo-preco">R$ @j.Preco.ToString("N2")</p> }
 
-                    <a class="btn-detalhe" asp-action="Detalhe" asp-route-id="@j.Id">Ver detalhes</a>
+                    <div class="ng-jogo-acoes">
+                        <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
+                            Ver detalhes
+                        </a>
 
-                    @* Wishlist — só para logados *@
-                    @if (Context.Session.GetInt32("UserId").HasValue)
-                    {
-                        <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                        @if (Context.Session.GetInt32("UserId").HasValue)
+                        {
+                            <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="jogoId" value="@j.Id" />
+                                <button class="btn-ng btn-ng-ghost btn-ng-sm btn-ng-full">❤ Wishlist</button>
+                            </form>
+                        }
+
+                        <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="jogoId" value="@j.Id" />
-                            <button class="btn-wish"> Wishlist</button>
+                            <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
                         </form>
-                    }
-
-                    <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="jogoId" value="@j.Id" />
-                        <button class="btn-carrinho">+ Carrinho</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         }

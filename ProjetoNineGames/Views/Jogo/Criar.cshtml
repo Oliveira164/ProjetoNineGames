@@ -1,43 +1,12 @@
 @model ProjetoNineGames.Models.Jogo
-@{
-    ViewData["Title"] = "Novo Jogo";
-}
-
-<style>
-    .form-card { max-width: 560px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 28px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { font-size: 13px; font-weight: 500; color: #374151; }
-    .field input, .field select, .field textarea { padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; }
-    .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #e05800; box-shadow: 0 0 0 3px rgba(124,58,237,.15); }
-    .field small { font-size: 11px; color: #9ca3af; }
-    .form-actions { display: flex; gap: 10px; margin-top: 20px; }
-
-    .btn-salvar {
-        padding: 9px 22px;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-
-        .btn-salvar:hover {
-            background: #e05800;
-        }
-    .btn-cancel { padding: 9px 16px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer; text-decoration: none; color: #374151; }
-    .alert-erro { background:#fef2f2; border:1px solid #fca5a5; color:#991b1b; padding:10px 14px; border-radius:8px; margin-bottom:14px; font-size:13px; }
-</style>
+@{ ViewData["Title"] = "Novo Jogo"; }
 
 <h2 style="margin-bottom:20px">Novo Jogo</h2>
 
-<div class="form-card">
+<div class="ng-form-card">
     @if (!ViewData.ModelState.IsValid)
     {
-        <div class="alert-erro">
+        <div class="ng-alert ng-alert-erro">
             @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
             { <div>@e.ErrorMessage</div> }
         </div>
@@ -45,40 +14,40 @@
 
     <form asp-action="Criar" method="post" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
-        <div class="form-grid">
+        <div class="ng-field-grid">
 
-            <div class="field full">
-                <label>Título *</label>
-                <input asp-for="Titulo" required />
+            <div class="ng-field full">
+                <label class="ng-label">Título *</label>
+                <input class="ng-input" asp-for="Titulo" required />
             </div>
 
-            <div class="field">
-                <label>Categoria</label>
-                <select asp-for="Categoria" asp-items="ViewBag.Categorias">
+            <div class="ng-field">
+                <label class="ng-label">Categoria</label>
+                <select class="ng-select" asp-for="Categoria" asp-items="ViewBag.Categorias">
                     <option value="">(Selecione)</option>
                 </select>
             </div>
 
-            <div class="field">
-                <label>Preço (R$) *</label>
-                <input asp-for="Preco" type="number" step="0.01" min="0.00" required />
+            <div class="ng-field">
+                <label class="ng-label">Preço (R$) *</label>
+                <input class="ng-input" asp-for="Preco" type="number" step="0.01" min="0.00" required />
             </div>
 
-            <div class="field">
-                <label>Imagem</label>
-                <input type="file" name="imagem" accept="image/*" />
-                <small>JPG, PNG ou WebP recomendado</small>
+            <div class="ng-field full">
+                <label class="ng-label">Imagem</label>
+                <input class="ng-input" type="file" name="imagem" accept="image/jpeg,image/png,image/webp" />
+                <span class="ng-hint">JPG, PNG ou WebP. Máx 5 MB.</span>
             </div>
 
-            <div class="field full">
-                <label>Descrição</label>
-                <textarea asp-for="Descricao" rows="4" placeholder="Descreva o jogo..."></textarea>
+            <div class="ng-field full">
+                <label class="ng-label">Descrição</label>
+                <textarea class="ng-textarea" asp-for="Descricao" rows="4" placeholder="Descreva o jogo..."></textarea>
             </div>
 
         </div>
-        <div class="form-actions">
-            <button type="submit" class="btn-salvar">Salvar</button>
-            <a asp-action="Gerenciar" class="btn-cancel">Cancelar</a>
+        <div class="ng-form-actions">
+            <button type="submit" class="btn-ng btn-ng-primary">Salvar</button>
+            <a asp-action="Gerenciar" class="btn-ng btn-ng-ghost">Cancelar</a>
         </div>
     </form>
 </div>

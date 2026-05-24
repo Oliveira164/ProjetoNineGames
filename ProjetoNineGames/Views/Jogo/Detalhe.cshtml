@@ -1,152 +1,37 @@
+@* ══════════════════════════════════════════════════════
+   Jogo/Detalhe.cshtml
+   ══════════════════════════════════════════════════════ *@
 @model ProjetoNineGames.Models.Jogo
-@{
-    ViewData["Title"] = Model.Titulo;
-}
+@{ ViewData["Title"] = Model.Titulo; }
 
-<style>
-    .detalhe-wrap {
-        display: grid;
-        grid-template-columns: 240px 1fr;
-        gap: 32px;
-        margin-top: 10px;
-        max-width: 760px;
-    }
+<a class="ng-btn-voltar" asp-action="Index">← Voltar à vitrine</a>
 
-    .detalhe-capa {
-        width: 240px;
-        height: 300px;
-        border-radius: 12px;
-        background: #f3f4f6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 64px;
-        overflow: hidden;
-        border: 1px solid #e5e7eb;
-    }
-
-        .detalhe-capa img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-    .detalhe-info h1 {
-        font-size: 22px;
-        margin: 0 0 6px;
-        color: #F96300;
-    }
-
-    .detalhe-cat {
-        display: inline-block;
-        padding: 3px 10px;
-        border-radius: 12px;
-        font-size: 12px;
-        background: #fc8f47;
-        color: #fff;
-        margin-bottom: 14px;
-    }
-
-    .detalhe-preco {
-        font-size: 30px;
-        font-weight: 700;
-        color: #fff;
-        margin: 0 0 8px;
-    }
-
-    .detalhe-desc {
-        font-size: 14px;
-        color: #ffff;
-        line-height: 1.7;
-        margin-bottom: 16px;
-    }
-
-    .acoes {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .btn-carrinho {
-        padding: 11px 0;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        width: 100%;
-    }
-
-        .btn-carrinho:hover {
-            background: #e05800;
-        }
-
-    .btn-wish {
-        padding: 9px 0;
-        background: #F96300;
-        border: 1px solid #fca5a5;
-        color: #fff;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        width: 100%;
-    }
-
-        .btn-wish:hover {
-            background: #e05800;
-        }
-
-    .btn-voltar {
-        font-size: 13px;
-        color: #F96300;
-        text-decoration: none;
-        display: inline-block;
-        margin-bottom: 18px;
-    }
-</style>
-
-<a asp-action="Index" class="btn-voltar">← Voltar à vitrine</a>
-
-<div class="detalhe-wrap">
-    <div class="detalhe-capa">
+<div class="ng-detalhe-wrap">
+    <div class="ng-detalhe-capa">
         @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
-        {
-            <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" />
-        }
-        else
-        {
-            <span>🎮</span>
-        }
+        { <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" /> }
+        else { <span>🎮</span> }
     </div>
 
-    <div class="detalhe-info">
-        <h1>@Model.Titulo</h1>
+    <div>
+        <h1 class="ng-detalhe-titulo">@Model.Titulo</h1>
 
         @if (!string.IsNullOrWhiteSpace(Model.Categoria))
-        {
-            <span class="detalhe-cat">@Model.Categoria</span>
-        }
-        @if(Model.Preco == 0)
-        {
-            <p class="detalhe-preco">Gratuito pra jogar</p>
-        }
+        { <span class="ng-badge ng-badge-orange" style="margin-bottom:14px;display:inline-block">@Model.Categoria</span> }
+
+        @if (Model.Preco == 0)
+        { <p class="ng-detalhe-gratis">Gratuito para jogar</p> }
         else
-        {
-            <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
-        }
+        { <p class="ng-detalhe-preco">R$ @Model.Preco.ToString("N2")</p> }
 
         @if (!string.IsNullOrWhiteSpace(Model.Descricao))
-        {
-            <p class="detalhe-desc">@Model.Descricao</p>
-        }
+        { <p class="ng-detalhe-desc">@Model.Descricao</p> }
 
-        <div class="acoes">
+        <div class="ng-detalhe-acoes">
             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="jogoId" value="@Model.Id" />
-                <button class="btn-carrinho"> Adicionar ao Carrinho</button>
+                <button class="btn-ng btn-ng-primary btn-ng-lg btn-ng-full">🛒 Adicionar ao Carrinho</button>
             </form>
 
             @if (Context.Session.GetInt32("UserId").HasValue)
@@ -154,7 +39,7 @@
                 <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="jogoId" value="@Model.Id" />
-                    <button class="btn-wish"> Adicionar à Wishlist</button>
+                    <button class="btn-ng btn-ng-ghost btn-ng-full">❤ Adicionar à Wishlist</button>
                 </form>
             }
         </div>
