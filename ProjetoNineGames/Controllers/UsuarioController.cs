@@ -91,6 +91,80 @@ namespace ProjetoNineGames.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // ── Registro público ─────────────────────────────────────────────────
+
+        [HttpGet]
+        public IActionResult Registrar()
+        {
+            // Se já estiver logado, manda para a vitrine
+            if (HttpContext.Session.GetInt32(SessionKeys.UserId).HasValue)
+                return RedirectToAction("Index", "Jogo");
+
+            return View();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Registrar(string nome, string email, string senha, string confirmarSenha)
+        {
+            // Validações
+            if (string.IsNullOrWhiteSpace(nome) ||
+                string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(senha))
+            {
+                ViewBag.Error = "Preencha todos os campos.";
+                return View();
+            }
+
+            if (senha != confirmarSenha)
+            {
+                ViewBag.Error = "As senhas não conferem.";
+                return View();
+            }
+
+            if (senha.Length < 6)
+            {
+                ViewBag.Error = "A senha deve ter pelo menos 6 caracteres.";
+                return View();
+            }
+
+            // Verifica se e-mail já está em uso
+            using var conn  = _db.GetConnection();
+            using var cmdChk = new MySqlCommand("sp_usuario_obter_por_email", conn)
+                               { CommandType = CommandType.StoredProcedure };
+            cmdChk.Parameters.AddWithValue("p_email", email);
+            using var rdChk = cmdChk.ExecuteReader();
+            if (rdChk.Read())
+            {
+                rdChk.Close();
+                ViewBag.Error = "Este e-mail já está cadastrado.";
+                return View();
+            }
+            rdChk.Close();
+
+            // Cria o usuário com role Cliente
+            var hash = BCrypt.Net.BCrypt.HashPassword(senha, workFactor: 12);
+
+            using var cmdCria = new MySqlCommand("sp_usuario_criar", conn)
+                                { CommandType = CommandType.StoredProcedure };
+            cmdCria.Parameters.AddWithValue("p_nome",       nome.Trim());
+            cmdCria.Parameters.AddWithValue("p_email",      email.Trim().ToLower());
+            cmdCria.Parameters.AddWithValue("p_senha_hash", hash);
+            cmdCria.Parameters.AddWithValue("p_role",       "Cliente");
+            using var rdCria = cmdCria.ExecuteReader();
+
+            int novoId = rdCria.Read() ? rdCria.GetInt32("id") : 0;
+            rdCria.Close();
+
+            // Loga automaticamente após o registro
+            HttpContext.Session.SetInt32(SessionKeys.UserId,    novoId);
+            HttpContext.Session.SetString(SessionKeys.UserName,  nome.Trim());
+            HttpContext.Session.SetString(SessionKeys.UserEmail, email.Trim().ToLower());
+            HttpContext.Session.SetString(SessionKeys.UserRole,  "Cliente");
+
+            TempData["ok"] = $"Bem-vindo, {nome.Trim()}! Conta criada com sucesso.";
+            return RedirectToAction("Index", "Jogo");
+        }
+
         // ── Perfil do usuário logado ─────────────────────────────────────────
 
         [SessionAuthorize]
@@ -118,7 +192,7 @@ namespace ProjetoNineGames.Controllers
             return View(u);
         }
 
-        // ── Ativar 2FA — gera secret e exibe QR ─────────────────────────────
+        // ── Ativar 2FA ───────────────────────────────────────────────────────
 
         [SessionAuthorize]
         [HttpPost, ValidateAntiForgeryToken]
@@ -127,13 +201,10 @@ namespace ProjetoNineGames.Controllers
             var id    = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
             var email = HttpContext.Session.GetString(SessionKeys.UserEmail) ?? "";
 
-            // Gera um secret Base32 aleatório de 20 bytes
             var secretBytes = KeyGeneration.GenerateRandomKey(20);
             var secret      = Base32Encoding.ToString(secretBytes);
-
-            // URI padrão TOTP (compatível com Google Authenticator, etc.)
-            var otpUri = $"otpauth://totp/NineGames:{Uri.EscapeDataString(email)}" +
-                         $"?secret={secret}&issuer=NineGames&algorithm=SHA1&digits=6&period=30";
+            var otpUri      = $"otpauth://totp/NineGames:{Uri.EscapeDataString(email)}" +
+                              $"?secret={secret}&issuer=NineGames&algorithm=SHA1&digits=6&period=30";
 
             using var conn = _db.GetConnection();
             using var cmd  = new MySqlCommand("sp_usuario_atualizar_2fa", conn)

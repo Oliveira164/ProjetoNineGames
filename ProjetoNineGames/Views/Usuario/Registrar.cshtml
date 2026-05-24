@@ -1,0 +1,65 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Criar Conta — NineGames";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="ng-auth-page">
+        <div class="ng-auth-card">
+
+            <div class="ng-auth-logo">
+                <img src="~/images/Nine.png" alt="NineGames" />
+            </div>
+
+            <h1 class="ng-auth-title">Crie Sua Conta</h1>
+            <p class="ng-auth-sub">insira seus dados para se registrar</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="ng-alert ng-alert-erro">@ViewBag.Error</div>
+            }
+
+            <form method="post" asp-action="Registrar" asp-controller="Usuario">
+                @Html.AntiForgeryToken()
+
+                <div class="ng-field">
+                    <input class="ng-input" type="text" name="nome"
+                           placeholder="Nome completo" required autofocus
+                           maxlength="100" />
+                </div>
+
+                <div class="ng-field">
+                    <input class="ng-input" type="email" name="email"
+                           placeholder="Email" required />
+                </div>
+
+                <div class="ng-field">
+                    <input class="ng-input" type="password" name="senha"
+                           placeholder="Senha" required minlength="6" />
+                </div>
+
+                <div class="ng-field">
+                    <input class="ng-input" type="password" name="confirmarSenha"
+                           placeholder="Confirmar senha" required minlength="6" />
+                </div>
+
+                <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">
+                    Avançar
+                </button>
+            </form>
+
+            <a asp-action="Index" asp-controller="Home" class="ng-auth-link">
+                Já possui uma conta? <strong>Entrar</strong>
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>
