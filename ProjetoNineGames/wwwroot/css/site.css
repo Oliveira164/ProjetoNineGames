@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
 
-/* ── Reset ─────────────────────────────────────────────────── */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -57,7 +56,6 @@ h1, h2, h3, h4 {
     border-radius: 3px;
 }
 
-/* ── Navbar ─────────────────────────────────────────────────── */
 .topnav {
     position: sticky;
     top: 0;
@@ -133,14 +131,12 @@ h1, h2, h3, h4 {
         color: #F96300;
     }
 
-/* ── Container ──────────────────────────────────────────────── */
 .container {
     max-width: 1240px;
     margin: 0 auto;
     padding: 32px 24px;
 }
 
-/* ── Botões ─────────────────────────────────────────────────── */
 .btn-ng {
     display: inline-flex;
     align-items: center;
@@ -222,7 +218,6 @@ h1, h2, h3, h4 {
     width: 100%;
 }
 
-/* ── Formulários ────────────────────────────────────────────── */
 .ng-label {
     display: block;
     font-size: 12px;
@@ -286,7 +281,6 @@ h1, h2, h3, h4 {
     margin-top: 4px;
 }
 
-/* ── Alerts ─────────────────────────────────────────────────── */
 .ng-alert {
     padding: 12px 16px;
     border-radius: 8px;
@@ -313,7 +307,6 @@ h1, h2, h3, h4 {
     color: #F96300;
 }
 
-/* ── Badges ─────────────────────────────────────────────────── */
 .ng-badge {
     display: inline-block;
     padding: 2px 9px;
@@ -359,7 +352,6 @@ h1, h2, h3, h4 {
     border: 1px solid rgba(245,158,11,.25);
 }
 
-/* ── Card genérico ──────────────────────────────────────────── */
 .ng-card {
     background: #181818;
     border: 1px solid #2a2a2a;
@@ -372,7 +364,6 @@ h1, h2, h3, h4 {
         border-color: rgba(249,99,0,.3);
     }
 
-/* ── Tabelas (admin) ────────────────────────────────────────── */
 .ng-table {
     width: 100%;
     border-collapse: collapse;
@@ -407,7 +398,6 @@ h1, h2, h3, h4 {
             background: rgba(249,99,0,.04);
         }
 
-/* ── Section header (admin) ─────────────────────────────────── */
 .ng-section-header {
     display: flex;
     align-items: center;
@@ -425,7 +415,6 @@ h1, h2, h3, h4 {
         letter-spacing: .05em;
     }
 
-/* ── Form card ──────────────────────────────────────────────── */
 .ng-form-card {
     max-width: 560px;
     background: #181818;
@@ -440,7 +429,6 @@ h1, h2, h3, h4 {
     margin-top: 8px;
 }
 
-/* ── Vitrine ────────────────────────────────────────────────── */
 .ng-vitrine-header {
     display: flex;
     align-items: center;
@@ -584,7 +572,6 @@ h1, h2, h3, h4 {
     margin-top: 8px;
 }
 
-/* ── Detalhe ────────────────────────────────────────────────── */
 .ng-detalhe-wrap {
     display: grid;
     grid-template-columns: 260px 1fr;
@@ -654,7 +641,6 @@ h1, h2, h3, h4 {
     margin-bottom: 18px;
 }
 
-/* ── Carrinho ───────────────────────────────────────────────── */
 .ng-cart-wrap {
     display: grid;
     grid-template-columns: 1fr 300px;
@@ -748,7 +734,6 @@ h1, h2, h3, h4 {
     margin-bottom: 16px;
 }
 
-/* ── Biblioteca / Wishlist ──────────────────────────────────── */
 .ng-bib-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -810,7 +795,6 @@ h1, h2, h3, h4 {
     gap: 6px;
 }
 
-/* ── Auth ───────────────────────────────────────────────────── */
 .ng-auth-page {
     min-height: calc(100vh - 58px);
     display: flex;
@@ -878,7 +862,6 @@ h1, h2, h3, h4 {
     margin-top: 16px;
 }
 
-/* ── 2FA tela ───────────────────────────────────────────────── */
 .ng-twofa-card {
     position: relative;
     z-index: 1;
@@ -920,7 +903,6 @@ h1, h2, h3, h4 {
     margin-top: 8px;
 }
 
-/* ── Perfil / 2FA setup ─────────────────────────────────────── */
 .ng-twofa-box {
     border-radius: 10px;
     padding: 14px 16px;
@@ -995,7 +977,6 @@ h1, h2, h3, h4 {
             margin-top: 2px;
         }
 
-/* ── Vazio ──────────────────────────────────────────────────── */
 .ng-vazio {
     text-align: center;
     padding: 80px 20px;
@@ -1012,7 +993,6 @@ h1, h2, h3, h4 {
         margin-bottom: 18px;
     }
 
-/* ── Utilitários ────────────────────────────────────────────── */
 .text-orange {
     color: #F96300;
 }
@@ -1027,7 +1007,6 @@ h1, h2, h3, h4 {
     margin: 24px 0;
 }
 
-/* ── Responsivo ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
     .ng-cart-wrap {
         grid-template-columns: 1fr;
