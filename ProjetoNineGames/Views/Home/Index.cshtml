@@ -1,24 +1,28 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
 @section Styles {
     <style>
+        .container {
+            padding: 0 !important;
+            max-width: 100% !important;
+        }
+
+        body, html {
+            overflow-x: hidden;
+        }
+
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        body {
-            color: #e8e8ee;
-        }
-
         .home-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 0 60px;
+            width: 100%;
             font-family: 'Segoe UI', system-ui, sans-serif;
+            color: #e8e8ee;
         }
 
         .hero {
@@ -26,7 +30,6 @@
             width: 100%;
             height: 440px;
             overflow: hidden;
-            border-radius: 0 0 16px 16px;
             margin-bottom: 40px;
         }
 
@@ -41,7 +44,12 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient( to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100% );
+            background: linear-gradient(
+                to right,
+                rgba(0,0,0,0.85) 0%,
+                rgba(0,0,0,0.4)  50%,
+                rgba(0,0,0,0.1)  100%
+            );
         }
 
         .hero-content {
@@ -74,12 +82,12 @@
             letter-spacing: -1px;
         }
 
-            .hero-game-title span {
-                display: block;
-                font-size: 28px;
-                letter-spacing: 4px;
-                opacity: 0.75;
-            }
+        .hero-game-title span {
+            display: block;
+            font-size: 28px;
+            letter-spacing: 4px;
+            opacity: 0.75;
+        }
 
         .hero-side-cards {
             display: flex;
@@ -98,47 +106,27 @@
             background: #1a1a1e;
         }
 
-            .hero-side-card:hover {
-                transform: scale(1.03);
-                border-color: rgba(255,255,255,0.3);
-            }
-
-            .hero-side-card img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-        .hero-dots {
-            position: absolute;
-            bottom: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 6px;
+        .hero-side-card:hover {
+            transform: scale(1.03);
+            border-color: rgba(255,255,255,0.3);
         }
 
-        .hero-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: background 0.2s;
+        .hero-side-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-            .hero-dot.active {
-                background: #fff;
-            }
+        .inner {
+            padding: 0 24px;
+        }
 
         .section-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 18px;
-            padding: 0 4px;
         }
 
         .section-title {
@@ -162,89 +150,17 @@
             display: inline-block;
         }
 
-            .btn-ver-mais:hover {
-                border-color: #f97316;
-                color: #f97316;
-                background: rgba(249,115,22,0.06);
-            }
+        .btn-ver-mais:hover {
+            border-color: #F96300;
+            color: #F96300;
+            background: rgba(249,99,0,0.06);
+        }
 
         .section {
             margin-bottom: 44px;
-            padding: 0 8px;
         }
 
-        .grid-em-alta {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-            .grid-em-alta .card-game:first-child {
-                grid-column: span 2;
-                grid-row: span 2;
-            }
-
-                .grid-em-alta .card-game:first-child .card-game-inner {
-                    height: 280px;
-                }
-
-        .grid-lancamentos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-            .grid-lancamentos .card-game:first-child {
-                grid-column: span 1;
-                grid-row: span 2;
-            }
-
-                .grid-lancamentos .card-game:first-child .card-game-inner {
-                    height: 280px;
-                }
-
-        .grid-em-breve {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-            .grid-em-breve .card-game-inner {
-                height: 180px;
-            }
-
-            .grid-em-breve .card-game:first-child {
-                grid-column: span 1;
-            }
-
-        .grid-free {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-            .grid-free .card-game:nth-child(3) {
-                grid-column: span 1;
-            }
-
-            .grid-free .card-game:nth-child(4) {
-                grid-column: span 1;
-                grid-row: 2;
-            }
-
-            .grid-free .card-game:nth-child(5) {
-                grid-column: 2;
-                grid-row: 2;
-            }
-
-            .grid-free .card-game:nth-child(6) {
-                grid-column: 3;
-                grid-row: 2;
-            }
-
-        .card-game {
-            cursor: pointer;
-        }
+        .card-game { cursor: pointer; }
 
         .card-game-inner {
             height: 130px;
@@ -253,13 +169,15 @@
             position: relative;
             background: #1a1a1e;
             border: 1px solid #1f1f23;
-            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.2s;
+            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                        border-color 0.2s, box-shadow 0.2s;
         }
 
         .card-game:hover .card-game-inner {
             transform: translateY(-4px) scale(1.02);
-            border-color: rgba(249,115,22,0.35);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,115,22,0.15);
+            border-color: rgba(249,99,0,0.35);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6),
+                        0 0 0 1px rgba(249,99,0,0.15);
         }
 
         .card-game-inner img {
@@ -285,9 +203,7 @@
             padding: 10px 12px;
         }
 
-        .card-game:hover .card-game-overlay {
-            opacity: 1;
-        }
+        .card-game:hover .card-game-overlay { opacity: 1; }
 
         .card-game-name {
             font-size: 11px;
@@ -295,6 +211,7 @@
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-decoration: none;
         }
 
         .card-placeholder {
@@ -313,12 +230,44 @@
             text-transform: uppercase;
         }
 
+        .grid-em-alta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .grid-em-alta .card-game:first-child { grid-column: span 2; grid-row: span 2; }
+        .grid-em-alta .card-game:first-child .card-game-inner { height: 280px; }
+
+        .grid-lancamentos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .grid-lancamentos .card-game:first-child { grid-column: span 1; grid-row: span 2; }
+        .grid-lancamentos .card-game:first-child .card-game-inner { height: 280px; }
+
+        .grid-em-breve {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .grid-em-breve .card-game-inner { height: 180px; }
+
+        .grid-free {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
         .genre-section {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 24px;
-            margin-bottom: 44px;
-            padding: 0 8px;
+            margin-bottom: 0;
+            padding: 0 24px 44px;
         }
 
         .genre-column h3 {
@@ -334,8 +283,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px 0;
-            border-bottom: 1px solid #18181b;
             cursor: pointer;
             text-decoration: none;
             transition: background 0.15s;
@@ -343,9 +290,7 @@
             padding: 8px 6px;
         }
 
-            .genre-item:hover {
-                background: #18181b;
-            }
+        .genre-item:hover { background: #18181b; }
 
         .genre-item-thumb {
             width: 52px;
@@ -356,11 +301,12 @@
             background: #27272a;
         }
 
-            .genre-item-thumb img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+        .genre-item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
         .genre-item-thumb-placeholder {
             width: 100%;
@@ -368,10 +314,7 @@
             background: linear-gradient(135deg, #27272a, #3f3f46);
         }
 
-        .genre-item-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .genre-item-info { flex: 1; min-width: 0; }
 
         .genre-item-name {
             font-size: 13px;
@@ -385,19 +328,17 @@
 
         .genre-item-price {
             font-size: 12px;
-            color: #f97316;
+            color: #F96300;
             font-weight: 700;
         }
 
-            .genre-item-price.free {
-                color: #22c55e;
-            }
+        .genre-item-price.free { color: #22c55e; }
 
         .home-footer {
             background: #111113;
             border-top: 1px solid #1f1f23;
-            padding: 36px 8px 24px;
-            margin-top: 20px;
+            padding: 36px 24px 24px;
+            width: 100%;
         }
 
         .footer-top {
@@ -410,33 +351,27 @@
         .footer-brand {
             font-size: 20px;
             font-weight: 900;
-            color: #f97316;
+            color: #F96300;
             letter-spacing: -0.5px;
         }
 
-        .footer-socials {
+        .footer-socials { display: flex; gap: 14px; }
+
+        .footer-socials a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #27272a;
             display: flex;
-            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            color: #a1a1aa;
+            text-decoration: none;
+            font-size: 15px;
+            transition: background 0.2s, color 0.2s;
         }
 
-            .footer-socials a {
-                width: 36px;
-                height: 36px;
-                border-radius: 50%;
-                background: #27272a;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #a1a1aa;
-                text-decoration: none;
-                font-size: 15px;
-                transition: background 0.2s, color 0.2s;
-            }
-
-                .footer-socials a:hover {
-                    background: #f97316;
-                    color: #fff;
-                }
+        .footer-socials a:hover { background: #F96300; color: #fff; }
 
         .footer-cols {
             display: grid;
@@ -454,24 +389,17 @@
             margin-bottom: 12px;
         }
 
-        .footer-col ul {
-            list-style: none;
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 6px; }
+
+        .footer-col ul li a {
+            font-size: 12px;
+            color: #71717a;
+            text-decoration: none;
+            transition: color 0.2s;
         }
 
-            .footer-col ul li {
-                margin-bottom: 6px;
-            }
-
-                .footer-col ul li a {
-                    font-size: 12px;
-                    color: #71717a;
-                    text-decoration: none;
-                    transition: color 0.2s;
-                }
-
-                    .footer-col ul li a:hover {
-                        color: #f97316;
-                    }
+        .footer-col ul li a:hover { color: #F96300; }
 
         .footer-copy {
             border-top: 1px solid #1f1f23;
@@ -483,47 +411,21 @@
         }
 
         @@media (max-width: 900px) {
-            .grid-em-alta {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .grid-lancamentos {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .genre-section {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-cols {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .grid-em-alta     { grid-template-columns: repeat(2, 1fr); }
+            .grid-lancamentos { grid-template-columns: repeat(2, 1fr); }
+            .genre-section    { grid-template-columns: 1fr; }
+            .footer-cols      { grid-template-columns: repeat(2, 1fr); }
         }
 
         @@media (max-width: 600px) {
-            .hero {
-                height: 260px;
-            }
-
-            .hero-side-cards {
-                display: none;
-            }
-
-            .hero-game-title {
-                font-size: 28px;
-            }
-
-            .grid-em-alta, .grid-lancamentos, .grid-free, .grid-em-breve {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-                .grid-em-alta .card-game:first-child, .grid-lancamentos .card-game:first-child {
-                    grid-column: span 2;
-                }
-
-            .footer-cols {
-                grid-template-columns: 1fr 1fr;
-            }
+            .hero               { height: 260px; }
+            .hero-side-cards    { display: none; }
+            .hero-game-title    { font-size: 28px; }
+            .grid-em-alta, .grid-lancamentos,
+            .grid-free, .grid-em-breve { grid-template-columns: repeat(2, 1fr); }
+            .grid-em-alta .card-game:first-child,
+            .grid-lancamentos .card-game:first-child { grid-column: span 2; }
+            .footer-cols { grid-template-columns: 1fr 1fr; }
         }
     </style>
 }
@@ -531,7 +433,7 @@
 <div class="home-wrapper">
 
     <div class="hero">
-        <img class="hero-bg" src="/images/fundo-tela-home-cod.png" alt="Call of Duty Warzone" onerror="this.style.background='linear-gradient(135deg,#1a0a00,#0a0a0c)';this.style.height='100%';this.removeAttribute('src')" />
+        <img class="hero-bg" src="/images/fundo-tela-home-cod.png" alt="Call of Duty Warzone" />
         <div class="hero-overlay"></div>
         <div class="hero-content">
             <div class="hero-text">
@@ -543,21 +445,18 @@
             </div>
             <div class="hero-side-cards">
                 <div class="hero-side-card">
-                    <div class="card-placeholder">Rise of the Ronin</div>
+                    <img src="~/images/rise-of-the-ronin.jpg" alt="Rise of the Ronin"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\'>Rise of the Ronin</div>'" />
                 </div>
                 <div class="hero-side-card">
-                    <div class="card-placeholder">Em Destaque</div>
+                    <img src="~/images/fc26.jpg" alt="EA Sports FC 26"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\'>FC 26</div>'" />
                 </div>
             </div>
         </div>
-        <div class="hero-dots">
-            <button class="hero-dot active"></button>
-            <button class="hero-dot"></button>
-            <button class="hero-dot"></button>
-        </div>
     </div>
 
-    <section class="section">
+    <section class="section inner">
         <div class="section-header">
             <h2 class="section-title">Em alta</h2>
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
@@ -565,50 +464,56 @@
         <div class="grid-em-alta">
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background-color:#7CC5F4"><img src="~/images/fortnite-capa-atualizado.jpg" /></div>
-                    <div class="card-game-overlay"><a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="5" class="card-game-name">Fortnite</a></div>
+                    <img src="~/images/fortnite-capa-atualizado.jpg" alt="Fortnite" />
+                    <div class="card-game-overlay">
+                        <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="5" class="card-game-name">Fortnite</a>
+                    </div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background-color:#7CC5F4"><img src="~/images/fc26.jpg" /></div>
+                    <img src="~/images/fc26.jpg" alt="EA Sports FC 26" />
                     <div class="card-game-overlay"><span class="card-game-name">EA Sports FC 26</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a1a3a,#2a1a5e)">Rocket League</div>
+                    <img src="~/images/capa-rocket-league.webp" alt="Rocket League" />
                     <div class="card-game-overlay"><span class="card-game-name">Rocket League</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#2a1a0a,#1a0a0a)">Hollow Knight</div>
+                    <img src="~/images/hollow-knight.jpg" alt="Hollow Knight"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#2a1a0a,#1a0a0a)\'>Hollow Knight</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Hollow Knight</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#3a1a0a,#5e2a0e)">Far Cry 6</div>
+                    <img src="~/images/far-cry-6.jpg" alt="Far Cry 6"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#3a1a0a,#5e2a0e)\'>Far Cry 6</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Far Cry 6</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#3a0a0a,#5e0e0e)">Red Dead II</div>
+                    <img src="~/images/red-dead-2.jpg" alt="Red Dead Redemption 2"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#3a0a0a,#5e0e0e)\'>Red Dead II</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Red Dead Redemption 2</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#2a1a0a,#4a2a0a)">Elden Ring</div>
+                    <img src="~/images/elden-ring.jpg" alt="Elden Ring"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#2a1a0a,#4a2a0a)\'>Elden Ring</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Elden Ring</span></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section">
+    <section class="section inner">
         <div class="section-header">
             <h2 class="section-title">Lançamentos</h2>
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
@@ -616,44 +521,50 @@
         <div class="grid-lancamentos">
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a1a2a,#0a2a1a);font-size:18px;font-weight:900;color:#60a5fa">WINDROSE</div>
+                    <img src="~/images/windrose.jpg" alt="Windrose"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a1a2a,#0a2a1a);font-size:18px;font-weight:900;color:#60a5fa\'>WINDROSE</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Windrose</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#2a1a0a,#3a0a0a)">Far Far West</div>
+                    <img src="~/images/far-far-west.jpg" alt="Far Far West"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#2a1a0a,#3a0a0a)\'>Far Far West</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Far Far West</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a0a2a,#1a0a3a)">Freedom Wars</div>
+                    <img src="~/images/freedom-wars.jpg" alt="Freedom Wars"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a0a2a,#1a0a3a)\'>Freedom Wars</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Freedom Wars</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a0a0a,#2a1a0a)">Marvel Cosmic</div>
+                    <img src="~/images/marvel-cosmic.jpg" alt="Marvel Cosmic Invasion"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a0a0a,#2a1a0a)\'>Marvel Cosmic</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Marvel Cosmic Invasion</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a1a0a,#2a2a0a)">Crimson Desert</div>
+                    <img src="~/images/crimson-desert.jpg" alt="Crimson Desert"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a1a0a,#2a2a0a)\'>Crimson Desert</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Crimson Desert</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#1a3a0a)">Invincible</div>
+                    <img src="~/images/invincible.jpg" alt="Invincible"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a1a0a,#1a3a0a)\'>Invincible</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Invincible</span></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section">
+    <section class="section inner">
         <div class="section-header">
             <h2 class="section-title">Em breve</h2>
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
@@ -661,69 +572,79 @@
         <div class="grid-em-breve">
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a0a0a,#2a0a0a);font-size:16px;font-weight:900;letter-spacing:2px">RESIDENT EVIL<br><small style="font-size:10px;opacity:0.6">REQUIEM</small></div>
+                    <img src="~/images/resident-evil-requiem.jpg" alt="Resident Evil: Requiem"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a0a0a,#2a0a0a);font-size:16px;font-weight:900;letter-spacing:2px\'>RESIDENT EVIL<br><small style=\'font-size:10px;opacity:0.6\'>REQUIEM</small></div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Resident Evil: Requiem</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a0a1a,#1a0a0a)">Gears E-Day</div>
+                    <img src="~/images/gears-eday.jpg" alt="Gears of War: E-Day"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a0a1a,#1a0a0a)\'>Gears E-Day</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Gears of War: E-Day</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a0a2a,#1a1a3a)">Forza Motorsport 9</div>
+                    <img src="~/images/forza-motorsport-9.jpg" alt="Forza Motorsport 9"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a0a2a,#1a1a3a)\'>Forza Motorsport 9</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Forza Motorsport 9</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a0a2a,#2a1a3a)">GTA VI</div>
+                    <img src="~/images/gta-6.jpg" alt="GTA VI"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a0a2a,#2a1a3a)\'>GTA VI</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">GTA VI</span></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section">
+    <section class="section inner">
         <div class="section-header">
-            <h2 class="section-title">Melhores Jogos gratis</h2>
+            <h2 class="section-title">Melhores Jogos Grátis</h2>
         </div>
         <div class="grid-free">
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a2a3a,#2a3a4a);font-weight:900;font-size:16px;color:#60a5fa">The Sims 4</div>
+                    <img src="~/images/the-sims-4.jpg" alt="The Sims 4"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a2a3a,#2a3a4a);font-weight:900;font-size:16px;color:#60a5fa\'>The Sims 4</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">The Sims 4</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#2a1a3a,#3a2a4a)">Fall Guys</div>
+                    <img src="~/images/fall-guys.jpg" alt="Fall Guys"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#2a1a3a,#3a2a4a)\'>Fall Guys</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Fall Guys</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#3a1a0a,#4a2a0a)">Pôr do Sol em Eridu</div>
+                    <img src="~/images/por-do-sol-eridu.jpg" alt="Pôr do Sol em Eridu"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#3a1a0a,#4a2a0a)\'>Pôr do Sol em Eridu</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Pôr do Sol em Eridu</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#1a2a0a)">Rennsport</div>
+                    <img src="~/images/rennsport.jpg" alt="Rennsport"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a1a0a,#1a2a0a)\'>Rennsport</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Rennsport</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#0a0a2a,#1a0a3a)">Poppy Playtime</div>
+                    <img src="~/images/poppy-playtime.jpg" alt="Poppy Playtime"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#0a0a2a,#1a0a3a)\'>Poppy Playtime</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Poppy Playtime</span></div>
                 </div>
             </div>
             <div class="card-game">
                 <div class="card-game-inner">
-                    <div class="card-placeholder" style="background:linear-gradient(135deg,#1a0a0a,#2a0a0a)">Apex Legends</div>
+                    <img src="~/images/apex-legends.jpg" alt="Apex Legends"
+                         onerror="this.outerHTML='<div class=\'card-placeholder\' style=\'background:linear-gradient(135deg,#1a0a0a,#2a0a0a)\'>Apex Legends</div>'" />
                     <div class="card-game-overlay"><span class="card-game-name">Apex Legends</span></div>
                 </div>
             </div>
@@ -732,33 +653,45 @@
 
     <div class="genre-section">
         <div class="genre-column">
-            <h3>Ação/Aventura</h3>
+            <h3>Ação / Aventura</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/god-of-war-ragnarok.jpg" alt="God of War Ragnarök"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">God of War Ragnarök</div>
-                    <div class="genre-item-price">R$249,99</div>
+                    <div class="genre-item-price">R$ 249,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/red-dead-2.jpg" alt="Red Dead Redemption 2"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Red Dead Redemption 2</div>
-                    <div class="genre-item-price">R$279,99</div>
+                    <div class="genre-item-price">R$ 279,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/the-last-of-us.jpg" alt="The Last of Us"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Last of Us</div>
-                    <div class="genre-item-price">R$249,99</div>
+                    <div class="genre-item-price">R$ 249,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/ghost-of-tsushima.jpg" alt="Ghost of Tsushima"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Ghost of Tsushima</div>
-                    <div class="genre-item-price">R$249,99</div>
+                    <div class="genre-item-price">R$ 249,99</div>
                 </div>
             </a>
         </div>
@@ -766,31 +699,43 @@
         <div class="genre-column">
             <h3>RPGs</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/cyberpunk-2077.jpg" alt="Cyberpunk 2077"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Cyberpunk 2077</div>
-                    <div class="genre-item-price">R$175,99</div>
+                    <div class="genre-item-price">R$ 175,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/persona-3.jpg" alt="P3 Persona"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">P3 Persona</div>
-                    <div class="genre-item-price">R$229,99</div>
+                    <div class="genre-item-price">R$ 229,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/baldurs-gate-3.jpg" alt="Baldur's Gate 3"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Baldur's Gate 3</div>
-                    <div class="genre-item-price">R$199,99</div>
+                    <div class="genre-item-price">R$ 199,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/the-walking-dead.jpg" alt="The Walking Dead"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Walking Dead</div>
-                    <div class="genre-item-price">R$49,99</div>
+                    <div class="genre-item-price">R$ 49,99</div>
                 </div>
             </a>
         </div>
@@ -798,31 +743,43 @@
         <div class="genre-column">
             <h3>História</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/detroit-become-human.jpg" alt="Detroit: Become Human"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Detroit: Become Human</div>
-                    <div class="genre-item-price">R$199,99</div>
+                    <div class="genre-item-price">R$ 199,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/the-quarry.jpg" alt="The Quarry"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Quarry</div>
-                    <div class="genre-item-price">R$339,99</div>
+                    <div class="genre-item-price">R$ 339,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/life-is-strange-2.jpg" alt="Life is Strange 2"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Life is Strange 2</div>
-                    <div class="genre-item-price">R$89,99</div>
+                    <div class="genre-item-price">R$ 89,99</div>
                 </div>
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
-                <div class="genre-item-thumb"><div class="genre-item-thumb-placeholder"></div></div>
+                <div class="genre-item-thumb">
+                    <img src="~/images/disco-elysium.jpg" alt="Disco Elysium"
+                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Disco Elysium: The Final Cut</div>
-                    <div class="genre-item-price">R$69,99</div>
+                    <div class="genre-item-price">R$ 69,99</div>
                 </div>
             </a>
         </div>
@@ -857,9 +814,9 @@
             <div class="footer-col">
                 <h4>Ferramentas</h4>
                 <ul>
-                    <li><a href="#">Laravel (Framework Back-end)</a></li>
-                    <li><a href="#">React (Biblioteca Front-end)</a></li>
-                    <li><a href="#">WordPress (CMS)</a></li>
+                    <li><a href="#">ASP.NET Core MVC</a></li>
+                    <li><a href="#">MySQL</a></li>
+                    <li><a href="#">Flutter</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -874,8 +831,12 @@
         <div class="footer-copy">
             <p>© 2026 Nine Games. Todos os direitos reservados.</p>
             <p style="margin-top:6px;max-width:700px;margin-left:auto;margin-right:auto;font-size:10px;line-height:1.7">
-                Todo o conteúdo e disponibilização neste site, incluindo, mas não se limitando a textos, gráficos, interfaces de usuário, interfaces visuais, fotografias, marcas registradas, logotipos, sons, músicas, artes, código de computador e mecânicas de jogo é de propriedade exclusiva da Nine Games e é protegido por todas as leis de direitos autorais, patentes e marcas comerciais aplicáveis, bem como por várias outras leis de propriedade intelectual e de concorrência desleal.
+                Todo o conteúdo e disponibilização neste site, incluindo, mas não se limitando a textos, gráficos,
+                interfaces de usuário, fotografias, marcas registradas, logotipos, sons, músicas, artes e código de
+                computador é de propriedade exclusiva da Nine Games e é protegido por todas as leis de direitos
+                autorais, patentes e marcas comerciais aplicáveis.
             </p>
         </div>
     </footer>
+
 </div>
