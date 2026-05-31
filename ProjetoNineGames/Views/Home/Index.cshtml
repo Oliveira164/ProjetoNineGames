@@ -44,12 +44,7 @@
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                to right,
-                rgba(0,0,0,0.85) 0%,
-                rgba(0,0,0,0.4)  50%,
-                rgba(0,0,0,0.1)  100%
-            );
+            background: linear-gradient( to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100% );
         }
 
         .hero-content {
@@ -82,12 +77,12 @@
             letter-spacing: -1px;
         }
 
-        .hero-game-title span {
-            display: block;
-            font-size: 28px;
-            letter-spacing: 4px;
-            opacity: 0.75;
-        }
+            .hero-game-title span {
+                display: block;
+                font-size: 28px;
+                letter-spacing: 4px;
+                opacity: 0.75;
+            }
 
         .hero-side-cards {
             display: flex;
@@ -106,17 +101,17 @@
             background: #1a1a1e;
         }
 
-        .hero-side-card:hover {
-            transform: scale(1.03);
-            border-color: rgba(255,255,255,0.3);
-        }
+            .hero-side-card:hover {
+                transform: scale(1.03);
+                border-color: rgba(255,255,255,0.3);
+            }
 
-        .hero-side-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+            .hero-side-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
 
         .inner {
             padding: 0 24px;
@@ -150,17 +145,22 @@
             display: inline-block;
         }
 
-        .btn-ver-mais:hover {
-            border-color: #F96300;
-            color: #F96300;
-            background: rgba(249,99,0,0.06);
-        }
+            .btn-ver-mais:hover {
+                border-color: #F96300;
+                color: #F96300;
+                background: rgba(249,99,0,0.06);
+            }
 
         .section {
             margin-bottom: 44px;
         }
 
-        .card-game { cursor: pointer; }
+        /* Alterado para que a âncora ocupe o espaço e não tenha formatação de texto */
+        .card-game {
+            cursor: pointer;
+            display: block;
+            text-decoration: none;
+        }
 
         .card-game-inner {
             height: 130px;
@@ -169,15 +169,13 @@
             position: relative;
             background: #1a1a1e;
             border: 1px solid #1f1f23;
-            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
-                        border-color 0.2s, box-shadow 0.2s;
+            transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.2s;
         }
 
         .card-game:hover .card-game-inner {
             transform: translateY(-4px) scale(1.02);
             border-color: rgba(249,99,0,0.35);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.6),
-                        0 0 0 1px rgba(249,99,0,0.15);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.6), 0 0 0 1px rgba(249,99,0,0.15);
         }
 
         .card-game-inner img {
@@ -203,7 +201,9 @@
             padding: 10px 12px;
         }
 
-        .card-game:hover .card-game-overlay { opacity: 1; }
+        .card-game:hover .card-game-overlay {
+            opacity: 1;
+        }
 
         .card-game-name {
             font-size: 11px;
@@ -236,8 +236,14 @@
             gap: 10px;
         }
 
-        .grid-em-alta .card-game:first-child { grid-column: span 2; grid-row: span 2; }
-        .grid-em-alta .card-game:first-child .card-game-inner { height: 280px; }
+            .grid-em-alta .card-game:first-child {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+
+                .grid-em-alta .card-game:first-child .card-game-inner {
+                    height: 280px;
+                }
 
         .grid-lancamentos {
             display: grid;
@@ -245,8 +251,14 @@
             gap: 10px;
         }
 
-        .grid-lancamentos .card-game:first-child { grid-column: span 1; grid-row: span 2; }
-        .grid-lancamentos .card-game:first-child .card-game-inner { height: 280px; }
+            .grid-lancamentos .card-game:first-child {
+                grid-column: span 1;
+                grid-row: span 2;
+            }
+
+                .grid-lancamentos .card-game:first-child .card-game-inner {
+                    height: 280px;
+                }
 
         .grid-em-breve {
             display: grid;
@@ -254,7 +266,9 @@
             gap: 10px;
         }
 
-        .grid-em-breve .card-game-inner { height: 180px; }
+            .grid-em-breve .card-game-inner {
+                height: 180px;
+            }
 
         .grid-free {
             display: grid;
@@ -290,7 +304,9 @@
             padding: 8px 6px;
         }
 
-        .genre-item:hover { background: #18181b; }
+            .genre-item:hover {
+                background: #18181b;
+            }
 
         .genre-item-thumb {
             width: 52px;
@@ -301,12 +317,12 @@
             background: #27272a;
         }
 
-        .genre-item-thumb img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
+            .genre-item-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
 
         .genre-item-thumb-placeholder {
             width: 100%;
@@ -314,7 +330,10 @@
             background: linear-gradient(135deg, #27272a, #3f3f46);
         }
 
-        .genre-item-info { flex: 1; min-width: 0; }
+        .genre-item-info {
+            flex: 1;
+            min-width: 0;
+        }
 
         .genre-item-name {
             font-size: 13px;
@@ -332,7 +351,9 @@
             font-weight: 700;
         }
 
-        .genre-item-price.free { color: #22c55e; }
+            .genre-item-price.free {
+                color: #22c55e;
+            }
 
         .home-footer {
             background: #111113;
@@ -359,17 +380,24 @@
             margin-bottom: 12px;
         }
 
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 6px; }
-
-        .footer-col ul li a {
-            font-size: 12px;
-            color: #71717a;
-            text-decoration: none;
-            transition: color 0.2s;
+        .footer-col ul {
+            list-style: none;
         }
 
-        .footer-col ul li a:hover { color: #F96300; }
+            .footer-col ul li {
+                margin-bottom: 6px;
+            }
+
+                .footer-col ul li a {
+                    font-size: 12px;
+                    color: #71717a;
+                    text-decoration: none;
+                    transition: color 0.2s;
+                }
+
+                    .footer-col ul li a:hover {
+                        color: #F96300;
+                    }
 
         .footer-copy {
             border-top: 1px solid #1f1f23;
@@ -381,21 +409,49 @@
         }
 
         @@media (max-width: 900px) {
-            .grid-em-alta     { grid-template-columns: repeat(2, 1fr); }
-            .grid-lancamentos { grid-template-columns: repeat(2, 1fr); }
-            .genre-section    { grid-template-columns: 1fr; }
-            .footer-cols      { grid-template-columns: repeat(2, 1fr); }
+            .grid-em-alta {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-lancamentos {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .genre-section {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-cols {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         @@media (max-width: 600px) {
-            .hero               { height: 260px; }
-            .hero-side-cards    { display: none; }
-            .hero-game-title    { font-size: 28px; }
+            .hero {
+                height: 260px;
+            }
+
+            .hero-side-cards {
+                display: none;
+            }
+
+            .hero-game-title {
+                font-size: 28px;
+            }
+
             .grid-em-alta, .grid-lancamentos,
-            .grid-free, .grid-em-breve { grid-template-columns: repeat(2, 1fr); }
-            .grid-em-alta .card-game:first-child,
-            .grid-lancamentos .card-game:first-child { grid-column: span 2; }
-            .footer-cols { grid-template-columns: 1fr 1fr; }
+            .grid-free, .grid-em-breve {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+                .grid-em-alta .card-game:first-child,
+                .grid-lancamentos .card-game:first-child {
+                    grid-column: span 2;
+                }
+
+            .footer-cols {
+                grid-template-columns: 1fr 1fr;
+            }
         }
     </style>
 }
@@ -406,21 +462,21 @@
         <img class="hero-bg" src="/images/fundo-tela-home-cod.png" alt="Call of Duty Warzone" />
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <div class="hero-text">
-                <p class="hero-title">Destaque</p>
-                <h2 class="hero-game-title">
-                    <span>Call of Duty</span>
-                    WARZONE
-                </h2>
-            </div>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="17" class="card-game-name" style="text-decoration: none;">
+                <div class="hero-text">
+                    <p class="hero-title">Destaque</p>
+                    <h2 class="hero-game-title">
+                        <span>Call of Duty</span>
+                        WARZONE
+                    </h2>
+                </div>
+            </a>
             <div class="hero-side-cards">
                 <div class="hero-side-card">
-                    <img src="~/images/rise-of-the-ronin.jpg" alt="Rise of the Ronin"
-                         onerror="this.outerHTML='<div class=\'card-placeholder\'>Rise of the Ronin</div>'" />
+                    <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="9" style="display:block; height:100%;"><img src="~/images/rise-of-the-ronin.jpg" alt="Rise of the Ronin" /></a>
                 </div>
                 <div class="hero-side-card">
-                    <img src="~/images/fc26.jpg" alt="EA Sports FC 26"
-                         onerror="this.outerHTML='<div class=\'card-placeholder\'>FC 26</div>'" />
+                    <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="21" style="display:block; height:100%;"><img src="~/images/fc26.jpg" alt="EA Sports FC 26" /></a>
                 </div>
             </div>
         </div>
@@ -432,50 +488,50 @@
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
         </div>
         <div class="grid-em-alta">
-            <div class="card-game">
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="34" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/fortnite-capa-atualizado.jpg" alt="Fortnite" />
                     <div class="card-game-overlay">
-                        <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="5" class="card-game-name">Fortnite</a>
+                        <span class="card-game-name">Fortnite</span>
                     </div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="21" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/fc26.jpg" alt="EA Sports FC 26" />
                     <div class="card-game-overlay"><span class="card-game-name">EA Sports FC 26</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="22" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/capa-rocket-league.webp" alt="Rocket League" />
                     <div class="card-game-overlay"><span class="card-game-name">Rocket League</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="29" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/hollow-knight.jpg" alt="Hollow Knight" />
                     <div class="card-game-overlay"><span class="card-game-name">Hollow Knight</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="8" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/far-cry-6.jpg" alt="Far Cry 6" />
                     <div class="card-game-overlay"><span class="card-game-name">Far Cry 6</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="5" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/red-dead-2.jpg" alt="Red Dead Redemption 2" />
                     <div class="card-game-overlay"><span class="card-game-name">Red Dead Redemption 2</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="13" class="card-game">
                 <div class="card-game-inner">
-                    <img src="~/images/elden-ring.webp" alt="Elden Ring"/>
+                    <img src="~/images/elden-ring.webp" alt="Elden Ring" />
                     <div class="card-game-overlay"><span class="card-game-name">Elden Ring</span></div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -485,42 +541,42 @@
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
         </div>
         <div class="grid-lancamentos">
-            <div class="card-game">
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="30" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/windrose.jpg" alt="Windrose" />
                     <div class="card-game-overlay"><span class="card-game-name">Windrose</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="31" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/far-far-west.jpg" alt="Far Far West" />
                     <div class="card-game-overlay"><span class="card-game-name">Far Far West</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="20" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/freedom-wars.jpg" alt="Freedom Wars" />
                     <div class="card-game-overlay"><span class="card-game-name">Freedom Wars</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/marvel-cosmic.jpg" alt="Marvel Cosmic Invasion" />
                     <div class="card-game-overlay"><span class="card-game-name">Marvel Cosmic Invasion</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="15" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/crimson-desert.jpg" alt="Crimson Desert" />
                     <div class="card-game-overlay"><span class="card-game-name">Crimson Desert</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/invincible.jpg" alt="Invincible" />
                     <div class="card-game-overlay"><span class="card-game-name">Invincible</span></div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -530,30 +586,30 @@
             <a asp-controller="Jogo" asp-action="Index" class="btn-ver-mais">Ver Mais</a>
         </div>
         <div class="grid-em-breve">
-            <div class="card-game">
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="32" class="card-game">
                 <div class="card-game-inner">
-                    <img src="~/images/resident-evil-requiem.webp" alt="Resident Evil: Requiem"/>
+                    <img src="~/images/resident-evil-requiem.webp" alt="Resident Evil: Requiem" />
                     <div class="card-game-overlay"><span class="card-game-name">Resident Evil: Requiem</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="19" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/gears-eday.jpg" alt="Gears of War: E-Day" />
                     <div class="card-game-overlay"><span class="card-game-name">Gears of War: E-Day</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="23" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/forza-motorsport-9.jpg" alt="Forza Motorsport 9" />
                     <div class="card-game-overlay"><span class="card-game-name">Forza Motorsport 9</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/gta-6.webp" alt="GTA VI" />
                     <div class="card-game-overlay"><span class="card-game-name">GTA VI</span></div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -562,49 +618,49 @@
             <h2 class="section-title">Melhores Jogos Grátis</h2>
         </div>
         <div class="grid-free">
-            <div class="card-game">
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="37" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/the-sims-4.webp" alt="The Sims 4" />
                     <div class="card-game-overlay"><span class="card-game-name">The Sims 4</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="35" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/fall-guys.webp" alt="Fall Guys" />
                     <div class="card-game-overlay"><span class="card-game-name">Fall Guys</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="36" class="card-game">
                 <div class="card-game-inner">
-                    <img src="~/images/zzz.jpg" alt="ZZZ"/>
+                    <img src="~/images/zzz.jpg" alt="ZZZ" />
                     <div class="card-game-overlay"><span class="card-game-name">Zenless Zone Zero</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="24" class="card-game">
                 <div class="card-game-inner">
-                    <img src="~/images/rennsport.jpg" alt="Rennsport"/>
+                    <img src="~/images/rennsport.jpg" alt="Rennsport" />
                     <div class="card-game-overlay"><span class="card-game-name">Rennsport</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="33" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/poppy-playtime.jpg" alt="Poppy Playtime" />
                     <div class="card-game-overlay"><span class="card-game-name">Poppy Playtime</span></div>
                 </div>
-            </div>
-            <div class="card-game">
+            </a>
+            <a asp-action="Detalhe" asp-controller="Jogo" asp-route-id="18" class="card-game">
                 <div class="card-game-inner">
                     <img src="~/images/apex-legends.jpg" alt="Apex Legends" />
                     <div class="card-game-overlay"><span class="card-game-name">Apex Legends</span></div>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
     <div class="genre-section">
         <div class="genre-column">
             <h3>Ação / Aventura</h3>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="4">
                 <div class="genre-item-thumb">
                     <img src="~/images/god-of-war-ragnarok.jpg" alt="God of War Ragnarök" />
                 </div>
@@ -613,7 +669,7 @@
                     <div class="genre-item-price">R$ 249,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="5">
                 <div class="genre-item-thumb">
                     <img src="~/images/red-dead-2.jpg" alt="Red Dead Redemption 2"
                          onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
@@ -623,7 +679,7 @@
                     <div class="genre-item-price">R$ 279,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="6">
                 <div class="genre-item-thumb">
                     <img src="~/images/the-last-of-us.png" alt="The Last of Us" />
                 </div>
@@ -632,7 +688,7 @@
                     <div class="genre-item-price">R$ 249,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="7">
                 <div class="genre-item-thumb">
                     <img src="~/images/ghost-pf-tsushima.png" alt="Ghost of Tsushima" />
                 </div>
@@ -645,7 +701,7 @@
 
         <div class="genre-column">
             <h3>RPGs</h3>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="10">
                 <div class="genre-item-thumb">
                     <img src="~/images/cyberpunk-2077.png" alt="Cyberpunk 2077" />
                 </div>
@@ -654,16 +710,16 @@
                     <div class="genre-item-price">R$ 175,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="11">
                 <div class="genre-item-thumb">
-                    <img src="~/images/persona-3.webp" alt="P3 Persona"/>
+                    <img src="~/images/persona-3.webp" alt="P3 Persona" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">P3 Persona</div>
                     <div class="genre-item-price">R$ 229,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="12">
                 <div class="genre-item-thumb">
                     <img src="~/images/baldurs-gate-3.png" alt="Baldur's Gate 3" />
                 </div>
@@ -672,7 +728,7 @@
                     <div class="genre-item-price">R$ 199,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="28">
                 <div class="genre-item-thumb">
                     <img src="~/images/the-walking-dead.jpeg" alt="The Walking Dead" />
                 </div>
@@ -685,16 +741,16 @@
 
         <div class="genre-column">
             <h3>História</h3>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="25">
                 <div class="genre-item-thumb">
-                    <img src="~/images/detroit-become-human.png" alt="Detroit: Become Human"/>
+                    <img src="~/images/detroit-become-human.png" alt="Detroit: Become Human" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Detroit: Become Human</div>
                     <div class="genre-item-price">R$ 199,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="26">
                 <div class="genre-item-thumb">
                     <img src="~/images/the-quarry.webp" alt="The Quarry" />
                 </div>
@@ -703,7 +759,7 @@
                     <div class="genre-item-price">R$ 339,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="27">
                 <div class="genre-item-thumb">
                     <img src="~/images/life-is-strange-2.png" alt="Life is Strange 2" />
                 </div>
@@ -712,7 +768,7 @@
                     <div class="genre-item-price">R$ 89,99</div>
                 </div>
             </a>
-            <a class="genre-item" asp-controller="Jogo" asp-action="Index">
+            <a class="genre-item" asp-controller="Jogo" asp-action="Detalhe" asp-route-id="14">
                 <div class="genre-item-thumb">
                     <img src="~/images/disco-elysium.jpg" alt="Disco Elysium" />
                 </div>
