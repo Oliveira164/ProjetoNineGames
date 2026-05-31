@@ -341,43 +341,13 @@
             width: 100%;
         }
 
-        .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-        }
-
-        .footer-brand {
-            font-size: 20px;
-            font-weight: 900;
-            color: #F96300;
-            letter-spacing: -0.5px;
-        }
-
-        .footer-socials { display: flex; gap: 14px; }
-
-        .footer-socials a {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #27272a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #a1a1aa;
-            text-decoration: none;
-            font-size: 15px;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .footer-socials a:hover { background: #F96300; color: #fff; }
-
         .footer-cols {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 28px;
+            text-align: center;
+            margin-left: 260px;
         }
 
         .footer-col h4 {
@@ -636,8 +606,7 @@
             <h3>Ação / Aventura</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/god-of-war-ragnarok.jpg" alt="God of War Ragnarök"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/god-of-war-ragnarok.jpg" alt="God of War Ragnarök" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">God of War Ragnarök</div>
@@ -656,8 +625,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/the-last-of-us.jpg" alt="The Last of Us"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/the-last-of-us.png" alt="The Last of Us" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Last of Us</div>
@@ -666,8 +634,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/ghost-of-tsushima.jpg" alt="Ghost of Tsushima"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/ghost-pf-tsushima.png" alt="Ghost of Tsushima" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Ghost of Tsushima</div>
@@ -680,8 +647,7 @@
             <h3>RPGs</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/cyberpunk-2077.jpg" alt="Cyberpunk 2077"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/cyberpunk-2077.png" alt="Cyberpunk 2077" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Cyberpunk 2077</div>
@@ -690,8 +656,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/persona-3.jpg" alt="P3 Persona"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/persona-3.webp" alt="P3 Persona"/>
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">P3 Persona</div>
@@ -700,8 +665,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/baldurs-gate-3.jpg" alt="Baldur's Gate 3"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/baldurs-gate-3.png" alt="Baldur's Gate 3" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Baldur's Gate 3</div>
@@ -710,8 +674,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/the-walking-dead.jpg" alt="The Walking Dead"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/the-walking-dead.jpeg" alt="The Walking Dead" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Walking Dead</div>
@@ -724,8 +687,7 @@
             <h3>História</h3>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/detroit-become-human.jpg" alt="Detroit: Become Human"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/detroit-become-human.png" alt="Detroit: Become Human"/>
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Detroit: Become Human</div>
@@ -734,8 +696,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/the-quarry.jpg" alt="The Quarry"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/the-quarry.webp" alt="The Quarry" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">The Quarry</div>
@@ -744,8 +705,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/life-is-strange-2.jpg" alt="Life is Strange 2"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/life-is-strange-2.png" alt="Life is Strange 2" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Life is Strange 2</div>
@@ -754,8 +714,7 @@
             </a>
             <a class="genre-item" asp-controller="Jogo" asp-action="Index">
                 <div class="genre-item-thumb">
-                    <img src="~/images/disco-elysium.jpg" alt="Disco Elysium"
-                         onerror="this.outerHTML='<div class=\'genre-item-thumb-placeholder\'></div>'" />
+                    <img src="~/images/disco-elysium.jpg" alt="Disco Elysium" />
                 </div>
                 <div class="genre-item-info">
                     <div class="genre-item-name">Disco Elysium: The Final Cut</div>
@@ -766,14 +725,6 @@
     </div>
 
     <footer class="home-footer">
-        <div class="footer-top">
-            <span class="footer-brand">STORE</span>
-            <div class="footer-socials">
-                <a href="#" title="YouTube">▶</a>
-                <a href="#" title="Facebook">f</a>
-                <a href="#" title="Instagram">◉</a>
-            </div>
-        </div>
         <div class="footer-cols">
             <div class="footer-col">
                 <h4>Jogos</h4>
@@ -781,14 +732,6 @@
                     <li><a asp-controller="Jogo" asp-action="Index">Fortnite</a></li>
                     <li><a asp-controller="Jogo" asp-action="Index">Rocket League</a></li>
                     <li><a asp-controller="Jogo" asp-action="Index">God of War</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Lojas</h4>
-                <ul>
-                    <li><a href="#">Nine Games Store</a></li>
-                    <li><a href="#">Fab</a></li>
-                    <li><a href="#">Política de reembolso</a></li>
                 </ul>
             </div>
             <div class="footer-col">
