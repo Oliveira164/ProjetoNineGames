@@ -1052,3 +1052,15 @@ h1, h2, h3, h4 {
         padding: 28px 20px;
     }
 }
+
+.btn-ng-success {
+    background: rgba(249,99,0,.12);
+    border: 1px solid rgba(249,99,0,.4);
+    color: #F96300;
+}
+
+    .btn-ng-success:hover {
+        background: rgba(249,99,0,.22);
+        border-color: #F96300;
+        color: #F96300;
+    }

@@ -1,17 +1,86 @@
 @model List<ProjetoNineGames.Models.Jogo>
-@{ ViewData["Title"] = "Minha Biblioteca"; }
+@{
+    ViewData["Title"] = "Minha Biblioteca";
+    var categorias     = ViewBag.Categorias    as List<string> ?? new();
+    var categoriaAtual = ViewBag.CategoriaAtual as string      ?? "";
+    var busca          = ViewBag.Busca          as string      ?? "";
+    var total          = Model.Count;
+}
 
-<h2 style="margin-bottom:4px">Minha Biblioteca</h2>
-<p class="text-muted" style="font-size:14px;margin-bottom:22px">Seus jogos adquiridos</p>
+<!-- ── Header ──────────────────────────────────────────────── -->
+<div class="ng-vitrine-header">
+    <div>
+        <h2 style="margin-bottom:2px">Minha Biblioteca</h2>
+        <p class="text-muted" style="font-size:13px">
+            @total jogo@(total != 1 ? "s" : "") adquirido@(total != 1 ? "s" : "")
+        </p>
+    </div>
 
-@if (ViewBag.Ok != null) { <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div> }
+    <!-- Busca -->
+    <form class="ng-busca" method="get" asp-action="MinhaBiblioteca">
+        <input type="hidden" name="categoria" value="@categoriaAtual" />
+        <input class="ng-input" type="text" name="busca"
+               value="@busca" placeholder="Buscar na biblioteca..." />
+        <button type="submit" class="btn-ng btn-ng-primary">Buscar</button>
+    </form>
+</div>
 
+<!-- ── Filtro de categorias ────────────────────────────────── -->
+@if (categorias.Any())
+{
+    <div class="ng-cats" style="margin-bottom:24px">
+        <a class="ng-cat @(string.IsNullOrEmpty(categoriaAtual) ? "ativo" : "")"
+           asp-action="MinhaBiblioteca" asp-route-busca="@busca">
+            Todos
+        </a>
+        @foreach (var cat in categorias)
+        {
+            <a class="ng-cat @(categoriaAtual == cat ? "ativo" : "")"
+               asp-action="MinhaBiblioteca"
+               asp-route-categoria="@cat"
+               asp-route-busca="@busca">
+                @cat
+            </a>
+        }
+    </div>
+}
+
+<!-- ── Alertas ─────────────────────────────────────────────── -->
+@if (ViewBag.Ok != null)
+{
+    <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div>
+}
+
+<!-- ── Conteúdo ────────────────────────────────────────────── -->
 @if (!Model.Any())
 {
     <div class="ng-vazio">
-        <div class="icon">📦</div>
-        <p>Você ainda não tem jogos.</p>
-        <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">Explorar a vitrine</a>
+        <div class="icon">
+            @(string.IsNullOrEmpty(busca) && string.IsNullOrEmpty(categoriaAtual) ? "📦" : "🔍")
+        </div>
+        <p>
+            @if (!string.IsNullOrEmpty(busca) || !string.IsNullOrEmpty(categoriaAtual))
+            {
+                <text>Nenhum jogo encontrado com os filtros aplicados.</text>
+            }
+            else
+            {
+                <text>Você ainda não tem jogos na biblioteca.</text>
+            }
+        </p>
+
+        @if (!string.IsNullOrEmpty(busca) || !string.IsNullOrEmpty(categoriaAtual))
+        {
+            <a asp-action="MinhaBiblioteca" class="btn-ng btn-ng-ghost">
+                Limpar filtros
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">
+                Explorar a vitrine
+            </a>
+        }
     </div>
 }
 else
@@ -28,7 +97,9 @@ else
                 <div class="ng-bib-body">
                     <p class="ng-bib-titulo">@j.Titulo</p>
                     @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    { <span class="ng-badge ng-badge-orange">@j.Categoria</span> }
+                    {
+                        <span class="ng-badge ng-badge-orange">@j.Categoria</span>
+                    }
                 </div>
             </div>
         }

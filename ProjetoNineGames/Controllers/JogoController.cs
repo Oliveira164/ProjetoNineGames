@@ -12,7 +12,7 @@ namespace ProjetoNineGames.Controllers
     {
         private readonly Database _db = new();
 
-        // VITRINE — pública
+        // ── VITRINE — pública ────────────────────────────────────────────────
 
         [HttpGet]
         public IActionResult Index(string? categoria, string? busca)
@@ -20,21 +20,47 @@ namespace ProjetoNineGames.Controllers
             var lista = new List<Jogo>();
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_listar", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_jogo_listar", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_categoria", string.IsNullOrWhiteSpace(categoria) ? DBNull.Value : categoria);
-            cmd.Parameters.AddWithValue("p_busca",     string.IsNullOrWhiteSpace(busca)     ? DBNull.Value : busca);
+            cmd.Parameters.AddWithValue("p_busca", string.IsNullOrWhiteSpace(busca) ? DBNull.Value : busca);
 
             using var rd = cmd.ExecuteReader();
             while (rd.Read()) lista.Add(MapearJogo(rd));
-            rd.Close();
+            rd.Close(); // Fecha o leitor da vitrine para permitir a próxima consulta
 
-            ViewBag.Categorias    = ObterCategorias(conn);
+            ViewBag.Categorias = ObterCategorias(conn);
             ViewBag.CategoriaAtual = categoria ?? "";
-            ViewBag.Busca         = busca ?? "";
+            ViewBag.Busca = busca ?? "";
 
-            if (TempData["ok"]   != null) ViewBag.Ok   = TempData["ok"];
+            if (TempData["ok"] != null) ViewBag.Ok = TempData["ok"];
             if (TempData["erro"] != null) ViewBag.Erro = TempData["erro"];
+
+            // Lógica para verificar os jogos que o usuário já possui na biblioteca
+            var userId = HttpContext.Session.GetInt32("UserId");
+            var jogosAdquiridos = new List<int>();
+
+            if (userId.HasValue)
+            {
+                try
+                {
+                    using var cmdBib = new MySqlCommand("sp_biblioteca_obter_ids", conn)
+                    { CommandType = CommandType.StoredProcedure };
+                    cmdBib.Parameters.AddWithValue("p_id_usuario", userId.Value);
+
+                    using var rdBib = cmdBib.ExecuteReader();
+                    while (rdBib.Read())
+                    {
+                        jogosAdquiridos.Add(rdBib.GetInt32("jogo_id"));
+                    }
+                }
+                catch (MySqlException)
+                {
+                    // Ignora silenciosamente caso haja instabilidade, mantendo a vitrine funcionando
+                }
+            }
+
+            ViewBag.JogosAdquiridos = jogosAdquiridos;
 
             return View(lista);
         }
@@ -43,17 +69,51 @@ namespace ProjetoNineGames.Controllers
         public IActionResult Detalhe(int id)
         {
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_obter", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_jogo_obter", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_id", id);
 
             using var rd = cmd.ExecuteReader();
             if (!rd.Read()) return NotFound();
 
-            return View(MapearJogo(rd));
+            var jogo = MapearJogo(rd);
+            rd.Close(); 
+
+            // ── Lógica para checar se o jogo está na biblioteca ──
+            var userId = HttpContext.Session.GetInt32("UserId");
+            bool possuiJogo = false;
+
+            if (userId.HasValue)
+            {
+                try
+                {
+                    using var cmdBib = new MySqlCommand("sp_biblioteca_obter_ids", conn)
+                    { CommandType = CommandType.StoredProcedure };
+                    cmdBib.Parameters.AddWithValue("p_id_usuario", userId.Value);
+
+                    using var rdBib = cmdBib.ExecuteReader();
+                    while (rdBib.Read())
+                    {
+                        if (rdBib.GetInt32("jogo_id") == id)
+                        {
+                            possuiJogo = true;
+                            break; // Achou o jogo, pode parar de procurar
+                        }
+                    }
+                }
+                catch (MySqlException)
+                {
+                    // Ignora silenciosamente
+                }
+            }
+
+            // Passa a resposta (true ou false) para a View
+            ViewBag.PossuiJogo = possuiJogo;
+
+            return View(jogo);
         }
 
-        // GERENCIAR — Admin / Funcionario
+        // ── GERENCIAR — Admin / Funcionario ──────────────────────────────────
 
         [SessionAuthorize(RoleAnyOf = "Admin,Funcionario")]
         [HttpGet]
@@ -62,17 +122,17 @@ namespace ProjetoNineGames.Controllers
             var lista = new List<Jogo>();
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_listar", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_jogo_listar", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_categoria", DBNull.Value);
-            cmd.Parameters.AddWithValue("p_busca",     string.IsNullOrWhiteSpace(busca) ? DBNull.Value : busca);
+            cmd.Parameters.AddWithValue("p_busca", string.IsNullOrWhiteSpace(busca) ? DBNull.Value : busca);
 
             using var rd = cmd.ExecuteReader();
             while (rd.Read()) lista.Add(MapearJogo(rd));
             rd.Close();
 
             ViewBag.Busca = busca ?? "";
-            if (TempData["ok"]   != null) ViewBag.Ok   = TempData["ok"];
+            if (TempData["ok"] != null) ViewBag.Ok = TempData["ok"];
             if (TempData["erro"] != null) ViewBag.Erro = TempData["erro"];
 
             return View(lista);
@@ -104,13 +164,13 @@ namespace ProjetoNineGames.Controllers
             var imagemUrl = SalvarImagem(imagem);
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_criar", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_titulo",     model.Titulo);
-            cmd.Parameters.AddWithValue("p_descricao",  (object?)model.Descricao ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("p_preco",      model.Preco);
-            cmd.Parameters.AddWithValue("p_categoria",  (object?)model.Categoria ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("p_imagem_url", (object?)imagemUrl       ?? DBNull.Value);
+            using var cmd = new MySqlCommand("sp_jogo_criar", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_titulo", model.Titulo);
+            cmd.Parameters.AddWithValue("p_descricao", (object?)model.Descricao ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("p_preco", model.Preco);
+            cmd.Parameters.AddWithValue("p_categoria", (object?)model.Categoria ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("p_imagem_url", (object?)imagemUrl ?? DBNull.Value);
             cmd.ExecuteNonQuery();
 
             TempData["ok"] = "Jogo cadastrado com sucesso!";
@@ -124,8 +184,8 @@ namespace ProjetoNineGames.Controllers
         public IActionResult Editar(int id)
         {
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_obter", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_jogo_obter", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_id", id);
             using var rd = cmd.ExecuteReader();
             if (!rd.Read()) return NotFound();
@@ -151,14 +211,14 @@ namespace ProjetoNineGames.Controllers
             var imagemUrl = SalvarImagem(imagem) ?? model.ImagemUrl;
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_jogo_atualizar", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id",         model.Id);
-            cmd.Parameters.AddWithValue("p_titulo",     model.Titulo);
-            cmd.Parameters.AddWithValue("p_descricao",  (object?)model.Descricao ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("p_preco",      model.Preco);
-            cmd.Parameters.AddWithValue("p_categoria",  (object?)model.Categoria ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("p_imagem_url", (object?)imagemUrl       ?? DBNull.Value);
+            using var cmd = new MySqlCommand("sp_jogo_atualizar", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id", model.Id);
+            cmd.Parameters.AddWithValue("p_titulo", model.Titulo);
+            cmd.Parameters.AddWithValue("p_descricao", (object?)model.Descricao ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("p_preco", model.Preco);
+            cmd.Parameters.AddWithValue("p_categoria", (object?)model.Categoria ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("p_imagem_url", (object?)imagemUrl ?? DBNull.Value);
             cmd.ExecuteNonQuery();
 
             TempData["ok"] = "Jogo atualizado!";
@@ -175,7 +235,7 @@ namespace ProjetoNineGames.Controllers
             try
             {
                 using var cmd = new MySqlCommand("sp_jogo_excluir", conn)
-                                { CommandType = CommandType.StoredProcedure };
+                { CommandType = CommandType.StoredProcedure };
                 cmd.Parameters.AddWithValue("p_id", id);
                 cmd.ExecuteNonQuery();
                 TempData["ok"] = "Jogo excluído.";
@@ -188,15 +248,15 @@ namespace ProjetoNineGames.Controllers
             return RedirectToAction(nameof(Gerenciar));
         }
 
-        // Helpers
+        // ── Helpers ──────────────────────────────────────────────────────────
 
         private static Jogo MapearJogo(MySqlDataReader rd) => new()
         {
-            Id        = rd.GetInt32("id"),
-            Titulo    = rd.GetString("titulo"),
-            Descricao = rd["descricao"]  as string,
-            Preco     = rd.GetDecimal("preco"),
-            Categoria = rd["categoria"]  as string,
+            Id = rd.GetInt32("id"),
+            Titulo = rd.GetString("titulo"),
+            Descricao = rd["descricao"] as string,
+            Preco = rd.GetDecimal("preco"),
+            Categoria = rd["categoria"] as string,
             ImagemUrl = rd["imagem_url"] as string,
         };
 
@@ -204,8 +264,8 @@ namespace ProjetoNineGames.Controllers
         {
             var cats = new List<string>();
             using var cmd = new MySqlCommand("sp_jogo_categorias", conn)
-                            { CommandType = CommandType.StoredProcedure };
-            using var rd  = cmd.ExecuteReader();
+            { CommandType = CommandType.StoredProcedure };
+            using var rd = cmd.ExecuteReader();
             while (rd.Read()) cats.Add(rd.GetString("categoria"));
             return cats;
         }
@@ -214,13 +274,13 @@ namespace ProjetoNineGames.Controllers
         {
             var lista = new List<SelectListItem>();
             using var cmd = new MySqlCommand("sp_categoria_listar", conn)
-                            { CommandType = CommandType.StoredProcedure };
-            using var rd  = cmd.ExecuteReader();
+            { CommandType = CommandType.StoredProcedure };
+            using var rd = cmd.ExecuteReader();
             while (rd.Read())
                 lista.Add(new SelectListItem
                 {
                     Value = rd.GetString("nome"),
-                    Text  = rd.GetString("nome")
+                    Text = rd.GetString("nome")
                 });
             return lista;
         }
@@ -228,9 +288,9 @@ namespace ProjetoNineGames.Controllers
         private static string? SalvarImagem(IFormFile? imagem)
         {
             if (imagem == null || imagem.Length == 0) return null;
-            var ext      = Path.GetExtension(imagem.FileName);
+            var ext = Path.GetExtension(imagem.FileName);
             var fileName = $"{Guid.NewGuid()}{ext}";
-            var dir      = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "jogos");
+            var dir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "jogos");
             Directory.CreateDirectory(dir);
             using var fs = new FileStream(Path.Combine(dir, fileName), FileMode.Create);
             imagem.CopyTo(fs);

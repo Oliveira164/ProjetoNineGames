@@ -296,6 +296,7 @@ BEGIN
         id_categoria = v_cat_id, imagem_url = p_imagem_url
     WHERE id = p_id;
 END$$
+DELIMITER ; 
 
 DROP PROCEDURE IF EXISTS sp_jogo_excluir;
 DELIMITER $$
@@ -377,6 +378,17 @@ BEGIN
     LEFT JOIN categoria c ON c.id = j.id_categoria
     WHERE  b.usuario_id = p_id_usuario
     ORDER BY b.data_aquisicao DESC;
+END$$
+DELIMITER ;
+
+-- NOVO: Stored Procedure criada para uso na vitrine (JogoController)
+DROP PROCEDURE IF EXISTS sp_biblioteca_obter_ids;
+DELIMITER $$
+CREATE PROCEDURE sp_biblioteca_obter_ids(IN p_id_usuario INT)
+BEGIN
+    SELECT jogo_id 
+    FROM   biblioteca 
+    WHERE  usuario_id = p_id_usuario;
 END$$
 DELIMITER ;
 

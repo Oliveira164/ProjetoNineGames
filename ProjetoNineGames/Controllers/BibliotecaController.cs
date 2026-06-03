@@ -12,31 +12,54 @@ namespace ProjetoNineGames.Controllers
     {
         private readonly Database _db = new();
 
-        // ── Biblioteca (jogos comprados) ─────────────────────────────────────
+        // ── Biblioteca com filtro ────────────────────────────────────────────
 
         [HttpGet]
-        public IActionResult MinhaBiblioteca()
+        public IActionResult MinhaBiblioteca(string? categoria, string? busca)
         {
             var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
-            var jogos = new List<Jogo>();
+            var jogos     = new List<Jogo>();
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_biblioteca_listar", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
-            using var rd = cmd.ExecuteReader();
-            while (rd.Read())
+
+            // 1) Busca jogos com filtros aplicados
+            using (var cmd = new MySqlCommand("sp_biblioteca_listar_filtro", conn)
+                             { CommandType = CommandType.StoredProcedure })
             {
-                jogos.Add(new Jogo
+                cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                cmd.Parameters.AddWithValue("p_categoria",
+                    string.IsNullOrWhiteSpace(categoria) ? DBNull.Value : categoria);
+                cmd.Parameters.AddWithValue("p_busca",
+                    string.IsNullOrWhiteSpace(busca) ? DBNull.Value : busca);
+
+                using var rd = cmd.ExecuteReader();
+                while (rd.Read())
                 {
-                    Id        = rd.GetInt32("id"),
-                    Titulo    = rd.GetString("titulo"),
-                    Descricao = rd["descricao"]  as string,
-                    Categoria = rd["categoria"]  as string,
-                    ImagemUrl = rd["imagem_url"] as string,
-                    Preco     = rd.GetDecimal("preco"),
-                });
+                    jogos.Add(new Jogo
+                    {
+                        Id        = rd.GetInt32("id"),
+                        Titulo    = rd.GetString("titulo"),
+                        Descricao = rd["descricao"]  as string,
+                        Categoria = rd["categoria"]  as string,
+                        ImagemUrl = rd["imagem_url"] as string,
+                        Preco     = rd.GetDecimal("preco"),
+                    });
+                }
             }
+
+            // 2) Busca categorias disponíveis na biblioteca do usuário
+            var categorias = new List<string>();
+            using (var cmd = new MySqlCommand("sp_biblioteca_categorias", conn)
+                             { CommandType = CommandType.StoredProcedure })
+            {
+                cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                using var rd = cmd.ExecuteReader();
+                while (rd.Read()) categorias.Add(rd.GetString("categoria"));
+            }
+
+            ViewBag.Categorias     = categorias;
+            ViewBag.CategoriaAtual = categoria ?? "";
+            ViewBag.Busca          = busca ?? "";
 
             if (TempData["ok"] != null) ViewBag.Ok = TempData["ok"];
             return View(jogos);
@@ -48,7 +71,7 @@ namespace ProjetoNineGames.Controllers
         public IActionResult Wishlist()
         {
             var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
-            var jogos = new List<Jogo>();
+            var jogos     = new List<Jogo>();
 
             using var conn = _db.GetConnection();
             using var cmd  = new MySqlCommand("sp_wishlist_listar", conn)

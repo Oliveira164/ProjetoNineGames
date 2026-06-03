@@ -2,45 +2,70 @@
    Jogo/Detalhe.cshtml
    ══════════════════════════════════════════════════════ *@
 @model ProjetoNineGames.Models.Jogo
-@{ ViewData["Title"] = Model.Titulo; }
+@{
+    ViewData["Title"] = Model.Titulo;
+}
 
 <a class="ng-btn-voltar" asp-action="Index">← Voltar à vitrine</a>
 
 <div class="ng-detalhe-wrap">
     <div class="ng-detalhe-capa">
         @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
-        { <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" /> }
-        else { <span>🎮</span> }
+        {
+            <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" />
+        }
+        else
+        {
+            <span>🎮</span>
+        }
     </div>
 
     <div>
         <h1 class="ng-detalhe-titulo">@Model.Titulo</h1>
 
         @if (!string.IsNullOrWhiteSpace(Model.Categoria))
-        { <span class="ng-badge ng-badge-orange" style="margin-bottom:14px;display:inline-block">@Model.Categoria</span> }
+        {
+            <span class="ng-badge ng-badge-orange" style="margin-bottom:14px;display:inline-block">@Model.Categoria</span>
+        }
 
         @if (Model.Preco == 0)
-        { <p class="ng-detalhe-gratis">Gratuito para jogar</p> }
+        {
+            <p class="ng-detalhe-gratis">Gratuito para jogar</p>
+        }
         else
-        { <p class="ng-detalhe-preco">R$ @Model.Preco.ToString("N2")</p> }
+        {
+            <p class="ng-detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
+        }
 
         @if (!string.IsNullOrWhiteSpace(Model.Descricao))
-        { <p class="ng-detalhe-desc">@Model.Descricao</p> }
+        {
+            <p class="ng-detalhe-desc">@Model.Descricao</p>
+        }
 
         <div class="ng-detalhe-acoes">
-            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="jogoId" value="@Model.Id" />
-                <button class="btn-ng btn-ng-primary btn-ng-lg btn-ng-full">🛒 Adicionar ao Carrinho</button>
-            </form>
-
-            @if (Context.Session.GetInt32("UserId").HasValue)
+            @if (ViewBag.PossuiJogo != null && (bool)ViewBag.PossuiJogo)
             {
-                <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                <a class="btn-ng btn-ng-success btn-ng-lg btn-ng-full"
+                   asp-controller="Biblioteca" asp-action="MinhaBiblioteca">
+                   Ver Na Biblioteca
+                </a>
+            }
+            else
+            {
+                <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="jogoId" value="@Model.Id" />
-                    <button class="btn-ng btn-ng-ghost btn-ng-full">❤ Adicionar à Wishlist</button>
+                    <button class="btn-ng btn-ng-primary btn-ng-lg btn-ng-full">🛒 Adicionar ao Carrinho</button>
                 </form>
+
+                @if (Context.Session.GetInt32("UserId").HasValue)
+                {
+                    <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="jogoId" value="@Model.Id" />
+                        <button class="btn-ng btn-ng-ghost btn-ng-full">❤ Adicionar à Wishlist</button>
+                    </form>
+                }
             }
         </div>
     </div>

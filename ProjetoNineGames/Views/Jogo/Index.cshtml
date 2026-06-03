@@ -1,5 +1,9 @@
 @model IEnumerable<ProjetoNineGames.Models.Jogo>
-@{ ViewData["Title"] = "Vitrine"; }
+@{
+    ViewData["Title"] = "Vitrine";
+    // Resgata os IDs da biblioteca (se for nulo, cria uma lista vazia)
+    var jogosAdquiridos = ViewBag.JogosAdquiridos as List<int> ?? new List<int>();
+}
 
 <div class="ng-vitrine-header">
     <h2>Vitrine de Jogos</h2>
@@ -20,8 +24,14 @@
     }
 </div>
 
-@if (ViewBag.Ok   != null) { <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div> }
-@if (ViewBag.Erro != null) { <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div> }
+@if (ViewBag.Ok != null)
+{
+     <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div>
+}
+@if (ViewBag.Erro != null)
+{
+     <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div>
+}
 
 @if (!Model.Any())
 {
@@ -39,39 +49,59 @@ else
             <div class="ng-jogo-card">
                 <div class="ng-jogo-capa">
                     @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
-                    { <img src="~/@j.ImagemUrl" alt="@j.Titulo" /> }
-                    else { <span>🎮</span> }
+                    {
+                        <img src="~/@j.ImagemUrl" alt="@j.Titulo" />
+                    }
+                    else
+                    {
+                        <span>🎮</span>
+                    }
                 </div>
                 <div class="ng-jogo-body">
                     <p class="ng-jogo-titulo">@j.Titulo</p>
 
                     @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    { <span class="ng-badge ng-badge-orange">@j.Categoria</span> }
+                    {
+                        <span class="ng-badge ng-badge-orange">@j.Categoria</span>
+                    }
 
                     @if (j.Preco == 0)
-                    { <p class="ng-jogo-gratis">Gratuito</p> }
+                    {
+                        <p class="ng-jogo-gratis">Gratuito</p>
+                    }
                     else
-                    { <p class="ng-jogo-preco">R$ @j.Preco.ToString("N2")</p> }
+                    {
+                        <p class="ng-jogo-preco">R$ @j.Preco.ToString("N2")</p>
+                    }
 
                     <div class="ng-jogo-acoes">
                         <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
                             Ver detalhes
                         </a>
 
-                        @if (Context.Session.GetInt32("UserId").HasValue)
+                        @if (jogosAdquiridos.Contains(j.Id))
                         {
-                            <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                            <a class="btn-ng btn-ng-success btn-ng-sm btn-ng-full" asp-controller="Biblioteca" asp-action="MinhaBiblioteca">
+                                Ver Na Biblioteca
+                            </a>
+                        }
+                        else
+                        {
+                            @if (Context.Session.GetInt32("UserId").HasValue)
+                            {
+                                <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="jogoId" value="@j.Id" />
+                                    <button class="btn-ng btn-ng-ghost btn-ng-sm btn-ng-full">❤ Wishlist</button>
+                                </form>
+                            }
+
+                            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="jogoId" value="@j.Id" />
-                                <button class="btn-ng btn-ng-ghost btn-ng-sm btn-ng-full">❤ Wishlist</button>
+                                <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
                             </form>
                         }
-
-                        <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="jogoId" value="@j.Id" />
-                            <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
-                        </form>
                     </div>
                 </div>
             </div>
