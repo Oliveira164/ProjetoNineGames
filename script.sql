@@ -392,6 +392,40 @@ BEGIN
 END$$
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS sp_biblioteca_listar_filtro;
+DELIMITER $$
+CREATE PROCEDURE sp_biblioteca_listar_filtro(
+    IN p_id_usuario INT,
+    IN p_categoria  VARCHAR(60),   -- NULL = todas
+    IN p_busca      VARCHAR(150)   -- NULL = sem filtro de texto
+)
+BEGIN
+    SELECT j.id, j.titulo, j.descricao, j.preco, j.imagem_url,
+           c.nome AS categoria, b.data_aquisicao
+    FROM   biblioteca b
+    JOIN   jogos      j ON j.id = b.jogo_id
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    WHERE  b.usuario_id = p_id_usuario
+      AND  (p_categoria IS NULL OR c.nome = p_categoria)
+      AND  (p_busca     IS NULL OR j.titulo LIKE CONCAT('%', p_busca, '%'))
+    ORDER BY b.data_aquisicao DESC;
+END$$
+DELIMITER ;
+
+-- SP que retorna apenas as categorias que o usuário tem na biblioteca
+DROP PROCEDURE IF EXISTS sp_biblioteca_categorias;
+DELIMITER $$
+CREATE PROCEDURE sp_biblioteca_categorias(IN p_id_usuario INT)
+BEGIN
+    SELECT DISTINCT c.nome AS categoria
+    FROM   biblioteca b
+    JOIN   jogos      j ON j.id = b.jogo_id
+    JOIN   categoria  c ON c.id = j.id_categoria
+    WHERE  b.usuario_id = p_id_usuario
+    ORDER BY c.nome;
+END$$
+DELIMITER ;
+
 -- ────────────────────────────────────────────────────────────
 -- WISHLIST
 -- ────────────────────────────────────────────────────────────

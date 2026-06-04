@@ -32,5 +32,22 @@
         <li>No próximo login, informe esse código na tela de verificação</li>
     </ol>
 
-    <a asp-action="Perfil" class="btn-ng btn-ng-primary">Concluir configuração</a>
+    <form asp-action="ConfirmarSetup2Fa" method="post"
+          style="margin-top: 24px; padding-top: 24px; border-top: 1px solid #2a2a2a;"
+          onsubmit="return confirm('⚠️ ATENÇÃO!\n\nVocê tem certeza que já escaneou o QR Code e está funcionando,
+          ou que já copiou ou anotou a chave?\n\nPor motivos de segurança, esta tela com o QR Code NÃO poderá ser acessada novamente.')">
+
+        @Html.AntiForgeryToken()
+
+        <div class="ng-field">
+            <label class="ng-label">Código de verificação gerado no App</label>
+            <input class="ng-input" type="text" name="codigo" placeholder="000000" maxlength="6"
+                   style="max-width: 200px; font-size: 24px; letter-spacing: 6px; text-align: center; font-weight: bold;" required />
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; margin-top: 14px;">
+            <button type="submit" class="btn-ng btn-ng-primary">Verificar e Concluir</button>
+            <a asp-action="Perfil" class="text-muted" style="font-size: 13px; text-decoration: underline;">Cancelar</a>
+        </div>
+    </form>
 </div>

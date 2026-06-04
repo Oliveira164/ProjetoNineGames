@@ -21,20 +21,20 @@ namespace ProjetoNineGames.Controllers
             var lista = new List<Usuario>();
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_listar", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_usuario_listar", conn)
+            { CommandType = CommandType.StoredProcedure };
             using var rd = cmd.ExecuteReader();
             while (rd.Read())
             {
                 lista.Add(new Usuario
                 {
-                    Id               = rd.GetInt32("id"),
-                    Nome             = rd.GetString("nome"),
-                    Email            = rd.GetString("email"),
-                    Role             = rd.GetString("role"),
-                    Ativo            = rd.GetInt32("ativo"),
+                    Id = rd.GetInt32("id"),
+                    Nome = rd.GetString("nome"),
+                    Email = rd.GetString("email"),
+                    Role = rd.GetString("role"),
+                    Ativo = rd.GetInt32("ativo"),
                     TwoFactorEnabled = rd.GetBoolean("two_factor_enabled"),
-                    CriadoEm         = rd.GetDateTime("criado_em"),
+                    CriadoEm = rd.GetDateTime("criado_em"),
                 });
             }
 
@@ -51,7 +51,7 @@ namespace ProjetoNineGames.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Criar(Usuario model, string senha)
         {
-            if (string.IsNullOrWhiteSpace(model.Nome)  ||
+            if (string.IsNullOrWhiteSpace(model.Nome) ||
                 string.IsNullOrWhiteSpace(model.Email) ||
                 string.IsNullOrWhiteSpace(senha))
             {
@@ -62,12 +62,12 @@ namespace ProjetoNineGames.Controllers
             var hash = BCrypt.Net.BCrypt.HashPassword(senha, workFactor: 12);
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_criar", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_nome",       model.Nome);
-            cmd.Parameters.AddWithValue("p_email",      model.Email);
+            using var cmd = new MySqlCommand("sp_usuario_criar", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_nome", model.Nome);
+            cmd.Parameters.AddWithValue("p_email", model.Email);
             cmd.Parameters.AddWithValue("p_senha_hash", hash);
-            cmd.Parameters.AddWithValue("p_role",       model.Role ?? "Cliente");
+            cmd.Parameters.AddWithValue("p_role", model.Role ?? "Cliente");
             cmd.ExecuteNonQuery();
 
             TempData["ok"] = "Usuário criado com sucesso!";
@@ -81,9 +81,9 @@ namespace ProjetoNineGames.Controllers
         public IActionResult AlterarAtivo(int id, int ativo)
         {
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_alterar_ativo", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id",    id);
+            using var cmd = new MySqlCommand("sp_usuario_alterar_ativo", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id", id);
             cmd.Parameters.AddWithValue("p_ativo", ativo);
             cmd.ExecuteNonQuery();
 
@@ -128,9 +128,9 @@ namespace ProjetoNineGames.Controllers
             }
 
             // Verifica se e-mail já está em uso
-            using var conn  = _db.GetConnection();
+            using var conn = _db.GetConnection();
             using var cmdChk = new MySqlCommand("sp_usuario_obter_por_email", conn)
-                               { CommandType = CommandType.StoredProcedure };
+            { CommandType = CommandType.StoredProcedure };
             cmdChk.Parameters.AddWithValue("p_email", email);
             using var rdChk = cmdChk.ExecuteReader();
             if (rdChk.Read())
@@ -145,21 +145,21 @@ namespace ProjetoNineGames.Controllers
             var hash = BCrypt.Net.BCrypt.HashPassword(senha, workFactor: 12);
 
             using var cmdCria = new MySqlCommand("sp_usuario_criar", conn)
-                                { CommandType = CommandType.StoredProcedure };
-            cmdCria.Parameters.AddWithValue("p_nome",       nome.Trim());
-            cmdCria.Parameters.AddWithValue("p_email",      email.Trim().ToLower());
+            { CommandType = CommandType.StoredProcedure };
+            cmdCria.Parameters.AddWithValue("p_nome", nome.Trim());
+            cmdCria.Parameters.AddWithValue("p_email", email.Trim().ToLower());
             cmdCria.Parameters.AddWithValue("p_senha_hash", hash);
-            cmdCria.Parameters.AddWithValue("p_role",       "Cliente");
+            cmdCria.Parameters.AddWithValue("p_role", "Cliente");
             using var rdCria = cmdCria.ExecuteReader();
 
             int novoId = rdCria.Read() ? rdCria.GetInt32("id") : 0;
             rdCria.Close();
 
             // Loga automaticamente após o registro
-            HttpContext.Session.SetInt32(SessionKeys.UserId,    novoId);
-            HttpContext.Session.SetString(SessionKeys.UserName,  nome.Trim());
+            HttpContext.Session.SetInt32(SessionKeys.UserId, novoId);
+            HttpContext.Session.SetString(SessionKeys.UserName, nome.Trim());
             HttpContext.Session.SetString(SessionKeys.UserEmail, email.Trim().ToLower());
-            HttpContext.Session.SetString(SessionKeys.UserRole,  "Cliente");
+            HttpContext.Session.SetString(SessionKeys.UserRole, "Cliente");
 
             TempData["ok"] = $"Bem-vindo, {nome.Trim()}! Conta criada com sucesso.";
             return RedirectToAction("Index", "Jogo");
@@ -174,18 +174,18 @@ namespace ProjetoNineGames.Controllers
             var id = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_obter_por_id", conn)
-                             { CommandType = CommandType.StoredProcedure };
+            using var cmd = new MySqlCommand("sp_usuario_obter_por_id", conn)
+            { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_id", id);
             using var rd = cmd.ExecuteReader();
             if (!rd.Read()) return RedirectToAction("Login", "Auth");
 
             var u = new Usuario
             {
-                Id               = rd.GetInt32("id"),
-                Nome             = rd.GetString("nome"),
-                Email            = rd.GetString("email"),
-                Role             = rd.GetString("role"),
+                Id = rd.GetInt32("id"),
+                Nome = rd.GetString("nome"),
+                Email = rd.GetString("email"),
+                Role = rd.GetString("role"),
                 TwoFactorEnabled = rd.GetBoolean("two_factor_enabled"),
             };
 
@@ -198,19 +198,19 @@ namespace ProjetoNineGames.Controllers
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Ativar2Fa()
         {
-            var id    = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
+            var id = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
             var email = HttpContext.Session.GetString(SessionKeys.UserEmail) ?? "";
 
             var secretBytes = KeyGeneration.GenerateRandomKey(20);
-            var secret      = Base32Encoding.ToString(secretBytes);
-            var otpUri      = $"otpauth://totp/NineGames:{Uri.EscapeDataString(email)}" +
+            var secret = Base32Encoding.ToString(secretBytes);
+            var otpUri = $"otpauth://totp/NineGames:{Uri.EscapeDataString(email)}" +
                               $"?secret={secret}&issuer=NineGames&algorithm=SHA1&digits=6&period=30";
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id",                id);
-            cmd.Parameters.AddWithValue("p_enabled",           1);
+            using var cmd = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id", id);
+            cmd.Parameters.AddWithValue("p_enabled", 0); // MANTÉM EM 0 AQUI
             cmd.Parameters.AddWithValue("p_two_factor_secret", secret);
             cmd.ExecuteNonQuery();
 
@@ -228,15 +228,70 @@ namespace ProjetoNineGames.Controllers
             var id = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
 
             using var conn = _db.GetConnection();
-            using var cmd  = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
-                             { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id",                id);
-            cmd.Parameters.AddWithValue("p_enabled",           0);
+            using var cmd = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id", id);
+            cmd.Parameters.AddWithValue("p_enabled", 0);
             cmd.Parameters.AddWithValue("p_two_factor_secret", DBNull.Value);
             cmd.ExecuteNonQuery();
 
             TempData["ok"] = "2FA desativado.";
             return RedirectToAction(nameof(Perfil));
+        }
+
+        // ── Confirmar Setup 2FA ──────────────────────────────────────────────
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ConfirmarSetup2Fa(string codigo)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (!userId.HasValue) return RedirectToAction("Login", "Auth");
+
+            // 1. Busca o usuário no banco para pegar o Secret temporário que foi gerado
+            using var conn = _db.GetConnection();
+            using var cmd = new MySqlCommand("sp_usuario_obter_por_id", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id", userId.Value);
+
+            using var rd = cmd.ExecuteReader();
+            if (!rd.Read()) return RedirectToAction("Login", "Auth");
+
+            string secret = rd["two_factor_secret"]?.ToString() ?? "";
+            string email = rd["email"]?.ToString() ?? "";
+            rd.Close();
+
+            if (string.IsNullOrEmpty(secret))
+            {
+                TempData["erro"] = "Nenhuma configuração de 2FA em andamento.";
+                return RedirectToAction("Perfil");
+            }
+
+            // 2. Validar o código digitado usando o Otp.NET
+            var secretBytes = Base32Encoding.ToBytes(secret);
+            var totp = new Totp(secretBytes);
+
+            bool isCodigoValido = totp.VerifyTotp(codigo.Replace(" ", ""), out long timeStepMatched, window: new VerificationWindow(1, 1));
+
+            if (!isCodigoValido)
+            {
+                TempData["erro"] = "Código inválido. Tente novamente.";
+
+                ViewBag.Secret = secret;
+                ViewBag.OtpUri = $"otpauth://totp/NineGames:{email}?secret={secret}&issuer=NineGames";
+
+                return View("Configurar2Fa");
+            }
+
+            // 3. Se o código for válido, ativa o 2FA de fato (p_enabled = 1) no banco
+            using var cmdUpdate = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmdUpdate.Parameters.AddWithValue("p_id", userId.Value);
+            cmdUpdate.Parameters.AddWithValue("p_enabled", 1);
+            cmdUpdate.Parameters.AddWithValue("p_two_factor_secret", secret);
+            cmdUpdate.ExecuteNonQuery();
+
+            TempData["ok"] = "Autenticação em 2 Etapas ativada e verificada com sucesso! 🔐";
+            return RedirectToAction("Perfil");
         }
     }
 }
