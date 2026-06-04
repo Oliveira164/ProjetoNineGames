@@ -355,11 +355,17 @@ BEGIN
     -- Marca venda como finalizada
     UPDATE venda SET status = 'Finalizada' WHERE id = p_id_venda;
 
-    -- Registra os jogos na biblioteca do usuário (ignora duplicatas)
+    -- Pega o ID do usuário que fez a compra
     SELECT id_usuario INTO v_usuario FROM venda WHERE id = p_id_venda;
 
+    -- Registra os jogos na biblioteca do usuário (ignora duplicatas)
     INSERT IGNORE INTO biblioteca (usuario_id, jogo_id)
     SELECT v_usuario, id_jogo FROM venda_itens WHERE id_venda = p_id_venda;
+
+    -- LIMPEZA: Remove os jogos comprados da wishlist do usuário
+    DELETE FROM lista_desejos
+    WHERE usuario_id = v_usuario
+      AND jogo_id IN (SELECT id_jogo FROM venda_itens WHERE id_venda = p_id_venda);
 END$$
 DELIMITER ;
 
@@ -439,6 +445,8 @@ BEGIN
     JOIN   jogos j ON j.id = ld.jogo_id
     LEFT JOIN categoria c ON c.id = j.id_categoria
     WHERE  ld.usuario_id = p_id_usuario
+      -- A MÁGICA ACONTECE AQUI: Ignora os jogos que já estão na biblioteca
+      AND  ld.jogo_id NOT IN (SELECT jogo_id FROM biblioteca WHERE usuario_id = p_id_usuario)
     ORDER BY ld.adicionado_em DESC;
 END$$
 DELIMITER ;
