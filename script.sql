@@ -458,3 +458,173 @@ BEGIN
     DELETE FROM lista_desejos WHERE usuario_id = p_id_usuario AND jogo_id = p_id_jogo;
 END$$
 DELIMITER ;
+
+-- ============================================================
+-- Dashboard Admin — Stored Procedures
+-- ============================================================
+
+-- ── 1. KPIs gerais (cards do topo) ──────────────────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_kpis;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_kpis()
+BEGIN
+    SELECT
+        -- Receita total (vendas finalizadas)
+        COALESCE(SUM(CASE WHEN status = 'Finalizada' THEN valor_total END), 0) AS receita_total,
+
+        -- Total de vendas finalizadas
+        COUNT(CASE WHEN status = 'Finalizada' THEN 1 END) AS total_vendas,
+
+        -- Ticket médio
+        COALESCE(AVG(CASE WHEN status = 'Finalizada' THEN valor_total END), 0) AS ticket_medio,
+
+        -- Total de usuários ativos
+        (SELECT COUNT(*) FROM usuarios WHERE ativo = 1 AND role = 'Cliente') AS total_clientes,
+
+        -- Total de jogos cadastrados
+        (SELECT COUNT(*) FROM jogos) AS total_jogos,
+
+        -- Vendas do mês atual
+        COALESCE(SUM(
+            CASE WHEN status = 'Finalizada'
+                  AND MONTH(data_hora) = MONTH(CURRENT_DATE())
+                  AND YEAR(data_hora)  = YEAR(CURRENT_DATE())
+            THEN valor_total END
+        ), 0) AS receita_mes,
+
+        -- Vendas do mês anterior (para calcular variação)
+        COALESCE(SUM(
+            CASE WHEN status = 'Finalizada'
+                  AND MONTH(data_hora) = MONTH(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+                  AND YEAR(data_hora)  = YEAR(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+            THEN valor_total END
+        ), 0) AS receita_mes_anterior
+
+    FROM venda;
+END$$
+DELIMITER ;
+
+-- ── 2. Últimas vendas (tabela recente) ───────────────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_ultimas_vendas;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_ultimas_vendas(IN p_limite INT)
+BEGIN
+    SELECT
+        v.id,
+        u.nome        AS cliente,
+        u.email,
+        v.valor_total,
+        v.forma_pagamento,
+        v.status,
+        v.data_hora,
+        COUNT(vi.id)  AS qtd_itens
+    FROM venda v
+    JOIN usuarios u ON u.id = v.id_usuario
+    JOIN venda_itens vi ON vi.id_venda = v.id
+    GROUP BY v.id, u.nome, u.email, v.valor_total, v.forma_pagamento, v.status, v.data_hora
+    ORDER BY v.data_hora DESC
+    LIMIT p_limite;
+END$$
+DELIMITER ;
+
+-- ── 3. Jogos mais vendidos ────────────────────────────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_top_jogos;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_top_jogos(IN p_limite INT)
+BEGIN
+    SELECT
+        j.id,
+        j.titulo,
+        j.imagem_url,
+        c.nome                  AS categoria,
+        j.preco,
+        SUM(vi.quantidade)      AS total_vendido,
+        SUM(vi.quantidade * vi.preco_unitario) AS receita_gerada,
+        COUNT(DISTINCT v.id_usuario)           AS compradores
+    FROM venda_itens vi
+    JOIN venda v  ON v.id  = vi.id_venda  AND v.status = 'Finalizada'
+    JOIN jogos j  ON j.id  = vi.id_jogo
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    GROUP BY j.id, j.titulo, j.imagem_url, c.nome, j.preco
+    ORDER BY total_vendido DESC
+    LIMIT p_limite;
+END$$
+DELIMITER ;
+
+-- ── 4. Receita por mês (últimos 6 meses) ────────────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_receita_mensal;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_receita_mensal()
+BEGIN
+    SELECT
+        DATE_FORMAT(data_hora, '%Y-%m') AS mes,
+        DATE_FORMAT(data_hora, '%b/%Y') AS mes_label,
+        COALESCE(SUM(valor_total), 0)   AS receita,
+        COUNT(*)                         AS quantidade
+    FROM venda
+    WHERE status    = 'Finalizada'
+      AND data_hora >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+    GROUP BY DATE_FORMAT(data_hora, '%Y-%m'), DATE_FORMAT(data_hora, '%b/%Y')
+    ORDER BY mes ASC;
+END$$
+DELIMITER ;
+
+-- ── 5. Vendas por forma de pagamento ────────────────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_por_pagamento;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_por_pagamento()
+BEGIN
+    SELECT
+        COALESCE(forma_pagamento, 'Não informado') AS forma,
+        COUNT(*)                                    AS quantidade,
+        SUM(valor_total)                            AS total
+    FROM venda
+    WHERE status = 'Finalizada'
+    GROUP BY forma_pagamento
+    ORDER BY quantidade DESC;
+END$$
+DELIMITER ;
+
+-- ── 6. Novos usuários por mês (últimos 6 meses) ─────────────
+DROP PROCEDURE IF EXISTS sp_dashboard_novos_usuarios;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_novos_usuarios()
+BEGIN
+    SELECT
+        DATE_FORMAT(criado_em, '%Y-%m') AS mes,
+        DATE_FORMAT(criado_em, '%b/%Y') AS mes_label,
+        COUNT(*)                         AS quantidade
+    FROM usuarios
+    WHERE role     = 'Cliente'
+      AND criado_em >= DATE_SUB(CURRENT_DATE(), INTERVAL 6 MONTH)
+    GROUP BY DATE_FORMAT(criado_em, '%Y-%m'), DATE_FORMAT(criado_em, '%b/%Y')
+    ORDER BY mes ASC;
+END$$
+DELIMITER ;
+
+-- ── 7. Jogos comprados por usuário (histórico detalhado) ─────
+DROP PROCEDURE IF EXISTS sp_dashboard_vendas_detalhe;
+DELIMITER $$
+CREATE PROCEDURE sp_dashboard_vendas_detalhe(IN p_limite INT)
+BEGIN
+    SELECT
+        v.id          AS venda_id,
+        v.data_hora,
+        u.nome        AS cliente,
+        u.email,
+        j.titulo      AS jogo,
+        c.nome        AS categoria,
+        vi.quantidade,
+        vi.preco_unitario,
+        (vi.quantidade * vi.preco_unitario) AS subtotal,
+        v.forma_pagamento,
+        v.status
+    FROM venda_itens vi
+    JOIN venda    v ON v.id  = vi.id_venda
+    JOIN usuarios u ON u.id  = v.id_usuario
+    JOIN jogos    j ON j.id  = vi.id_jogo
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    ORDER BY v.data_hora DESC
+    LIMIT p_limite;
+END$$
+DELIMITER ;
