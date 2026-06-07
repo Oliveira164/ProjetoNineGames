@@ -1,110 +1,276 @@
 @model IEnumerable<ProjetoNineGames.Models.Jogo>
 @{
     ViewData["Title"] = "Vitrine";
-    // Resgata os IDs da biblioteca (se for nulo, cria uma lista vazia)
     var jogosAdquiridos = ViewBag.JogosAdquiridos as List<int> ?? new List<int>();
+    var categorias = ViewBag.Categorias as List<string> ?? new List<string>();
+}
+
+@section Styles {
+    <style>
+        /* ── Layout Lateral Genérico (Pode remover se já estiver no site.css) ── */
+        .layout-lateral {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .sidebar-filtros {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .conteudo-principal {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .ng-input-busca {
+            width: 100%;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+            .ng-input-busca:focus {
+                border-color: #F96300;
+            }
+
+        .tab-bar-vert {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #111;
+            border-radius: 8px;
+            padding: 6px;
+        }
+
+            .tab-bar-vert .tab-btn {
+                text-align: left;
+                width: 100%;
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: none;
+                background: transparent;
+                color: #a0a0a0;
+                font-size: 13px;
+                font-weight: 600;
+                font-family: 'Inter', system-ui, sans-serif;
+                cursor: pointer;
+                transition: background 0.2s ease, color 0.2s ease;
+            }
+
+                .tab-bar-vert .tab-btn:hover {
+                    color: #ffffff;
+                }
+
+                .tab-bar-vert .tab-btn.ativo {
+                    background: #1a1a1a;
+                    color: #ffffff;
+                }
+
+        @@media (max-width: 850px) {
+            .layout-lateral {
+                flex-direction: column;
+            }
+
+            .sidebar-filtros {
+                width: 100%;
+            }
+
+            .tab-bar-vert {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+                .tab-bar-vert .tab-btn {
+                    width: auto;
+                }
+        }
+    </style>
 }
 
 <div class="ng-vitrine-header">
     <h2>Vitrine de Jogos</h2>
-    <form class="ng-busca" method="get" asp-action="Index">
-        <input type="hidden" name="categoria" value="@ViewBag.CategoriaAtual" />
-        <input class="ng-input" type="text" name="busca" value="@ViewBag.Busca" placeholder="Buscar jogo..." />
-        <button type="submit" class="btn-ng btn-ng-primary">Buscar</button>
-    </form>
-</div>
-
-<div class="ng-cats">
-    <a class="ng-cat @(string.IsNullOrEmpty(ViewBag.CategoriaAtual as string) ? "ativo" : "")"
-       asp-action="Index" asp-route-busca="@ViewBag.Busca">Todos</a>
-    @foreach (var cat in (List<string>)ViewBag.Categorias)
-    {
-        <a class="ng-cat @(ViewBag.CategoriaAtual == cat ? "ativo" : "")"
-           asp-action="Index" asp-route-categoria="@cat" asp-route-busca="@ViewBag.Busca">@cat</a>
-    }
+    <p class="text-muted" style="font-size:13px; margin-top: -4px;">
+        Descubra sua próxima aventura
+    </p>
 </div>
 
 @if (ViewBag.Ok != null)
 {
-     <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div>
+    <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div>
 }
 @if (ViewBag.Erro != null)
 {
-     <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div>
+    <div class="ng-alert ng-alert-erro">@ViewBag.Erro</div>
 }
 
-@if (!Model.Any())
-{
-    <div class="ng-vazio">
-        <div class="icon">🎮</div>
-        <p>Nenhum jogo encontrado.</p>
-        <a class="btn-ng btn-ng-outline" asp-action="Index">Ver todos</a>
-    </div>
-}
-else
-{
-    <div class="ng-jogos-grid">
-        @foreach (var j in Model)
+<div class="layout-lateral">
+
+    <div class="sidebar-filtros">
+        <input type="text" id="inputBuscaVitrine"
+               placeholder="Buscar jogo..."
+               oninput="filtrarVitrine(this.value)"
+               class="ng-input-busca" />
+
+        @if (categorias.Any())
         {
-            <div class="ng-jogo-card">
-                <div class="ng-jogo-capa">
-                    @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
-                    {
-                        <img src="~/@j.ImagemUrl" alt="@j.Titulo" />
-                    }
-                    else
-                    {
-                        <span>🎮</span>
-                    }
-                </div>
-                <div class="ng-jogo-body">
-                    <p class="ng-jogo-titulo">@j.Titulo</p>
-
-                    @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    {
-                        <span class="ng-badge ng-badge-orange">@j.Categoria</span>
-                    }
-
-                    @if (j.Preco == 0)
-                    {
-                        <p class="ng-jogo-gratis">Gratuito</p>
-                    }
-                    else
-                    {
-                        <p class="ng-jogo-preco">R$ @j.Preco.ToString("N2")</p>
-                    }
-
-                    <div class="ng-jogo-acoes">
-                        <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
-                            Ver detalhes
-                        </a>
-
-                        @if (jogosAdquiridos.Contains(j.Id))
-                        {
-                            <a class="btn-ng btn-ng-success btn-ng-sm btn-ng-full" asp-controller="Biblioteca" asp-action="MinhaBiblioteca">
-                                Ver Na Biblioteca
-                            </a>
-                        }
-                        else
-                        {
-                            @if (Context.Session.GetInt32("UserId").HasValue)
-                            {
-                                <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="jogoId" value="@j.Id" />
-                                    <button class="btn-ng btn-ng-ghost btn-ng-sm btn-ng-full">❤ Wishlist</button>
-                                </form>
-                            }
-
-                            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="jogoId" value="@j.Id" />
-                                <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
-                            </form>
-                        }
-                    </div>
-                </div>
+            <div class="tab-bar-vert">
+                <button class="tab-btn ativo" onclick="filtrarCategoria('todos', this)">Todos os Jogos</button>
+                @foreach (var cat in categorias)
+                {
+                    <button class="tab-btn" onclick="filtrarCategoria('@cat', this)">@cat</button>
+                }
             </div>
         }
     </div>
+
+    <div class="conteudo-principal">
+        @if (!Model.Any())
+        {
+            <div class="ng-vazio">
+                <div class="icon">🎮</div>
+                <p>Nenhum jogo cadastrado na vitrine ainda.</p>
+            </div>
+        }
+        else
+        {
+            <div class="ng-jogos-grid" id="gridVitrine">
+                @foreach (var j in Model)
+                {
+                    <div class="ng-jogo-card"
+                         data-categoria="@(j.Categoria ?? "")"
+                         data-busca="@j.Titulo.ToLower()">
+
+                        <div class="ng-jogo-capa">
+                            @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
+                            {
+                                <img src="~/@j.ImagemUrl" alt="@j.Titulo" />
+                            }
+                            else
+                            {
+                                <span>🎮</span>
+                            }
+                        </div>
+                        <div class="ng-jogo-body">
+                            <p class="ng-jogo-titulo">@j.Titulo</p>
+
+                            @if (!string.IsNullOrWhiteSpace(j.Categoria))
+                            {
+                                <span class="ng-badge ng-badge-orange" style="margin-top:4px;">@j.Categoria</span>
+                            }
+
+                            @if (j.Preco == 0)
+                            {
+                                <p class="ng-jogo-gratis">Gratuito</p>
+                            }
+                            else
+                            {
+                                <p class="ng-jogo-preco">R$ @j.Preco.ToString("N2")</p>
+                            }
+
+                            <div class="ng-jogo-acoes">
+                                <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
+                                    Ver detalhes
+                                </a>
+
+                                @if (jogosAdquiridos.Contains(j.Id))
+                                {
+                                    <a class="btn-ng btn-ng-success btn-ng-sm btn-ng-full" asp-controller="Biblioteca" asp-action="MinhaBiblioteca">
+                                        Ver Na Biblioteca
+                                    </a>
+                                }
+                                else
+                                {
+                                    @if (Context.Session.GetInt32("UserId").HasValue)
+                                    {
+                                        <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="jogoId" value="@j.Id" />
+                                            <button class="btn-ng btn-ng-ghost btn-ng-sm btn-ng-full">❤ Wishlist</button>
+                                        </form>
+                                    }
+
+                                    <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="jogoId" value="@j.Id" />
+                                        <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="ng-vazio" id="vazioFiltro" style="display:none; padding: 40px 20px;">
+                <div class="icon">🔍</div>
+                <p>Nenhum jogo encontrado com os filtros aplicados.</p>
+                <button type="button" onclick="limparFiltros()" class="btn-ng btn-ng-ghost" style="margin-top: 10px;">
+                    Limpar filtros
+                </button>
+            </div>
+        }
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        let categoriaAtiva = 'todos';
+        let buscaAtiva     = '';
+
+        function filtrarVitrine(valor) {
+            buscaAtiva = valor.toLowerCase();
+            aplicarFiltrosVitrine();
+        }
+
+        function filtrarCategoria(categoria, btn) {
+            categoriaAtiva = categoria;
+
+            const botoes = document.querySelectorAll('.tab-bar-vert .tab-btn');
+            botoes.forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+
+            aplicarFiltrosVitrine();
+        }
+
+        function aplicarFiltrosVitrine() {
+            const cards = document.querySelectorAll('#gridVitrine .ng-jogo-card');
+            let visiveis = 0;
+
+            cards.forEach(card => {
+                const catOk   = categoriaAtiva === 'todos' || card.dataset.categoria === categoriaAtiva;
+                const buscaOk = !buscaAtiva || card.dataset.busca.includes(buscaAtiva);
+
+                const mostrar = catOk && buscaOk;
+                card.style.display = mostrar ? '' : 'none';
+
+                if (mostrar) visiveis++;
+            });
+
+            const msgVazio = document.getElementById('vazioFiltro');
+            const grid     = document.getElementById('gridVitrine');
+            if (msgVazio && grid) {
+                msgVazio.style.display = visiveis === 0 ? 'block' : 'none';
+                grid.style.display     = visiveis === 0 ? 'none'  : 'grid';
+            }
+        }
+
+        function limparFiltros() {
+            document.getElementById('inputBuscaVitrine').value = '';
+            buscaAtiva = '';
+
+            const btnTodos = document.querySelector('.tab-bar-vert .tab-btn');
+            if (btnTodos) filtrarCategoria('todos', btnTodos);
+        }
+    </script>
 }

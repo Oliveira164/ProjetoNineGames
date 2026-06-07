@@ -31,13 +31,15 @@
 
                 @if (role is "Admin" or "Funcionario")
                 {
-                    <a asp-controller="Jogo"      asp-action="Gerenciar">Gerenciar Jogos</a>
+                    <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    <a asp-controller="Jogo" asp-action="Gerenciar">Gerenciar Jogos</a>
                     <a asp-controller="Categoria" asp-action="Index">Categorias</a>
                 }
                 @if (role == "Admin")
                 {
                     <a asp-controller="Usuario" asp-action="Index">Usuários</a>
                 }
+
             }
 
             <span class="spacer"></span>

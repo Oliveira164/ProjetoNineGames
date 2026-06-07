@@ -1,13 +1,104 @@
 @model List<ProjetoNineGames.Models.Jogo>
 @{
     ViewData["Title"] = "Minha Biblioteca";
-    var categorias     = ViewBag.Categorias    as List<string> ?? new();
-    var categoriaAtual = ViewBag.CategoriaAtual as string      ?? "";
-    var busca          = ViewBag.Busca          as string      ?? "";
-    var total          = Model.Count;
+    var categorias = ViewBag.Categorias as List<string> ?? new();
+    var total = Model.Count;
 }
 
-<!-- ── Header ──────────────────────────────────────────────── -->
+@section Styles {
+    <style>
+        /* ── Layout Lateral Genérico ────────────────────────────── */
+        .layout-lateral {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .sidebar-filtros {
+            width: 240px; /* Largura fixa da barra lateral */
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .conteudo-principal {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* ── Elementos da Sidebar ───────────────────────────────── */
+        .ng-input-busca {
+            width: 100%;
+            background: #111;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+            padding: 9px 12px;
+            color: #ffffff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+            .ng-input-busca:focus {
+                border-color: #F96300;
+            }
+
+        .tab-bar-vert {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: #111;
+            border-radius: 8px;
+            padding: 6px;
+        }
+
+            .tab-bar-vert .tab-btn {
+                text-align: left;
+                width: 100%;
+                padding: 8px 16px;
+                border-radius: 6px;
+                border: none;
+                background: transparent;
+                color: #a0a0a0;
+                font-size: 13px;
+                font-weight: 600;
+                font-family: 'Inter', system-ui, sans-serif;
+                cursor: pointer;
+                transition: background 0.2s ease, color 0.2s ease;
+            }
+
+                .tab-bar-vert .tab-btn:hover {
+                    color: #ffffff;
+                }
+
+                .tab-bar-vert .tab-btn.ativo {
+                    background: #1a1a1a;
+                    color: #ffffff;
+                }
+
+        /* ── Responsividade ─────────────────────────────────────── */
+        @@media (max-width: 850px) {
+            .layout-lateral {
+                flex-direction: column;
+            }
+
+            .sidebar-filtros {
+                width: 100%;
+            }
+
+            .tab-bar-vert {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+                .tab-bar-vert .tab-btn {
+                    width: auto;
+                }
+        }
+    </style>
+}
+
 <div class="ng-vitrine-header">
     <div>
         <h2 style="margin-bottom:2px">Minha Biblioteca</h2>
@@ -15,93 +106,139 @@
             @total jogo@(total != 1 ? "s" : "") adquirido@(total != 1 ? "s" : "")
         </p>
     </div>
-
-    <!-- Busca -->
-    <form class="ng-busca" method="get" asp-action="MinhaBiblioteca">
-        <input type="hidden" name="categoria" value="@categoriaAtual" />
-        <input class="ng-input" type="text" name="busca"
-               value="@busca" placeholder="Buscar na biblioteca..." />
-        <button type="submit" class="btn-ng btn-ng-primary">Buscar</button>
-    </form>
 </div>
 
-<!-- ── Filtro de categorias ────────────────────────────────── -->
-@if (categorias.Any())
-{
-    <div class="ng-cats" style="margin-bottom:24px">
-        <a class="ng-cat @(string.IsNullOrEmpty(categoriaAtual) ? "ativo" : "")"
-           asp-action="MinhaBiblioteca" asp-route-busca="@busca">
-            Todos
-        </a>
-        @foreach (var cat in categorias)
-        {
-            <a class="ng-cat @(categoriaAtual == cat ? "ativo" : "")"
-               asp-action="MinhaBiblioteca"
-               asp-route-categoria="@cat"
-               asp-route-busca="@busca">
-                @cat
-            </a>
-        }
-    </div>
-}
-
-<!-- ── Alertas ─────────────────────────────────────────────── -->
 @if (ViewBag.Ok != null)
 {
     <div class="ng-alert ng-alert-ok">@ViewBag.Ok</div>
 }
 
-<!-- ── Conteúdo ────────────────────────────────────────────── -->
-@if (!Model.Any())
-{
-    <div class="ng-vazio">
-        <div class="icon">
-            @(string.IsNullOrEmpty(busca) && string.IsNullOrEmpty(categoriaAtual) ? "📦" : "🔍")
-        </div>
-        <p>
-            @if (!string.IsNullOrEmpty(busca) || !string.IsNullOrEmpty(categoriaAtual))
-            {
-                <text>Nenhum jogo encontrado com os filtros aplicados.</text>
-            }
-            else
-            {
-                <text>Você ainda não tem jogos na biblioteca.</text>
-            }
-        </p>
+<div class="layout-lateral">
 
-        @if (!string.IsNullOrEmpty(busca) || !string.IsNullOrEmpty(categoriaAtual))
+    <div class="sidebar-filtros">
+        <input type="text" id="inputBuscaBib"
+               placeholder="Buscar jogo..."
+               oninput="filtrarBiblioteca(this.value)"
+               class="ng-input-busca" />
+
+        @if (categorias.Any())
         {
-            <a asp-action="MinhaBiblioteca" class="btn-ng btn-ng-ghost">
-                Limpar filtros
-            </a>
-        }
-        else
-        {
-            <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">
-                Explorar a vitrine
-            </a>
-        }
-    </div>
-}
-else
-{
-    <div class="ng-bib-grid">
-        @foreach (var j in Model)
-        {
-            <div class="ng-bib-card">
-                <div class="ng-bib-thumb">
-                    @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
-                    { <img src="~/@j.ImagemUrl" alt="@j.Titulo" /> }
-                    else { <span>🎮</span> }
-                </div>
-                <div class="ng-bib-body">
-                    <p class="ng-bib-titulo">@j.Titulo</p>
-                    @if (!string.IsNullOrWhiteSpace(j.Categoria))
-                    {
-                        <span class="ng-badge ng-badge-orange">@j.Categoria</span>
-                    }
-                </div>
+            <div class="tab-bar-vert">
+                <button class="tab-btn ativo" onclick="filtrarCategoria('todos', this)">Todos os Jogos</button>
+                @foreach (var cat in categorias)
+                {
+                    <button class="tab-btn" onclick="filtrarCategoria('@cat', this)">@cat</button>
+                }
             </div>
         }
     </div>
+
+    <div class="conteudo-principal">
+        @if (!Model.Any())
+        {
+            <div class="ng-vazio">
+                <div class="icon">📦</div>
+                <p>Você ainda não tem jogos na biblioteca.</p>
+                <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">
+                    Explorar a vitrine
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="ng-bib-grid" id="gridBiblioteca">
+                @foreach (var j in Model)
+                {
+                    <div class="ng-bib-card"
+                         data-categoria="@(j.Categoria ?? "")"
+                         data-busca="@j.Titulo.ToLower()">
+
+                        <div class="ng-bib-thumb">
+                            @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
+                            {
+                                <img src="~/@j.ImagemUrl" alt="@j.Titulo" />
+                            }
+                            else
+                            {
+                                <span>🎮</span>
+                            }
+                        </div>
+                        <div class="ng-bib-body">
+                            <p class="ng-bib-titulo">@j.Titulo</p>
+                            @if (!string.IsNullOrWhiteSpace(j.Categoria))
+                            {
+                                <span class="ng-badge ng-badge-orange" style="margin-top: 4px;">@j.Categoria</span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="ng-vazio" id="vazioFiltro" style="display:none; padding: 40px 20px;">
+                <div class="icon">🔍</div>
+                <p>Nenhum jogo encontrado com os filtros aplicados.</p>
+                <button type="button" onclick="limparFiltros()" class="btn-ng btn-ng-ghost" style="margin-top: 10px;">
+                    Limpar filtros
+                </button>
+            </div>
+        }
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        let categoriaAtiva = 'todos';
+        let buscaBibAtiva  = '';
+
+        // Disparado ao digitar no input
+        function filtrarBiblioteca(valor) {
+            buscaBibAtiva = valor.toLowerCase();
+            aplicarFiltrosBib();
+        }
+
+        // Disparado ao clicar nas categorias laterais
+        function filtrarCategoria(categoria, btn) {
+            categoriaAtiva = categoria;
+
+            // Gerencia os visuais dos botões da sidebar
+            const botoes = document.querySelectorAll('.tab-bar-vert .tab-btn');
+            botoes.forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+
+            aplicarFiltrosBib();
+        }
+
+        // Faz a mágica de esconder/mostrar os cards instantaneamente
+        function aplicarFiltrosBib() {
+            const cards = document.querySelectorAll('#gridBiblioteca .ng-bib-card');
+            let visiveis = 0;
+
+            cards.forEach(card => {
+                const catOk   = categoriaAtiva === 'todos' || card.dataset.categoria === categoriaAtiva;
+                const buscaOk = !buscaBibAtiva || card.dataset.busca.includes(buscaBibAtiva);
+
+                const mostrar = catOk && buscaOk;
+                card.style.display = mostrar ? '' : 'none';
+
+                if (mostrar) visiveis++;
+            });
+
+            // Mostra a div de "Vazio" se a busca/filtro ocultar tudo
+            const msgVazio = document.getElementById('vazioFiltro');
+            const grid     = document.getElementById('gridBiblioteca');
+            if (msgVazio && grid) {
+                msgVazio.style.display = visiveis === 0 ? 'block' : 'none';
+                grid.style.display     = visiveis === 0 ? 'none'  : 'grid';
+            }
+        }
+
+        function limparFiltros() {
+            document.getElementById('inputBuscaBib').value = '';
+            buscaBibAtiva = '';
+
+            const btnTodos = document.querySelector('.tab-bar-vert .tab-btn');
+            if (btnTodos) filtrarCategoria('todos', btnTodos);
+        }
+    </script>
 }
