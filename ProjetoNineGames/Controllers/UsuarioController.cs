@@ -162,7 +162,7 @@ namespace ProjetoNineGames.Controllers
             HttpContext.Session.SetString(SessionKeys.UserRole, "Cliente");
 
             TempData["ok"] = $"Bem-vindo, {nome.Trim()}! Conta criada com sucesso.";
-            return RedirectToAction("Index", "Jogo");
+            return RedirectToAction("Index", "Home");
         }
 
         // ── Perfil do usuário logado ─────────────────────────────────────────
@@ -210,7 +210,7 @@ namespace ProjetoNineGames.Controllers
             using var cmd = new MySqlCommand("sp_usuario_atualizar_2fa", conn)
             { CommandType = CommandType.StoredProcedure };
             cmd.Parameters.AddWithValue("p_id", id);
-            cmd.Parameters.AddWithValue("p_enabled", 0); // MANTÉM EM 0 AQUI
+            cmd.Parameters.AddWithValue("p_enabled", 0); 
             cmd.Parameters.AddWithValue("p_two_factor_secret", secret);
             cmd.ExecuteNonQuery();
 
