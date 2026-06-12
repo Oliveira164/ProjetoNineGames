@@ -636,3 +636,22 @@ BEGIN
     LIMIT p_limite;
 END$$
 DELIMITER ;
+
+-- Retorna jogos da mesma categoria, excluindo o jogo atual
+DROP PROCEDURE IF EXISTS sp_jogo_sugestoes;
+DELIMITER $$
+CREATE PROCEDURE sp_jogo_sugestoes(
+    IN p_id_jogo    INT,
+    IN p_categoria  VARCHAR(60),
+    IN p_limite     INT
+)
+BEGIN
+    SELECT j.id, j.titulo, j.preco, j.imagem_url, c.nome AS categoria
+    FROM   jogos j
+    LEFT JOIN categoria c ON c.id = j.id_categoria
+    WHERE  c.nome = p_categoria
+      AND  j.id  != p_id_jogo
+    ORDER BY RAND()
+    LIMIT p_limite;
+END$$
+DELIMITER ;

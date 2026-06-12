@@ -12,7 +12,7 @@ namespace ProjetoNineGames.Controllers
     {
         private readonly Database _db = new();
 
-        // ── VITRINE — pública ────────────────────────────────────────────────
+        // ── Vitrine — pública ────────────────────────────────────────────────
 
         [HttpGet]
         public IActionResult Index(string? categoria, string? busca)
@@ -27,7 +27,7 @@ namespace ProjetoNineGames.Controllers
 
             using var rd = cmd.ExecuteReader();
             while (rd.Read()) lista.Add(MapearJogo(rd));
-            rd.Close(); // Fecha o leitor da vitrine para permitir a próxima consulta
+            rd.Close();
 
             ViewBag.Categorias = ObterCategorias(conn);
             ViewBag.CategoriaAtual = categoria ?? "";
@@ -36,84 +36,45 @@ namespace ProjetoNineGames.Controllers
             if (TempData["ok"] != null) ViewBag.Ok = TempData["ok"];
             if (TempData["erro"] != null) ViewBag.Erro = TempData["erro"];
 
-            // Lógica para verificar os jogos que o usuário já possui na biblioteca
-            var userId = HttpContext.Session.GetInt32("UserId");
-            var jogosAdquiridos = new List<int>();
-
-            if (userId.HasValue)
-            {
-                try
-                {
-                    using var cmdBib = new MySqlCommand("sp_biblioteca_obter_ids", conn)
-                    { CommandType = CommandType.StoredProcedure };
-                    cmdBib.Parameters.AddWithValue("p_id_usuario", userId.Value);
-
-                    using var rdBib = cmdBib.ExecuteReader();
-                    while (rdBib.Read())
-                    {
-                        jogosAdquiridos.Add(rdBib.GetInt32("jogo_id"));
-                    }
-                }
-                catch (MySqlException)
-                {
-                    // Ignora silenciosamente caso haja instabilidade, mantendo a vitrine funcionando
-                }
-            }
-
-            ViewBag.JogosAdquiridos = jogosAdquiridos;
-
             return View(lista);
         }
+
+        // ── Detalhe com sugestões ────────────────────────────────────────────
 
         [HttpGet]
         public IActionResult Detalhe(int id)
         {
             using var conn = _db.GetConnection();
-            using var cmd = new MySqlCommand("sp_jogo_obter", conn)
-            { CommandType = CommandType.StoredProcedure };
-            cmd.Parameters.AddWithValue("p_id", id);
 
-            using var rd = cmd.ExecuteReader();
-            if (!rd.Read()) return NotFound();
-
-            var jogo = MapearJogo(rd);
-            rd.Close(); 
-
-            // ── Lógica para checar se o jogo está na biblioteca ──
-            var userId = HttpContext.Session.GetInt32("UserId");
-            bool possuiJogo = false;
-
-            if (userId.HasValue)
+            // Busca o jogo principal
+            Jogo? jogo;
+            using (var cmd = new MySqlCommand("sp_jogo_obter", conn)
+            { CommandType = CommandType.StoredProcedure })
             {
-                try
-                {
-                    using var cmdBib = new MySqlCommand("sp_biblioteca_obter_ids", conn)
-                    { CommandType = CommandType.StoredProcedure };
-                    cmdBib.Parameters.AddWithValue("p_id_usuario", userId.Value);
-
-                    using var rdBib = cmdBib.ExecuteReader();
-                    while (rdBib.Read())
-                    {
-                        if (rdBib.GetInt32("jogo_id") == id)
-                        {
-                            possuiJogo = true;
-                            break; // Achou o jogo, pode parar de procurar
-                        }
-                    }
-                }
-                catch (MySqlException)
-                {
-                    // Ignora silenciosamente
-                }
+                cmd.Parameters.AddWithValue("p_id", id);
+                using var rd = cmd.ExecuteReader();
+                if (!rd.Read()) return NotFound();
+                jogo = MapearJogo(rd);
             }
 
-            // Passa a resposta (true ou false) para a View
-            ViewBag.PossuiJogo = possuiJogo;
+            // Busca sugestões da mesma categoria (4 jogos aleatórios)
+            var sugestoes = new List<Jogo>();
+            if (!string.IsNullOrWhiteSpace(jogo.Categoria))
+            {
+                using var cmdS = new MySqlCommand("sp_jogo_sugestoes", conn)
+                { CommandType = CommandType.StoredProcedure };
+                cmdS.Parameters.AddWithValue("p_id_jogo", id);
+                cmdS.Parameters.AddWithValue("p_categoria", jogo.Categoria);
+                cmdS.Parameters.AddWithValue("p_limite", 4);
+                using var rdS = cmdS.ExecuteReader();
+                while (rdS.Read()) sugestoes.Add(MapearJogo(rdS));
+            }
 
+            ViewBag.Sugestoes = sugestoes;
             return View(jogo);
         }
 
-        // ── GERENCIAR — Admin / Funcionario ──────────────────────────────────
+        // ── CRUD Admin / Funcionario ─────────────────────────────────────────
 
         [SessionAuthorize(RoleAnyOf = "Admin,Funcionario")]
         [HttpGet]
@@ -138,8 +99,6 @@ namespace ProjetoNineGames.Controllers
             return View(lista);
         }
 
-        // ── Criar ────────────────────────────────────────────────────────────
-
         [SessionAuthorize(RoleAnyOf = "Admin,Funcionario")]
         [HttpGet]
         public IActionResult Criar()
@@ -157,7 +116,7 @@ namespace ProjetoNineGames.Controllers
             {
                 using var conn2 = _db.GetConnection();
                 ViewBag.Categorias = CarregarSelectCategorias(conn2);
-                ModelState.AddModelError("", "Informe título e preço válido.");
+                ModelState.AddModelError("", "Informe o título.");
                 return View(model);
             }
 
@@ -176,8 +135,6 @@ namespace ProjetoNineGames.Controllers
             TempData["ok"] = "Jogo cadastrado com sucesso!";
             return RedirectToAction(nameof(Gerenciar));
         }
-
-        // ── Editar ───────────────────────────────────────────────────────────
 
         [SessionAuthorize(RoleAnyOf = "Admin,Funcionario")]
         [HttpGet]
@@ -204,7 +161,7 @@ namespace ProjetoNineGames.Controllers
             {
                 using var conn2 = _db.GetConnection();
                 ViewBag.Categorias = CarregarSelectCategorias(conn2);
-                ModelState.AddModelError("", "Informe título e preço válido.");
+                ModelState.AddModelError("", "Informe o título.");
                 return View(model);
             }
 
@@ -224,8 +181,6 @@ namespace ProjetoNineGames.Controllers
             TempData["ok"] = "Jogo atualizado!";
             return RedirectToAction(nameof(Gerenciar));
         }
-
-        // ── Excluir ──────────────────────────────────────────────────────────
 
         [SessionAuthorize(RoleAnyOf = "Admin,Funcionario")]
         [HttpPost, ValidateAntiForgeryToken]
@@ -250,15 +205,40 @@ namespace ProjetoNineGames.Controllers
 
         // ── Helpers ──────────────────────────────────────────────────────────
 
-        private static Jogo MapearJogo(MySqlDataReader rd) => new()
+        private static Jogo MapearJogo(MySqlDataReader rd)
         {
-            Id = rd.GetInt32("id"),
-            Titulo = rd.GetString("titulo"),
-            Descricao = rd["descricao"] as string,
-            Preco = rd.GetDecimal("preco"),
-            Categoria = rd["categoria"] as string,
-            ImagemUrl = rd["imagem_url"] as string,
-        };
+            var jogo = new Jogo
+            {
+                Id = rd.GetInt32("id"),
+                Titulo = rd.GetString("titulo"),
+                Preco = rd.GetDecimal("preco")
+            };
+
+            // Proteção: Só lê a descrição se a coluna existir no SELECT
+            if (HasColumn(rd, "descricao"))
+                jogo.Descricao = rd["descricao"] as string;
+
+            // Proteção: Só lê a categoria se a coluna existir no SELECT
+            if (HasColumn(rd, "categoria"))
+                jogo.Categoria = rd["categoria"] as string;
+
+            // Proteção: Só lê a imagem_url se a coluna existir no SELECT
+            if (HasColumn(rd, "imagem_url"))
+                jogo.ImagemUrl = rd["imagem_url"] as string;
+
+            return jogo;
+        }
+
+        // Função auxiliar que checa se a coluna existe no leitor do MySql
+        private static bool HasColumn(MySqlDataReader rd, string columnName)
+        {
+            for (int i = 0; i < rd.FieldCount; i++)
+            {
+                if (rd.GetName(i).Equals(columnName, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
 
         private static List<string> ObterCategorias(MySqlConnection conn)
         {
