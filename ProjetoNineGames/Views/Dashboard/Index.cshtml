@@ -90,10 +90,19 @@
                 color: #a0a0a0;
             }
 
+        /* AJUSTE PARA OS ÍCONES PERSONALIZADOS */
         .kpi-icon {
-            font-size: 22px;
+            display: flex;
+            align-items: center;
+            height: 32px;
             margin-bottom: 4px;
         }
+
+            .kpi-icon img {
+                height: 28px;
+                width: auto;
+                object-fit: contain;
+            }
 
         /* ── Section header ─────────────────────────────────────── */
         .dash-section-title {
@@ -111,7 +120,7 @@
             display: flex;
             align-items: flex-end;
             gap: 10px;
-            height: 160px; /* Aumentado levemente */
+            height: 160px;
             padding-top: 20px;
         }
 
@@ -126,14 +135,14 @@
         }
 
         .chart-bar {
-            width: 70%; /* Reduzido para dar espaçamento entre as barras */
+            width: 70%;
             background: #F96300;
             border-radius: 6px 6px 0 0;
             min-height: 4px;
             transition: all 0.2s ease;
             position: absolute;
             bottom: 0;
-            left: 15%; /* Centraliza a barra ( (100% - 70%) / 2 ) */
+            left: 15%;
         }
 
             .chart-bar:hover {
@@ -428,14 +437,14 @@
 <div class="dash-grid-kpi">
 
     <div class="kpi-card">
-        <div class="kpi-icon">💰</div>
+        <div class="kpi-icon"><img src="~/images/receita_total_emoji.png" alt="Receita Total" /></div>
         <div class="kpi-label">Receita total</div>
         <div class="kpi-valor laranja">R$ @Model.Kpis.ReceitaTotal.ToString("N2")</div>
         <div class="kpi-label" style="margin-top:2px">@Model.Kpis.TotalVendas vendas finalizadas</div>
     </div>
 
     <div class="kpi-card">
-        <div class="kpi-icon">📅</div>
+        <div class="kpi-icon"><img src="~/images/receita_emoji.png" alt="Receita Mensal" /></div>
         <div class="kpi-label">Receita em @mesAtual</div>
         <div class="kpi-valor">R$ @Model.Kpis.ReceitaMes.ToString("N2")</div>
         @{
@@ -447,14 +456,14 @@
     </div>
 
     <div class="kpi-card">
-        <div class="kpi-icon">🎫</div>
+        <div class="kpi-icon"><img src="~/images/ticket_emoji.png" alt="Ticket Médio" /></div>
         <div class="kpi-label">Ticket médio</div>
         <div class="kpi-valor">R$ @Model.Kpis.TicketMedio.ToString("N2")</div>
         <div class="kpi-label" style="margin-top:2px">por venda finalizada</div>
     </div>
 
     <div class="kpi-card">
-        <div class="kpi-icon">👥</div>
+        <div class="kpi-icon"><img src="~/images/usuario_emoji.png" alt="Clientes Ativos" /></div>
         <div class="kpi-label">Clientes ativos</div>
         <div class="kpi-valor">@Model.Kpis.TotalClientes</div>
         <a asp-controller="Usuario" asp-action="Index"
@@ -462,7 +471,7 @@
     </div>
 
     <div class="kpi-card">
-        <div class="kpi-icon">🎮</div>
+        <div class="kpi-icon"><img src="~/images/jogos_emoji.png" alt="Jogos Cadastrados" /></div>
         <div class="kpi-label">Jogos cadastrados</div>
         <div class="kpi-valor">@Model.Kpis.TotalJogos</div>
         <a asp-controller="Jogo" asp-action="Gerenciar"
@@ -470,7 +479,7 @@
     </div>
 
     <div class="kpi-card" style="border-color:rgba(249, 99, 0, 0.4)">
-        <div class="kpi-icon">📦</div>
+        <div class="kpi-icon"><img src="~/images/itens_vendidos_emoji.png" alt="Itens Vendidos" /></div>
         <div class="kpi-label">Itens vendidos (total)</div>
         <div class="kpi-valor">@Model.TopJogos.Sum(j => j.TotalVendido)</div>
         <div class="kpi-label" style="margin-top:2px">unidades de jogos</div>
