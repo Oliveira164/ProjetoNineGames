@@ -4,21 +4,26 @@
     var total = Model.Sum(i => i.PrecoUnitario);
 }
 
-<h2 style="margin-bottom:20px">🛒 Carrinho</h2>
+<h2 style="margin-bottom:20px; display: flex; align-items: center; gap: 10px;">
+    <img src="~/images/carrinho_emoji.png" alt="Carrinho" style="height: 32px; width: auto;" />
+    Carrinho
+</h2>
 
 @if (TempData["ok"] != null)
 {
-     <div class="ng-alert ng-alert-ok">@TempData["ok"]</div>
+    <div class="ng-alert ng-alert-ok">@TempData["ok"]</div>
 }
 @if (TempData["erro"] != null)
 {
-     <div class="ng-alert ng-alert-erro">@TempData["erro"]</div>
+    <div class="ng-alert ng-alert-erro">@TempData["erro"]</div>
 }
 
 @if (!Model.Any())
 {
     <div class="ng-vazio">
-        <div class="icon">🛒</div>
+        <div class="icon">
+            <img src="~/images/carrinho_emoji.png" alt="Carrinho Vazio" style="width: 64px; height: auto; margin: 0 auto;" />
+        </div>
         <p>Seu carrinho está vazio.</p>
         <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">Explorar jogos</a>
     </div>
