@@ -5,211 +5,245 @@
 }
 
 @section Styles {
-<style>
-    /* ── Detalhe principal ──────────────────────────────────── */
-    .detalhe-wrap {
-        display: grid;
-        grid-template-columns: 260px 1fr;
-        gap: 36px;
-        max-width: 820px;
-        margin-bottom: 56px;
-    }
+    <style>
+        /* ── Detalhe principal ──────────────────────────────────── */
+        .detalhe-wrap {
+            display: grid;
+            grid-template-columns: 460px 1fr; /* Largura ajustada para imagens horizontais */
+            gap: 36px;
+            max-width: 920px; /* Limite aumentado para acomodar a nova imagem */
+            margin-bottom: 56px;
+        }
 
-    .detalhe-capa {
-        width: 260px;
-        height: 320px;
-        border-radius: 14px;
-        overflow: hidden;
-        border: 1px solid #2a2a2a;
-        background: #111;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 64px;
-        flex-shrink: 0;
-    }
+        .detalhe-capa {
+            width: 100%;
+            max-width: 460px;
+            aspect-ratio: 16 / 9; /* Formato paisagem (deitado) */
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            flex-shrink: 0;
+        }
 
-    .detalhe-capa img { width: 100%; height: 100%; object-fit: cover; }
+            .detalhe-capa img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Como a caixa e a foto são horizontais, o cover preenche perfeito sem cortes grosseiros */
+            }
 
-    .detalhe-info h1 {
-        font-size: 2rem;
-        font-weight: 800;
-        margin: 0 0 10px;
-        color: #f0f0f0;
-        line-height: 1.1;
-    }
+        .detalhe-info h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 10px;
+            color: #f0f0f0;
+            line-height: 1.1;
+        }
 
-    .detalhe-preco {
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: #F96300;
-        margin: 12px 0;
-        font-family: 'Barlow Condensed', sans-serif;
-    }
+        .detalhe-preco {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #F96300;
+            margin: 12px 0;
+            font-family: 'Barlow Condensed', sans-serif;
+        }
 
-    .detalhe-gratis {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: #4ade80;
-        margin: 12px 0;
-    }
+        .detalhe-gratis {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #4ade80;
+            margin: 12px 0;
+        }
 
-    .detalhe-desc {
-        font-size: 14px;
-        color: #888;
-        line-height: 1.75;
-        margin-bottom: 20px;
-    }
+        .detalhe-desc {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.75;
+            margin-bottom: 20px;
+        }
 
-    .detalhe-acoes { display: flex; flex-direction: column; gap: 10px; }
+        .detalhe-acoes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .btn-voltar {
-        font-size: 13px;
-        color: #F96300;
-        text-decoration: none;
-        display: inline-block;
-        margin-bottom: 20px;
-        transition: color .15s;
-    }
+        .btn-voltar {
+            font-size: 13px;
+            color: #F96300;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: color .15s;
+        }
 
-    .btn-voltar:hover { color: #ff8533; }
+            .btn-voltar:hover {
+                color: #ff8533;
+            }
 
-    /* ── Seção de sugestões ─────────────────────────────────── */
-    .sugestoes-section {
-        border-top: 1px solid #2a2a2a;
-        padding-top: 36px;
-        margin-top: 8px;
-    }
+        /* ── Seção de sugestões ─────────────────────────────────── */
+        .sugestoes-section {
+            border-top: 1px solid #2a2a2a;
+            padding-top: 36px;
+            margin-top: 8px;
+        }
 
-    .sugestoes-titulo {
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: .1em;
-        color: #555;
-        margin-bottom: 18px;
-    }
+        .sugestoes-titulo {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: #555;
+            margin-bottom: 18px;
+        }
 
-    .sugestoes-titulo span {
-        color: #F96300;
-    }
+            .sugestoes-titulo span {
+                color: #F96300;
+            }
 
-    .sugestoes-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-        gap: 16px;
-    }
+        .sugestoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 16px;
+        }
 
-    .sug-card {
-        background: #181818;
-        border: 1px solid #2a2a2a;
-        border-radius: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        transition: border-color .15s, transform .15s, box-shadow .15s;
-    }
+        .sug-card {
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            transition: border-color .15s, transform .15s, box-shadow .15s;
+        }
 
-    .sug-card:hover {
-        border-color: rgba(249,99,0,.4);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 28px rgba(0,0,0,.5);
-    }
+            .sug-card:hover {
+                border-color: rgba(249,99,0,.4);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 28px rgba(0,0,0,.5);
+            }
 
-    .sug-capa {
-        width: 100%;
-        height: 120px;
-        background: #111;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        overflow: hidden;
-    }
+        .sug-capa {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            overflow: hidden;
+        }
 
-    .sug-capa img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform .3s;
-    }
+            .sug-capa img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform .3s;
+            }
 
-    .sug-card:hover .sug-capa img { transform: scale(1.05); }
+        .sug-card:hover .sug-capa img {
+            transform: scale(1.05);
+        }
 
-    .sug-body { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .sug-body {
+            padding: 12px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-    .sug-titulo {
-        font-size: 14px;
-        font-weight: 700;
-        color: #f0f0f0;
-        line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .sug-titulo {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f0f0f0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    .sug-preco {
-        font-size: 15px;
-        font-weight: 800;
-        color: #F96300;
-        margin-top: auto;
-        padding-top: 6px;
-    }
+        .sug-preco {
+            font-size: 15px;
+            font-weight: 800;
+            color: #F96300;
+            margin-top: auto;
+            padding-top: 6px;
+        }
 
-    .sug-gratis {
-        font-size: 13px;
-        font-weight: 700;
-        color: #4ade80;
-        margin-top: auto;
-        padding-top: 6px;
-    }
+        .sug-gratis {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4ade80;
+            margin-top: auto;
+            padding-top: 6px;
+        }
 
-    /* Botões */
-    .btn-carrinho-det {
-        padding: 12px 0;
-        background: #F96300;
-        color: #fff;
-        border: none;
-        border-radius: 9px;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        width: 100%;
-        transition: background .15s;
-    }
+        /* Botões */
+        .btn-carrinho-det {
+            padding: 12px 0;
+            background: #F96300;
+            color: #fff;
+            border: none;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background .15s;
+        }
 
-    .btn-carrinho-det:hover { background: #d95500; }
+            .btn-carrinho-det:hover {
+                background: #d95500;
+            }
 
-    .btn-wish-det {
-        padding: 10px 0;
-        background: transparent;
-        border: 1px solid #3a3a3a;
-        color: #888;
-        border-radius: 9px;
-        font-size: 14px;
-        cursor: pointer;
-        width: 100%;
-        transition: border-color .15s, color .15s;
-    }
+        .btn-wish-det {
+            padding: 10px 0;
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #888;
+            border-radius: 9px;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: border-color .15s, color .15s;
+        }
 
-    .btn-wish-det:hover { border-color: #F96300; color: #F96300; }
+            .btn-wish-det:hover {
+                border-color: #F96300;
+                color: #F96300;
+            }
 
-    @@media (max-width: 700px) {
-        .detalhe-wrap { grid-template-columns: 1fr; }
-        .detalhe-capa { width: 100%; height: 220px; }
-    }
-</style>
+        @@media (max-width: 800px) {
+            .detalhe-wrap {
+                grid-template-columns: 1fr;
+            }
+
+            .detalhe-capa {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        }
+    </style>
 }
 
 <a asp-action="Index" class="btn-voltar">← Voltar à vitrine</a>
 
-<!-- ── Info principal ────────────────────────────────────────── -->
 <div class="detalhe-wrap">
     <div class="detalhe-capa">
         @if (!string.IsNullOrWhiteSpace(Model.ImagemUrl))
-        { <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" /> }
-        else { <span>🎮</span> }
+        {
+            <img src="~/@Model.ImagemUrl" alt="@Model.Titulo" />
+        }
+        else
+        {
+            <span>🎮</span>
+        }
     </div>
 
     <div class="detalhe-info">
@@ -223,12 +257,18 @@
         }
 
         @if (Model.Preco == 0)
-        { <p class="detalhe-gratis">Gratuito para jogar</p> }
+        {
+            <p class="detalhe-gratis">Gratuito para jogar</p>
+        }
         else
-        { <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p> }
+        {
+            <p class="detalhe-preco">R$ @Model.Preco.ToString("N2")</p>
+        }
 
         @if (!string.IsNullOrWhiteSpace(Model.Descricao))
-        { <p class="detalhe-desc">@Model.Descricao</p> }
+        {
+            <p class="detalhe-desc">@Model.Descricao</p>
+        }
 
         <div class="detalhe-acoes">
             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
@@ -249,7 +289,6 @@
     </div>
 </div>
 
-<!-- ── Sugestões da mesma categoria ─────────────────────────── -->
 @if (sugestoes.Any())
 {
     <div class="sugestoes-section">
@@ -262,15 +301,24 @@
                 <a asp-action="Detalhe" asp-route-id="@s.Id" class="sug-card">
                     <div class="sug-capa">
                         @if (!string.IsNullOrWhiteSpace(s.ImagemUrl))
-                        { <img src="~/@s.ImagemUrl" alt="@s.Titulo" /> }
-                        else { <span>🎮</span> }
+                        {
+                            <img src="~/@s.ImagemUrl" alt="@s.Titulo" />
+                        }
+                        else
+                        {
+                            <span>🎮</span>
+                        }
                     </div>
                     <div class="sug-body">
                         <p class="sug-titulo">@s.Titulo</p>
                         @if (s.Preco == 0)
-                        { <p class="sug-gratis">Gratuito</p> }
+                        {
+                            <p class="sug-gratis">Gratuito</p>
+                        }
                         else
-                        { <p class="sug-preco">R$ @s.Preco.ToString("N2")</p> }
+                        {
+                            <p class="sug-preco">R$ @s.Preco.ToString("N2")</p>
+                        }
                     </div>
                 </a>
             }
