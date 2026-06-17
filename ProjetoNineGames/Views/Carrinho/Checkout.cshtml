@@ -253,17 +253,14 @@
             <div class="metodos">
                 <button type="button" class="metodo-btn @(Model.FormaPagamento == "Crédito" ? "ativo" : "")"
                         onclick="selecionarMetodo('Crédito', this)">
-                    <span class="icon">💳</span>
                     Crédito
                 </button>
                 <button type="button" class="metodo-btn @(Model.FormaPagamento == "Crédito" ? "ativo" : "")"
                         onclick="selecionarMetodo('Débito', this)">
-                    <span class="icon">🏦</span>
                     Débito
                 </button>
                 <button type="button" class="metodo-btn @(Model.FormaPagamento == "Débito" ? "ativo" : "")"
                         onclick="selecionarMetodo('Pix', this)">
-                    <span class="icon">⚡</span>
                     Pix
                 </button>
             </div>

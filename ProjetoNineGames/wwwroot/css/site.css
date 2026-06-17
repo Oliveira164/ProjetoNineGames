@@ -78,7 +78,7 @@ h1, h2, h3, h4 {
 }
 
     .topnav-brand img {
-        height: 30px;
+        height: 42px;
         width: auto;
     }
 
@@ -511,7 +511,7 @@ h1, h2, h3, h4 {
 
 .ng-jogo-capa {
     width: 100%;
-    height: 135px;
+    aspect-ratio: 16 / 9; 
     background: #111;
     display: flex;
     align-items: center;
@@ -523,7 +523,8 @@ h1, h2, h3, h4 {
     .ng-jogo-capa img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: cover; 
+        object-position: top; 
         transition: transform .3s ease;
     }
 
@@ -833,7 +834,7 @@ h1, h2, h3, h4 {
 }
 
     .ng-auth-logo img {
-        height: 36px;
+        height: 72px;
         width: auto;
     }
 

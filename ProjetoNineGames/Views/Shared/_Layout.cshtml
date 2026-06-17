@@ -1,273 +1,337 @@
 @using ProjetoNineGames.Autenticacao
 @{
-    var isLogged = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
-    var role     = Context.Session.GetString(SessionKeys.UserRole) ?? "";
-    var userName = Context.Session.GetString(SessionKeys.UserName) ?? "";
+	var isLogged = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
+	var role = Context.Session.GetString(SessionKeys.UserRole) ?? "";
+	var userName = Context.Session.GetString(SessionKeys.UserName) ?? "";
 
-    // Páginas que usam layout nulo (login/2fa) não chegam aqui,
-    // então o footer aparece em TODAS as outras páginas automaticamente.
+	// Páginas que usam layout nulo (login/2fa) não chegam aqui,
+	// então o footer aparece em TODAS as outras páginas automaticamente.
 }
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="utf-8" />
-    <title>@ViewData["Title"] — NineGames</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @RenderSection("Styles", required: false)
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
+	<meta charset="utf-8" />
+	<title>@ViewData["Title"] — NineGames</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	@RenderSection("Styles", required: false)
+	<style>
+		*, *::before, *::after {
+			box-sizing: border-box;
+		}
 
-        body {
-            font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
-            margin: 0;
-            background: #0d0d0d;
-            color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+		body {
+			font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+			margin: 0;
+			background: #0d0d0d;
+			color: #f0f0f0;
+			display: flex;
+			flex-direction: column;
+			min-height: 100vh;
+		}
 
-        /* Navbar */
-        .topnav {
-            display: flex; gap: 4px; align-items: center;
-            padding: 0 20px;
-            background: rgba(13,13,13,.96);
-            height: 52px;
-            position: sticky; top: 0; z-index: 100;
-            border-bottom: 1px solid #1f1f1f;
-            backdrop-filter: blur(10px);
-        }
+		/* Navbar */
+		.topnav {
+			display: flex;
+			gap: 4px;
+			align-items: center;
+			padding: 0 20px;
+			background: rgba(13,13,13,.96);
+			height: 52px;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			border-bottom: 1px solid #1f1f1f;
+			backdrop-filter: blur(10px);
+		}
 
-        .topnav-brand {
-            display: flex; align-items: center;
-            color: #F96300; font-weight: 700; font-size: 16px;
-            text-decoration: none; margin-right: 12px;
-        }
+		.topnav-brand {
+			display: flex;
+			align-items: center;
+			color: #F96300;
+			font-weight: 700;
+			font-size: 16px;
+			text-decoration: none;
+			margin-right: 12px;
+		}
 
-        .topnav-brand img { height: 28px; width: auto; }
+			.topnav-brand img {
+				height: 42px;
+				width: auto;
+			}
 
-        .topnav a {
-            color: #a1a1aa; text-decoration: none;
-            padding: 6px 10px; border-radius: 6px; font-size: 13px;
-            transition: background .15s, color .15s;
-        }
+		.topnav a {
+			color: #a1a1aa;
+			text-decoration: none;
+			padding: 6px 10px;
+			border-radius: 6px;
+			font-size: 13px;
+			transition: background .15s, color .15s;
+		}
 
-        .topnav a:hover { background: rgba(249,99,0,.12); color: #F96300; }
+			.topnav a:hover {
+				background: rgba(249,99,0,.12);
+				color: #F96300;
+			}
 
-        .spacer { flex: 1; }
+		.spacer {
+			flex: 1;
+		}
 
-        .topnav-user { color: #a1a1aa; font-size: 13px; padding: 0 8px; }
+		.topnav-user {
+			color: #a1a1aa;
+			font-size: 13px;
+			padding: 0 8px;
+		}
 
-        .btn-sair {
-            background: none; border: 1px solid #3a3a3a;
-            color: #a1a1aa; border-radius: 6px; padding: 5px 12px;
-            font-size: 13px; cursor: pointer;
-            transition: border-color .15s, color .15s;
-        }
+		.btn-sair {
+			background: none;
+			border: 1px solid #3a3a3a;
+			color: #a1a1aa;
+			border-radius: 6px;
+			padding: 5px 12px;
+			font-size: 13px;
+			cursor: pointer;
+			transition: border-color .15s, color .15s;
+		}
 
-        .btn-sair:hover { border-color: #F96300; color: #F96300; }
+			.btn-sair:hover {
+				border-color: #F96300;
+				color: #F96300;
+			}
 
-        /* Main cresce para empurrar o footer para baixo */
-        main.container {
-            flex: 1;
-            padding: 28px 24px;
-            max-width: 1240px;
-            margin: 0 auto;
-            width: 100%;
-        }
+		/* Main cresce para empurrar o footer para baixo */
+		main.container {
+			flex: 1;
+			padding: 28px 24px;
+			max-width: 1240px;
+			margin: 0 auto;
+			width: 100%;
+		}
 
-        /* ── Footer ─────────────────────────────────────────── */
-        .site-footer {
-            background: #111113;
-            border-top: 1px solid #1f1f23;
-            padding: 36px 24px 24px;
-            margin-top: auto;
-        }
+		/* ── Footer ─────────────────────────────────────────── */
+		.site-footer {
+			background: #111113;
+			border-top: 1px solid #1f1f23;
+			padding: 36px 24px 24px;
+			margin-top: auto;
+		}
 
-        .footer-inner {
-            max-width: 1240px;
-            margin: 0 auto;
-        }
+		.footer-inner {
+			max-width: 1240px;
+			margin: 0 auto;
+		}
 
-        .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
-        }
+		.footer-top {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 28px;
+		}
 
-        .footer-brand {
-            font-size: 18px;
-            font-weight: 900;
-            color: #F96300;
-            letter-spacing: -.5px;
-            text-decoration: none;
-        }
+		.footer-brand {
+			font-size: 18px;
+			font-weight: 900;
+			color: #F96300;
+			letter-spacing: -.5px;
+			text-decoration: none;
+		}
 
-        .footer-socials { display: flex; gap: 12px; }
+		.footer-socials {
+			display: flex;
+			gap: 12px;
+		}
 
-        .footer-socials a {
-            width: 34px; height: 34px;
-            border-radius: 50%;
-            background: #27272a;
-            display: flex; align-items: center; justify-content: center;
-            color: #a1a1aa; text-decoration: none; font-size: 14px;
-            transition: background .2s, color .2s;
-        }
+			.footer-socials a {
+				width: 34px;
+				height: 34px;
+				border-radius: 50%;
+				background: #27272a;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: #a1a1aa;
+				text-decoration: none;
+				font-size: 14px;
+				transition: background .2s, color .2s;
+			}
 
-        .footer-socials a:hover { background: #F96300; color: #fff; }
+				.footer-socials a:hover {
+					background: #F96300;
+					color: #fff;
+				}
 
-        .footer-cols {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 28px;
-        }
+		.footer-cols {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 20px;
+			margin-bottom: 28px;
+		}
 
-        .footer-col h4 {
-            font-size: 11px; font-weight: 700;
-            color: #fff; letter-spacing: 1.5px;
-            text-transform: uppercase; margin-bottom: 12px;
-        }
+		.footer-col h4 {
+			font-size: 11px;
+			font-weight: 700;
+			color: #fff;
+			letter-spacing: 1.5px;
+			text-transform: uppercase;
+			margin-bottom: 12px;
+		}
 
-        .footer-col ul { list-style: none; }
-        .footer-col ul li { margin-bottom: 6px; }
+		.footer-col ul {
+			list-style: none;
+		}
 
-        .footer-col ul li a {
-            font-size: 12px; color: #71717a;
-            text-decoration: none; transition: color .2s;
-        }
+			.footer-col ul li {
+				margin-bottom: 6px;
+			}
 
-        .footer-col ul li a:hover { color: #F96300; }
+				.footer-col ul li a {
+					font-size: 12px;
+					color: #71717a;
+					text-decoration: none;
+					transition: color .2s;
+				}
 
-        .footer-copy {
-            border-top: 1px solid #1f1f23;
-            padding-top: 18px;
-            text-align: center;
-            font-size: 11px; color: #52525b; line-height: 1.6;
-        }
+					.footer-col ul li a:hover {
+						color: #F96300;
+					}
 
-        @@media (max-width: 800px) {
-            .footer-cols { grid-template-columns: 1fr 1fr; }
-        }
+		.footer-copy {
+			border-top: 1px solid #1f1f23;
+			padding-top: 18px;
+			text-align: center;
+			font-size: 11px;
+			color: #52525b;
+			line-height: 1.6;
+		}
 
-        @@media (max-width: 500px) {
-            .footer-cols { grid-template-columns: 1fr; }
-            .footer-top  { flex-direction: column; gap: 14px; }
-        }
-    </style>
+		@@media (max-width: 800px) {
+			.footer-cols {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
+
+		@@media (max-width: 500px) {
+			.footer-cols {
+				grid-template-columns: 1fr;
+			}
+
+			.footer-top {
+				flex-direction: column;
+				gap: 14px;
+			}
+		}
+	</style>
 </head>
 <body>
 
-    <!-- ── Navbar ─────────────────────────────────────────────── -->
-    <header>
-        <nav class="topnav">
-            <a class="topnav-brand" asp-controller="Home" asp-action="Index">
-                <img src="~/images/Nine.png" alt="NineGames"
-                     onerror="this.outerHTML='<span style=\'color:#F96300;font-weight:900\'>NineGames</span>'" />
-            </a>
+	<!-- ── Navbar ─────────────────────────────────────────────── -->
+	<header>
+		<nav class="topnav">
+			<a class="topnav-brand" asp-controller="Home" asp-action="Index">
+				<img src="~/images/Nine.png" alt="NineGames" asp-append-version="true" />
+			</a>
 
-            <a asp-controller="Jogo" asp-action="Index">Vitrine</a>
+			<a asp-controller="Jogo" asp-action="Index">Vitrine</a>
 
-            @if (isLogged)
-            {
-                <a asp-controller="Carrinho"   asp-action="Index">Carrinho</a>
-                <a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a>
-                <a asp-controller="Biblioteca" asp-action="Wishlist">Wishlist</a>
+			@if (isLogged)
+			{
+				<a asp-controller="Carrinho" asp-action="Index">Carrinho</a>
+				<a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a>
+				<a asp-controller="Biblioteca" asp-action="Wishlist">Wishlist</a>
 
-                @if (role is "Admin" or "Funcionario")
-                {
-                    <a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                    <a asp-controller="Jogo"      asp-action="Gerenciar">Gerenciar Jogos</a>
-                    <a asp-controller="Categoria" asp-action="Index">Categorias</a>
-                }
-                @if (role == "Admin")
-                {
-                    <a asp-controller="Usuario" asp-action="Index">Usuários</a>
-                }
-            }
+				@if (role is "Admin" or "Funcionario")
+				{
+					<a asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+					<a asp-controller="Jogo" asp-action="Gerenciar">Gerenciar Jogos</a>
+					<a asp-controller="Categoria" asp-action="Index">Categorias</a>
+				}
+				@if (role == "Admin")
+				{
+					<a asp-controller="Usuario" asp-action="Index">Usuários</a>
+				}
+			}
 
-            <span class="spacer"></span>
+			<span class="spacer"></span>
 
-            @if (isLogged)
-            {
-                <a asp-controller="Usuario" asp-action="Perfil" class="topnav-user">
-                    👤 @userName
-                </a>
-                <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn-sair">Sair</button>
-                </form>
-            }
-            else
-            {
-                <a asp-controller="Auth" asp-action="Login">Entrar</a>
-            }
-        </nav>
-    </header>
+			@if (isLogged)
+			{
+				<a asp-controller="Usuario" asp-action="Perfil" class="topnav-user">
+					👤 @userName
+				</a>
+				<form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline">
+					@Html.AntiForgeryToken()
+					<button type="submit" class="btn-sair">Sair</button>
+				</form>
+			}
+			else
+			{
+				<a asp-controller="Auth" asp-action="Login">Entrar</a>
+			}
+		</nav>
+	</header>
 
-    <!-- ── Conteúdo ───────────────────────────────────────────── -->
-    <main class="container">
-        @RenderBody()
-    </main>
+	<!-- ── Conteúdo ───────────────────────────────────────────── -->
+	<main class="container">
+		@RenderBody()
+	</main>
 
-    <!-- ── Footer — aparece em TODAS as páginas ───────────────── -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-top">
-                <a asp-controller="Home" asp-action="Index" class="footer-brand">
-                    NineGames
-                </a>
-            </div>
+	<!-- ── Footer — aparece em TODAS as páginas ───────────────── -->
+	<footer class="site-footer">
+		<div class="footer-inner">
+			<div class="footer-top">
+				<a asp-controller="Home" asp-action="Index" class="footer-brand">
+					NineGames
+				</a>
+			</div>
 
-            <div class="footer-cols">
-                <div class="footer-col">
-                    <h4>Loja</h4>
-                    <ul>
-                        <li><a asp-controller="Jogo" asp-action="Index">Vitrine</a></li>
-                        <li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="RPG">RPG</a></li>
-                        <li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="Corrida">Corrida</a></li>
-                        <li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="Soulslike">Soulslike</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Minha conta</h4>
-                    <ul>
-                        @if (isLogged)
-                        {
-                            <li><a asp-controller="Usuario"  asp-action="Perfil">Perfil</a></li>
-                            <li><a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a></li>
-                            <li><a asp-controller="Biblioteca" asp-action="Wishlist">Wishlist</a></li>
-                            <li><a asp-controller="Carrinho"   asp-action="Index">Carrinho</a></li>
-                        }
-                        else
-                        {
-                            <li><a asp-controller="Auth"    asp-action="Login">Entrar</a></li>
-                            <li><a asp-controller="Usuario" asp-action="Registrar">Criar conta</a></li>
-                        }
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Ferramentas</h4>
-                    <ul>
-                        <li><a href="#">ASP.NET Core MVC</a></li>
-                        <li><a href="#">MySQL</a></li>
-                        <li><a href="#">Flutter</a></li>
-                    </ul>
-                </div>
-            </div>
+			<div class="footer-cols">
+				<div class="footer-col">
+					<h4>Loja</h4>
+					<ul>
+						<li><a asp-controller="Jogo" asp-action="Index">Vitrine</a></li>
+						<li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="RPG">RPG</a></li>
+						<li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="Corrida">Corrida</a></li>
+						<li><a asp-controller="Jogo" asp-action="Index" asp-route-categoria="Soulslike">Soulslike</a></li>
+					</ul>
+				</div>
+				<div class="footer-col">
+					<h4>Minha conta</h4>
+					<ul>
+						@if (isLogged)
+						{
+							<li><a asp-controller="Usuario" asp-action="Perfil">Perfil</a></li>
+							<li><a asp-controller="Biblioteca" asp-action="MinhaBiblioteca">Biblioteca</a></li>
+							<li><a asp-controller="Biblioteca" asp-action="Wishlist">Wishlist</a></li>
+							<li><a asp-controller="Carrinho" asp-action="Index">Carrinho</a></li>
+						}
+						else
+						{
+							<li><a asp-controller="Auth" asp-action="Login">Entrar</a></li>
+							<li><a asp-controller="Usuario" asp-action="Registrar">Criar conta</a></li>
+						}
+					</ul>
+				</div>
+				<div class="footer-col">
+					<h4>Ferramentas</h4>
+					<ul>
+						<li><a href="#">ASP.NET Core MVC</a></li>
+						<li><a href="#">MySQL</a></li>
+						<li><a href="#">Flutter</a></li>
+					</ul>
+				</div>
+			</div>
 
-            <div class="footer-copy">
-                <p>© @DateTime.Now.Year NineGames. Todos os direitos reservados.</p>
-                <p style="margin-top:5px;max-width:640px;margin-left:auto;margin-right:auto;font-size:10px">
-                    Todo o conteúdo deste site é de propriedade exclusiva da NineGames e protegido
-                    pelas leis de direitos autorais aplicáveis.
-                </p>
-            </div>
-        </div>
-    </footer>
+			<div class="footer-copy">
+				<p>© @DateTime.Now.Year NineGames. Todos os direitos reservados.</p>
+				<p style="margin-top:5px;max-width:640px;margin-left:auto;margin-right:auto;font-size:10px">
+					Todo o conteúdo deste site é de propriedade exclusiva da NineGames e protegido
+					pelas leis de direitos autorais aplicáveis.
+				</p>
+			</div>
+		</div>
+	</footer>
 
-    @RenderSection("Scripts", required: false)
+	@RenderSection("Scripts", required: false)
 </body>
 </html>
