@@ -274,7 +274,7 @@
             <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="jogoId" value="@Model.Id" />
-                <button class="btn-carrinho-det">🛒 Adicionar ao Carrinho</button>
+                <button class="btn-carrinho-det"> Adicionar ao Carrinho</button>
             </form>
 
             @if (Context.Session.GetInt32("UserId").HasValue)

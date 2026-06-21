@@ -228,6 +228,100 @@ h1, h2, h3, h4 {
     margin-bottom: 6px;
 }
 
+.ng-field-floating {
+    position: relative;
+    margin-bottom: 18px;
+}
+
+    .ng-field-floating.has-toggle {
+        margin-bottom: 8px;
+    }
+
+.ng-input-floating {
+    width: 100%;
+    background: #222;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 22px 14px 8px;
+    color: #f0f0f0;
+    font-family: 'Barlow', system-ui, sans-serif;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.ng-field-floating.has-toggle .ng-input-floating {
+    padding-right: 44px;
+}
+
+.ng-input-floating::placeholder {
+    color: transparent;
+}
+
+.ng-input-floating:focus,
+.ng-input-floating:not(:placeholder-shown) {
+    border-color: #F96300;
+    box-shadow: 0 0 0 3px rgba(249,99,0,.22);
+}
+
+.ng-field-floating label {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #666;
+    pointer-events: none;
+    transition: all .15s ease;
+}
+
+.ng-input-floating:focus ~ label,
+.ng-input-floating:not(:placeholder-shown) ~ label {
+    top: 11px;
+    transform: translateY(0);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #F96300;
+}
+
+.ng-toggle-pwd {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 4px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    transition: color .15s ease;
+}
+
+    .ng-toggle-pwd:hover {
+        color: #F96300;
+    }
+
+    .ng-toggle-pwd svg {
+        width: 18px;
+        height: 18px;
+    }
+
+.ng-forgot-link {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+    .ng-forgot-link:hover {
+        color: #F96300;
+    }
+
 .ng-input, .ng-select, .ng-textarea {
     width: 100%;
     background: #222;
@@ -1065,3 +1159,33 @@ h1, h2, h3, h4 {
         border-color: #F96300;
         color: #F96300;
     }
+
+.ng-auth-actions-alt {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 24px; 
+}
+
+.btn-ng-auth-alt {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #2a2a2a;
+    color: #888;
+    font-weight: 500;
+}
+
+    .btn-ng-auth-alt strong {
+        color: #F96300;
+        margin-left: 4px;
+        transition: color 0.15s ease;
+    }
+
+    .btn-ng-auth-alt:hover {
+        background: rgba(249, 99, 0, 0.08);
+        border-color: rgba(249, 99, 0, 0.4);
+        color: #f0f0f0;
+    }
+
+        .btn-ng-auth-alt:hover strong {
+            color: #ff8533;
+        }
