@@ -15,7 +15,7 @@ namespace ProjetoNineGames.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            var vm = new DashboardViewModel();
+            var vm = new Dashboard();
             using var conn = _db.GetConnection();
 
             // ── KPIs ────────────────────────────────────────────────────────

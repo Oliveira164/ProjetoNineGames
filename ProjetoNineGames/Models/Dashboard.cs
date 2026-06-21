@@ -1,6 +1,6 @@
 namespace ProjetoNineGames.Models
 {
-    public class DashboardViewModel
+    public class Dashboard
     {
         public KpiDashboard         Kpis          { get; set; } = new();
         public List<VendaResumo>    UltimasVendas { get; set; } = new();

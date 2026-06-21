@@ -1,6 +1,6 @@
 namespace ProjetoNineGames.Models
 {
-    public class ErrorViewModel
+    public class Erro
     {
         public string? RequestId { get; set; }
 

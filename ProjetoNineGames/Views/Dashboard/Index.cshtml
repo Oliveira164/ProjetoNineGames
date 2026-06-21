@@ -1,423 +1,395 @@
-@model ProjetoNineGames.Models.DashboardViewModel
+@model ProjetoNineGames.Models.Dashboard
 @{
     ViewData["Title"] = "Dashboard";
     var mesAtual = DateTime.Now.ToString("MMMM", new System.Globalization.CultureInfo("pt-BR"));
 }
 
 @section Styles {
-    <style>
-        /* ── Grid principal ─────────────────────────────────────── */
-        .dash-grid-kpi {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+<style>
+    /* ── Grid principal ─────────────────────────────────────── */
+    .dash-grid-kpi {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    }
 
-        .dash-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+    .dash-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+    }
 
-        .dash-grid-3 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
+    .dash-grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+    }
 
-        /* ── KPI card ───────────────────────────────────────────── */
-        .kpi-card {
-            background: #1a1a1a;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            transition: border-color 0.2s ease;
-        }
+    /* ── KPI card ───────────────────────────────────────────── */
+    .kpi-card {
+    background: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.2s ease;
+    }
 
-            .kpi-card:hover {
-                border-color: rgba(249, 99, 0, 0.4);
-            }
+    .kpi-card:hover {
+    border-color: rgba(249, 99, 0, 0.4);
+    }
 
-        .kpi-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #a0a0a0;
-        }
+    .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #a0a0a0;
+    }
 
-        .kpi-valor {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.1;
-        }
+    .kpi-valor {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.1;
+    }
 
-            .kpi-valor.laranja {
-                color: #F96300;
-            }
+    .kpi-valor.laranja {
+    color: #F96300;
+    }
 
-        .kpi-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 20px;
-            width: fit-content;
-        }
+    .kpi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    width: fit-content;
+    }
 
-            .kpi-badge.up {
-                background: rgba(34,197,94,.1);
-                color: #4ade80;
-            }
+    .kpi-badge.up {
+    background: rgba(34,197,94,.1);
+    color: #4ade80;
+    }
 
-            .kpi-badge.down {
-                background: rgba(239,68,68,.1);
-                color: #f87171;
-            }
+    .kpi-badge.down {
+    background: rgba(239,68,68,.1);
+    color: #f87171;
+    }
 
-            .kpi-badge.neu {
-                background: rgba(255,255,255,.05);
-                color: #a0a0a0;
-            }
+    .kpi-badge.neu {
+    background: rgba(255,255,255,.05);
+    color: #a0a0a0;
+    }
 
-        /* AJUSTE PARA OS ÍCONES PERSONALIZADOS */
-        .kpi-icon {
-            display: flex;
-            align-items: center;
-            height: 32px;
-            margin-bottom: 4px;
-        }
+    /* AJUSTE PARA OS ÍCONES PERSONALIZADOS */
+    .kpi-icon {
+    display: flex;
+    align-items: center;
+    height: 32px;
+    margin-bottom: 4px;
+    }
 
-            .kpi-icon img {
-                height: 28px;
-                width: auto;
-                object-fit: contain;
-            }
+    .kpi-icon img {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    }
 
-        /* ── Section header ─────────────────────────────────────── */
-        .dash-section-title {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            color: #a0a0a0;
-            margin-bottom: 14px;
-        }
+    /* ── Section header ─────────────────────────────────────── */
+    .dash-section-title {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #a0a0a0;
+    margin-bottom: 14px;
+    }
 
-        /* ── Gráfico de barras (CSS puro) ───────────────────────── */
-        .chart-bars {
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            height: 160px;
-            padding-top: 20px;
-        }
+    /* ── Gráfico de barras (CSS puro) ───────────────────────── */
+    .chart-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    height: 160px;
+    padding-top: 20px;
+    }
 
-        .chart-bar-wrap {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            height: 100%;
-            justify-content: flex-end;
-        }
+    .chart-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    justify-content: flex-end;
+    }
 
-        .chart-bar {
-            width: 70%;
-            background: #F96300;
-            border-radius: 6px 6px 0 0;
-            min-height: 4px;
-            transition: all 0.2s ease;
-            position: absolute;
-            bottom: 0;
-            left: 15%;
-        }
+    .chart-bar {
+    width: 70%;
+    background: #F96300;
+    border-radius: 6px 6px 0 0;
+    min-height: 4px;
+    transition: all 0.2s ease;
+    position: absolute;
+    bottom: 0;
+    left: 15%;
+    }
 
-            .chart-bar:hover {
-                filter: brightness(1.2);
-                cursor: pointer;
-            }
+    .chart-bar:hover {
+    filter: brightness(1.2);
+    cursor: pointer;
+    }
 
-        .chart-bar-tooltip {
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: #111;
-            border: 1px solid rgba(249, 99, 0, 0.4);
-            border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 11px;
-            white-space: nowrap;
-            color: #fff;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .2s;
-            z-index: 20;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-        }
+    .chart-bar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #111;
+    border: 1px solid rgba(249, 99, 0, 0.4);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+    color: #fff;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
 
-        .chart-bar:hover .chart-bar-tooltip {
-            opacity: 1;
-        }
+    .chart-bar:hover .chart-bar-tooltip {
+    opacity: 1;
+    }
 
-        .chart-label {
-            font-size: 10px;
-            font-weight: 600;
-            color: #a0a0a0;
-            text-align: center;
-            white-space: nowrap;
-            margin-top: 4px;
-        }
+    .chart-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #a0a0a0;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 4px;
+    }
 
-        .chart-bar-qty {
-            font-size: 10px;
-            font-weight: 700;
-            color: #F96300;
-            text-align: center;
-            margin-bottom: 2px;
-        }
+    .chart-bar-qty {
+    font-size: 10px;
+    font-weight: 700;
+    color: #F96300;
+    text-align: center;
+    margin-bottom: 2px;
+    }
 
-        /* ── Donut de pagamentos (CSS) ──────────────────────────── */
-        .pagto-lista {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+    /* ── Donut de pagamentos (CSS) ──────────────────────────── */
+    .pagto-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    }
 
-        .pagto-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 13px;
-        }
+    .pagto-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    }
 
-        .pagto-cor {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
+    .pagto-cor {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    }
 
-        .pagto-bar-wrap {
-            flex: 1;
-            height: 6px;
-            background: #111;
-            border-radius: 3px;
-            overflow: hidden;
-        }
+    .pagto-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: #111;
+    border-radius: 3px;
+    overflow: hidden;
+    }
 
-        .pagto-bar {
-            height: 100%;
-            border-radius: 3px;
-        }
+    .pagto-bar {
+    height: 100%;
+    border-radius: 3px;
+    }
 
-        .pagto-pct {
-            font-size: 12px;
-            color: #a0a0a0;
-            min-width: 36px;
-            text-align: right;
-        }
+    .pagto-pct {
+    font-size: 12px;
+    color: #a0a0a0;
+    min-width: 36px;
+    text-align: right;
+    }
 
-        /* ── Top jogos ──────────────────────────────────────────── */
-        .top-jogo-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,.04);
-        }
+    /* ── Top jogos ──────────────────────────────────────────── */
+    .top-jogo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    }
 
-            .top-jogo-item:last-child {
-                border-bottom: none;
-            }
+    .top-jogo-item:last-child {
+    border-bottom: none;
+    }
 
-        .top-rank {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-size: 18px;
-            font-weight: 800;
-            color: #666666;
-            width: 24px;
-            text-align: center;
-            flex-shrink: 0;
-        }
+    .top-rank {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #666666;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+    }
 
-            .top-rank.gold {
-                color: #f0c060;
-            }
+    .top-rank.gold {
+    color: #f0c060;
+    }
 
-            .top-rank.silver {
-                color: #a0a0b0;
-            }
+    .top-rank.silver {
+    color: #a0a0b0;
+    }
 
-            .top-rank.bronze {
-                color: #cd7f32;
-            }
+    .top-rank.bronze {
+    color: #cd7f32;
+    }
 
-        .top-thumb {
-            width: 44px;
-            height: 44px;
-            border-radius: 8px;
-            background: #111;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
+    .top-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    }
 
-            .top-thumb img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+    .top-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    }
 
-        .top-info {
-            flex: 1;
-            min-width: 0;
-        }
+    .top-info {
+    flex: 1;
+    min-width: 0;
+    }
 
-        .top-titulo {
-            font-size: 13px;
-            font-weight: 600;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .top-titulo {
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
 
-        .top-sub {
-            font-size: 11px;
-            color: #a0a0a0;
-            margin-top: 2px;
-        }
+    .top-sub {
+    font-size: 11px;
+    color: #a0a0a0;
+    margin-top: 2px;
+    }
 
-        .top-receita {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: #F96300;
-            text-align: right;
-            flex-shrink: 0;
-        }
+    .top-receita {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #F96300;
+    text-align: right;
+    flex-shrink: 0;
+    }
 
-        .top-vendido {
-            font-size: 11px;
-            color: #666666;
-            text-align: right;
-        }
+    .top-vendido {
+    font-size: 11px;
+    color: #666666;
+    text-align: right;
+    }
 
-        /* ── Tabela de vendas ───────────────────────────────────── */
-        .tab-bar {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 16px;
-            background: #111;
-            border-radius: 8px;
-            padding: 4px;
-            width: fit-content;
-        }
+    /* ── Tabela de vendas ───────────────────────────────────── */
+    .tab-content {
+    display: none;
+    }
 
-        .tab-btn {
-            padding: 6px 16px;
-            border-radius: 6px;
-            border: none;
-            background: transparent;
-            color: #a0a0a0;
-            font-size: 12px;
-            font-weight: 600;
-            font-family: 'Inter', system-ui, sans-serif;
-            cursor: pointer;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
+    .tab-content.visivel {
+    display: block;
+    }
 
-            .tab-btn.ativo {
-                background: #1a1a1a;
-                color: #ffffff;
-            }
+    .status-pill {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    }
 
-        .tab-content {
-            display: none;
-        }
+    .status-fin {
+    background: rgba(34,197,94,.1);
+    color: #4ade80;
+    }
 
-            .tab-content.visivel {
-                display: block;
-            }
+    .status-abt {
+    background: rgba(245,158,11,.1);
+    color: #fbbf24;
+    }
 
-        .status-pill {
-            display: inline-block;
-            padding: 2px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
+    .status-can {
+    background: rgba(239,68,68,.1);
+    color: #f87171;
+    }
 
-        .status-fin {
-            background: rgba(34,197,94,.1);
-            color: #4ade80;
-        }
+    /* ── Busca inline ───────────────────────────────────────── */
+    #inputBuscaVenda {
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 7px 12px;
+    color: #ffffff;
+    font-size: 13px;
+    outline: none;
+    width: 220px;
+    transition: border-color 0.2s ease;
+    }
 
-        .status-abt {
-            background: rgba(245,158,11,.1);
-            color: #fbbf24;
-        }
+    #inputBuscaVenda:focus {
+    border-color: #F96300;
+    }
 
-        .status-can {
-            background: rgba(239,68,68,.1);
-            color: #f87171;
-        }
+    @@media (max-width: 1000px) {
+    .dash-grid-kpi {
+    grid-template-columns: repeat(2, 1fr);
+    }
 
-        /* ── Busca inline ───────────────────────────────────────── */
-        #inputBuscaVenda {
-            background: #111;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 7px 12px;
-            color: #ffffff;
-            font-size: 13px;
-            outline: none;
-            width: 220px;
-            transition: border-color 0.2s ease;
-        }
+    .dash-grid-2 {
+    grid-template-columns: 1fr;
+    }
 
-            #inputBuscaVenda:focus {
-                border-color: #F96300;
-            }
+    .dash-grid-3 {
+    grid-template-columns: 1fr;
+    }
+    }
 
-        @@media (max-width: 1000px) {
-            .dash-grid-kpi {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .dash-grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .dash-grid-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @@media (max-width: 600px) {
-            .dash-grid-kpi {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-    </style>
+    @@media (max-width: 600px) {
+    .dash-grid-kpi {
+    grid-template-columns: 1fr 1fr;
+    }
+    }
+</style>
 }
 
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:10px">
@@ -467,7 +439,7 @@
         <div class="kpi-label">Clientes ativos</div>
         <div class="kpi-valor">@Model.Kpis.TotalClientes</div>
         <a asp-controller="Usuario" asp-action="Index"
-           style="font-size:12px;color:#F96300;margin-top:2px">Ver todos →</a>
+        style="font-size:12px;color:#F96300;margin-top:2px">Ver todos →</a>
     </div>
 
     <div class="kpi-card">
@@ -475,7 +447,7 @@
         <div class="kpi-label">Jogos cadastrados</div>
         <div class="kpi-valor">@Model.Kpis.TotalJogos</div>
         <a asp-controller="Jogo" asp-action="Gerenciar"
-           style="font-size:12px;color:#F96300;margin-top:2px">Gerenciar →</a>
+        style="font-size:12px;color:#F96300;margin-top:2px">Gerenciar →</a>
     </div>
 
     <div class="kpi-card" style="border-color:rgba(249, 99, 0, 0.4)">
@@ -566,7 +538,7 @@
 <div class="dash-grid-2">
 
     <div class="ng-card">
-        <p class="dash-section-title">🏆 Jogos mais vendidos</p>
+        <p class="dash-section-title"> Jogos mais vendidos</p>
         @if (!Model.TopJogos.Any())
         {
             <p class="text-muted" style="font-size:13px">Ainda não há vendas registradas.</p>
@@ -627,9 +599,6 @@
                     <tbody>
                         @foreach (var v in Model.UltimasVendas)
                         {
-                            var stCls = v.Status == "Finalizada" ? "status-fin"
-                            : v.Status == "Cancelada" ? "status-can"
-                            : "status-abt";
                             <tr>
                                 <td class="text-muted">#@v.Id</td>
                                 <td>
@@ -638,7 +607,7 @@
                                 </td>
                                 <td class="text-muted">@v.QtdItens</td>
                                 <td style="font-weight:700;color:#F96300">R$ @v.ValorTotal.ToString("N2")</td>
-                                <td><span class="status-pill @stCls">@v.Status</span></td>
+                                <td><span class="status-pill">@v.Status</span></td>
                                 <td class="text-muted" style="font-size:12px;white-space:nowrap">
                                     @v.DataHora.ToString("dd/MM/yy HH:mm")
                                 </td>
@@ -660,13 +629,6 @@
                oninput="filtrarTabela(this.value)" />
     </div>
 
-    <div class="tab-bar">
-        <button class="tab-btn ativo" onclick="filtrarStatus('todos', this)">Todos</button>
-        <button class="tab-btn" onclick="filtrarStatus('Finalizada', this)">Finalizadas</button>
-        <button class="tab-btn" onclick="filtrarStatus('Aberta', this)">Em aberto</button>
-        <button class="tab-btn" onclick="filtrarStatus('Cancelada', this)">Canceladas</button>
-    </div>
-
     <div style="overflow-x:auto">
         <table class="ng-table" id="tabelaDetalhe">
             <thead>
@@ -686,9 +648,6 @@
             <tbody id="tabelaDetalheBody">
                 @foreach (var d in Model.DetalheVendas)
                 {
-                    var stCls = d.Status == "Finalizada" ? "status-fin"
-                    : d.Status == "Cancelada" ? "status-can"
-                    : "status-abt";
                     <tr data-status="@d.Status"
                         data-busca="@($"{d.VendaId} {d.Cliente} {d.Email} {d.Jogo}".ToLower())">
                         <td class="text-muted">#@d.VendaId</td>
@@ -716,7 +675,7 @@
                         <td class="text-muted">R$ @d.PrecoUnitario.ToString("N2")</td>
                         <td style="font-weight:700;color:#F96300">R$ @d.Subtotal.ToString("N2")</td>
                         <td style="font-size:12px;color:#a0a0a0">@(d.FormaPagamento ?? "—")</td>
-                        <td><span class="status-pill @stCls">@d.Status</span></td>
+                        <td><span class="status-pill">@d.Status</span></td>
                     </tr>
                 }
                 @if (!Model.DetalheVendas.Any())
