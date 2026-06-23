@@ -655,3 +655,49 @@ BEGIN
     LIMIT p_limite;
 END$$
 DELIMITER ;
+
+DROP PROCEDURE IF EXISTS sp_usuario_atualizar_senha;
+DELIMITER $$
+CREATE PROCEDURE sp_usuario_atualizar_senha(
+    IN p_id INT,
+    IN p_nova_senha_hash VARCHAR(255)
+)
+BEGIN
+    UPDATE usuarios 
+    SET senha_hash = p_nova_senha_hash 
+    WHERE id = p_id;
+END$$
+DELIMITER ;
+
+-- Alterar a tabela para incluir os campos de recuperação
+ALTER TABLE usuarios 
+ADD COLUMN token_recuperacao VARCHAR(255) NULL,
+ADD COLUMN token_expiracao TIMESTAMP NULL;
+
+-- Procedure 1: Salvar o token gerado para o usuário
+DROP PROCEDURE IF EXISTS sp_usuario_definir_token_recuperacao;
+DELIMITER $$
+CREATE PROCEDURE sp_usuario_definir_token_recuperacao(
+    IN p_email VARCHAR(100),
+    IN p_token VARCHAR(255),
+    IN p_minutos_validade INT
+)
+BEGIN
+    UPDATE usuarios 
+    SET token_recuperacao = p_token,
+        token_expiracao = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL p_minutos_validade MINUTE)
+    WHERE email = p_email AND ativo = 1;
+END$$
+DELIMITER ;
+
+-- Procedure 2: Buscar usuário pelo token (usada na validação do link)
+DROP PROCEDURE IF EXISTS sp_usuario_obter_por_token;
+DELIMITER $$
+CREATE PROCEDURE sp_usuario_obter_por_token(IN p_token VARCHAR(255))
+BEGIN
+    SELECT id, nome, email, token_expiracao
+    FROM usuarios
+    WHERE token_recuperacao = p_token AND ativo = 1
+    LIMIT 1;
+END$$
+DELIMITER ;

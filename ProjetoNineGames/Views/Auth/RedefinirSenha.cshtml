@@ -1,0 +1,87 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Nova Senha — NineGames";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="ng-auth-page">
+        <div class="ng-auth-card">
+            <div class="ng-auth-logo">
+                <img src="~/images/Nine.png" alt="NineGames" asp-append-version="true" />
+            </div>
+            <h1 class="ng-auth-title">Nova Senha</h1>
+            <p class="ng-auth-sub">crie uma nova senha de acesso</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="ng-alert ng-alert-erro">@ViewBag.Error</div>
+            }
+
+            <form method="post" asp-action="RedefinirSenha" asp-controller="Auth">
+                @Html.AntiForgeryToken()
+
+                <!-- O Token invisível viaja junto com o POST -->
+                <input type="hidden" name="token" value="@ViewBag.Token" />
+
+                <div class="ng-field-floating has-toggle">
+                    <input class="ng-input-floating" type="password" id="novaSenha" name="novaSenha"
+                           placeholder=" " required autofocus minlength="6" />
+                    <label for="novaSenha">Nova Senha</label>
+                    <button type="button" class="ng-toggle-pwd" aria-label="Mostrar senha" data-target="novaSenha">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+                            <path d="M3 3l18 18" />
+                            <path d="M10.6 10.6a3 3 0 0 0 4.24 4.24" />
+                            <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a17.3 17.3 0 0 1-3.1 3.94M6.1 6.1A17.4 17.4 0 0 0 1 11s4 7 11 7c1.46 0 2.84-.27 4.08-.74" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="ng-field-floating has-toggle">
+                    <input class="ng-input-floating" type="password" id="confirmarSenha" name="confirmarSenha"
+                           placeholder=" " required minlength="6" />
+                    <label for="confirmarSenha">Confirmar Nova Senha</label>
+                    <button type="button" class="ng-toggle-pwd" aria-label="Mostrar senha" data-target="confirmarSenha">
+                        <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                        <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
+                            <path d="M3 3l18 18" />
+                            <path d="M10.6 10.6a3 3 0 0 0 4.24 4.24" />
+                            <path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 7 11 7a17.3 17.3 0 0 1-3.1 3.94M6.1 6.1A17.4 17.4 0 0 0 1 11s4 7 11 7c1.46 0 2.84-.27 4.08-.74" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">Salvar e Entrar</button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Script para os botões de visualizar as duas senhas funcionarem -->
+    <script>
+        document.querySelectorAll('.ng-toggle-pwd').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var input = document.getElementById(btn.dataset.target);
+                var showing = input.type === 'text';
+                input.type = showing ? 'password' : 'text';
+                btn.querySelector('.icon-eye').style.display = showing ? '' : 'none';
+                btn.querySelector('.icon-eye-off').style.display = showing ? 'none' : '';
+                btn.setAttribute('aria-label', showing ? 'Mostrar senha' : 'Ocultar senha');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Recuperar Conta — NineGames";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="ng-auth-page">
+        <div class="ng-auth-card">
+            <div class="ng-auth-logo">
+                <img src="~/images/Nine.png" alt="NineGames" asp-append-version="true" />
+            </div>
+            <h1 class="ng-auth-title">Recuperar Conta</h1>
+            <p class="ng-auth-sub">informe seu e-mail para receber o link</p>
+
+            @if (ViewBag.Error != null)
+            {
+                <div class="ng-alert ng-alert-erro">@ViewBag.Error</div>
+            }
+            @if (ViewBag.Success != null)
+            {
+                <div class="ng-alert ng-alert-ok" style="text-align: center;">
+                    @ViewBag.Success
+
+                    @if (ViewBag.LinkTCC != null)
+                    {
+                        <div style="margin-top: 14px;">
+                            <a href="@ViewBag.LinkTCC" class="btn-ng btn-ng-success btn-ng-full" target="_blank">
+                                🔗 Abrir Link de Recuperação
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+
+            <form method="post" asp-action="EsqueciSenha" asp-controller="Auth">
+                @Html.AntiForgeryToken()
+
+                <div class="ng-field-floating">
+                    <input class="ng-input-floating" type="email" id="email" name="email"
+                           placeholder=" " autocomplete="email" required autofocus />
+                    <label for="email">E-mail de Cadastro</label>
+                </div>
+
+                <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">Enviar Link de Recuperação</button>
+            </form>
+
+            <div class="ng-auth-actions-alt">
+                <a asp-controller="Auth" asp-action="Login" class="btn-ng btn-ng-auth-alt btn-ng-full">
+                    Lembrou a senha? <strong>Fazer Login</strong>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
