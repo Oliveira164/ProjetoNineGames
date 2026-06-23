@@ -27,7 +27,6 @@
             <form method="post" asp-action="RedefinirSenha" asp-controller="Auth">
                 @Html.AntiForgeryToken()
 
-                <!-- O Token invisível viaja junto com o POST -->
                 <input type="hidden" name="token" value="@ViewBag.Token" />
 
                 <div class="ng-field-floating has-toggle">
@@ -66,11 +65,9 @@
 
                 <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">Salvar e Entrar</button>
             </form>
-
         </div>
     </div>
 
-    <!-- Script para os botões de visualizar as duas senhas funcionarem -->
     <script>
         document.querySelectorAll('.ng-toggle-pwd').forEach(function (btn) {
             btn.addEventListener('click', function () {

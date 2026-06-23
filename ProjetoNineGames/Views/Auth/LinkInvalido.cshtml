@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Link Inválido — NineGames";
+}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="ng-auth-page">
+        <div class="ng-auth-card">
+            <div class="ng-auth-logo">
+                <img src="~/images/Nine.png" alt="NineGames" asp-append-version="true" />
+            </div>
+
+            <h1 class="ng-auth-title" style="color: #f87171;">Ops! Algo deu errado.</h1>
+            <p class="ng-auth-sub">Não foi possível processar a sua solicitação.</p>
+
+            <div class="ng-alert ng-alert-erro text-center" style="margin-bottom: 24px;">
+                @(ViewBag.Error ?? "Este link de recuperação é inválido ou já expirou.")
+            </div>
+
+            <a asp-controller="Auth" asp-action="EsqueciSenha" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">
+                Solicitar Novo Link
+            </a>
+
+            <div class="ng-auth-actions-alt">
+                <a asp-controller="Home" asp-action="Index" class="btn-ng btn-ng-auth-alt btn-ng-full">
+                    &larr; Voltar para a Home
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

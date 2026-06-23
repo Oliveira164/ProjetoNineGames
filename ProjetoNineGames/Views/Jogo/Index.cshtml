@@ -94,6 +94,20 @@
                     width: auto;
                 }
         }
+
+        .controle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px; 
+        }
+
+            .controle-icon img {
+                height: 54px;
+                width: auto;
+                object-fit: contain;
+                opacity: 0.6; 
+            }
     </style>
 }
 
@@ -137,7 +151,7 @@
         @if (!Model.Any())
         {
             <div class="ng-vazio">
-                <div class="icon">🎮</div>
+                <div class="controle-icon"><img src="~/images/jogos_emoji.png" alt="Jogos Cadastrados" /></div>
                 <p>Nenhum jogo cadastrado na vitrine ainda.</p>
             </div>
         }
@@ -157,7 +171,7 @@
                             }
                             else
                             {
-                                <span>🎮</span>
+                                <div class="controle-icon"><img src="~/images/jogos_emoji.png" alt="Jogos Cadastrados" /></div>
                             }
                         </div>
                         <div class="ng-jogo-body">
