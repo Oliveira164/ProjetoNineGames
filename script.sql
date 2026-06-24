@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS categoria (
     criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Usuários (Já consolidada com todas as colunas novas)
+-- Tabela de Usuários 
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Cartões (Movida para junto das outras tabelas)
+-- Tabela de Cartões 
 CREATE TABLE IF NOT EXISTS cartoes (
     id INT NOT NULL AUTO_INCREMENT,
     id_usuario INT NOT NULL,
