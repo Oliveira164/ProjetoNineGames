@@ -27,5 +27,8 @@ namespace ProjetoNineGames.Models
         // ── Resumo (preenchido pelo controller) ───────────────────────────────
         public decimal Total          { get; set; }
         public List<ItemCarrinho> Itens { get; set; } = new();
+
+        public bool SalvarCartao { get; set; }
+        public List<Cartao> CartoesSalvos { get; set; } = new List<Cartao>();
     }
 }

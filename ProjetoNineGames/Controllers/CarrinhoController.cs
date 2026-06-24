@@ -91,7 +91,7 @@ namespace ProjetoNineGames.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // ── CHECKOUT — GET (exibe tela de pagamento ou resgata jogo grátis) ───
+        // ── CHECKOUT — GET (exibe tela de pagamento) ─────────────────────────
 
         [SessionAuthorize]
         [HttpGet]
@@ -105,75 +105,51 @@ namespace ProjetoNineGames.Controllers
             }
 
             var total = cart.Sum(i => i.PrecoUnitario);
+            var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
 
-            // 🟢 LÓGICA DE JOGO GRATUITO (Bypass de Pagamento) 🟢
-            if (total == 0)
+            var cartoes = new List<Cartao>();
+            string pixChaveStr = "";
+            string pixQrUrl = "";
+
+            // Se tiver valor a pagar, gera Pix e busca cartões. Se for grátis, pula isso.
+            if (total > 0)
             {
-                var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
-
                 using var conn = _db.GetConnection();
-                using var tx = conn.BeginTransaction();
-
-                try
+                using var cmdCartoes = new MySqlCommand("sp_cartao_listar", conn) { CommandType = CommandType.StoredProcedure };
+                cmdCartoes.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                using var rd = cmdCartoes.ExecuteReader();
+                while (rd.Read())
                 {
-                    int idVenda;
-
-                    using (var cmd = new MySqlCommand("sp_venda_criar", conn, tx) { CommandType = CommandType.StoredProcedure })
+                    cartoes.Add(new Cartao
                     {
-                        cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
-                        cmd.Parameters.AddWithValue("p_valor_total", 0);
-                        cmd.Parameters.AddWithValue("p_forma_pagamento", "Gratuito");
-                        var pOut = new MySqlParameter("p_id_gerado", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
-                        cmd.Parameters.Add(pOut);
-                        cmd.ExecuteNonQuery();
-                        idVenda = Convert.ToInt32(pOut.Value);
-                    }
-
-                    foreach (var item in cart)
-                    {
-                        using var cmdI = new MySqlCommand("sp_venda_adicionar_item", conn, tx) { CommandType = CommandType.StoredProcedure };
-                        cmdI.Parameters.AddWithValue("p_id_venda", idVenda);
-                        cmdI.Parameters.AddWithValue("p_id_jogo", item.JogoId);
-                        cmdI.Parameters.AddWithValue("p_quantidade", 1);
-                        cmdI.Parameters.AddWithValue("p_preco_unitario", 0);
-                        cmdI.ExecuteNonQuery();
-                    }
-
-                    using (var cmdF = new MySqlCommand("sp_venda_finalizar", conn, tx) { CommandType = CommandType.StoredProcedure })
-                    {
-                        cmdF.Parameters.AddWithValue("p_id_venda", idVenda);
-                        cmdF.ExecuteNonQuery();
-                    }
-
-                    tx.Commit();
-
-                    HttpContext.Session.Remove(CART_KEY);
-                    TempData["ok"] = $"Jogo resgatado com sucesso! Já está na sua biblioteca. 🎮";
-                    TempData["idVenda"] = idVenda;
-                    return RedirectToAction(nameof(Confirmacao));
+                        Id = rd.GetInt32("id"),
+                        Bandeira = rd.GetString("bandeira"),
+                        Ultimos4 = rd.GetString("ultimos4"),
+                        NomeTitular = rd.GetString("nome_titular"),
+                        Validade = rd.GetString("validade"),
+                        Principal = rd.GetBoolean("principal")
+                    });
                 }
-                catch (MySqlException ex)
-                {
-                    tx.Rollback();
-                    TempData["erro"] = $"Falha ao resgatar jogo grátis: {ex.Message}";
-                    return RedirectToAction(nameof(Index));
-                }
+                rd.Close();
+
+                var payloadPix = "00020126580014BR.GOV.BCB.PIX0136" +
+                                 Guid.NewGuid().ToString("N")[..32] +
+                                 "5204000053039865406" +
+                                 total.ToString("F2").Replace(",", ".") +
+                                 "5802BR5913NineGames6008SaoPaulo62070503***6304";
+
+                pixChaveStr = "ninegames@pagamentos.com.br";
+                pixQrUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={Uri.EscapeDataString(payloadPix)}";
             }
-            // 🔴 FIM DA LÓGICA DE JOGO GRATUITO 🔴
-
-            // Fluxo normal de pagamento
-            var pixChave = "00020126580014BR.GOV.BCB.PIX0136" +
-                           Guid.NewGuid().ToString("N")[..32] +
-                           "5204000053039865406" +
-                           total.ToString("F2").Replace(",", ".") +
-                           "5802BR5913NineGames6008SaoPaulo62070503***6304";
 
             var vm = new Pagamento
             {
                 Total = total,
                 Itens = cart,
-                PixChave = "ninegames@pagamentos.com.br",
-                PixQrCodeUrl = $"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={Uri.EscapeDataString(pixChave)}"
+                CartoesSalvos = cartoes,
+                PixChave = pixChaveStr,
+                PixQrCodeUrl = pixQrUrl,
+                FormaPagamento = total == 0 ? "Gratuito" : "Crédito"
             };
 
             return View(vm);
@@ -192,14 +168,21 @@ namespace ProjetoNineGames.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Validação dos campos do cartão (se não for Pix)
-            if (vm.FormaPagamento != "Pix")
+            var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
+            var total = cart.Sum(i => i.PrecoUnitario);
+
+            // 🟢 SE FOR GRÁTIS, PULA VALIDAÇÕES DE CARTÃO 🟢
+            if (total == 0)
+            {
+                vm.FormaPagamento = "Gratuito";
+                ModelState.Clear(); // Limpa erros de validação da ViewModel
+            }
+            else if (vm.FormaPagamento != "Pix")
             {
                 if (string.IsNullOrWhiteSpace(vm.NomeTitular))
                     ModelState.AddModelError("NomeTitular", "Informe o nome do titular.");
 
                 var numCartao = vm.NumeroCartao?.Replace(" ", "");
-
                 if (string.IsNullOrWhiteSpace(numCartao) || numCartao.Length < 15 || !numCartao.All(char.IsDigit))
                     ModelState.AddModelError("NumeroCartao", "Número do cartão inválido.");
 
@@ -222,35 +205,61 @@ namespace ProjetoNineGames.Controllers
                     ModelState.AddModelError("Cvv", "CVV inválido.");
             }
 
+            // Se caiu em algum erro do cartão, devolve pra tela
             if (!ModelState.IsValid)
             {
-                vm.Total = cart.Sum(i => i.PrecoUnitario);
+                vm.Total = total;
                 vm.Itens = cart;
+
+                using var connCartoes = _db.GetConnection();
+                using var cmdCartoes = new MySqlCommand("sp_cartao_listar", connCartoes) { CommandType = CommandType.StoredProcedure };
+                cmdCartoes.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                using var rd = cmdCartoes.ExecuteReader();
+                vm.CartoesSalvos = new List<Cartao>();
+                while (rd.Read())
+                {
+                    vm.CartoesSalvos.Add(new Cartao { Bandeira = rd.GetString("bandeira"), Ultimos4 = rd.GetString("ultimos4") });
+                }
+
                 return View(vm);
             }
 
-            // Grava a venda no banco
-            var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId)!.Value;
-            var total = cart.Sum(i => i.PrecoUnitario);
-            var formaPgto = vm.FormaPagamento +
-                            (vm.FormaPagamento == "Crédito" && vm.Parcelas > 1
-                                ? $" {vm.Parcelas}x"
-                                : "");
+            // Define string final de pagamento (ex: "Crédito 2x", "Gratuito", etc)
+            var formaPgto = vm.FormaPagamento + (vm.FormaPagamento == "Crédito" && vm.Parcelas > 1 ? $" {vm.Parcelas}x" : "");
 
             using var conn = _db.GetConnection();
             using var tx = conn.BeginTransaction();
 
             try
             {
+                // Se escolheu salvar cartão (e não for grátis/Pix)
+                if (vm.SalvarCartao && vm.FormaPagamento != "Pix" && vm.FormaPagamento != "Gratuito")
+                {
+                    var numLimpo = vm.NumeroCartao.Replace(" ", "");
+                    var ultimos4 = numLimpo[^4..];
+
+                    string bandeira = "Outro";
+                    if (numLimpo.StartsWith("4")) bandeira = "Visa";
+                    else if (System.Text.RegularExpressions.Regex.IsMatch(numLimpo, @"^5[1-5]")) bandeira = "Mastercard";
+                    else if (System.Text.RegularExpressions.Regex.IsMatch(numLimpo, @"^3[47]")) bandeira = "Amex";
+
+                    using var cmdCartao = new MySqlCommand("sp_cartao_adicionar", conn, tx) { CommandType = CommandType.StoredProcedure };
+                    cmdCartao.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                    cmdCartao.Parameters.AddWithValue("p_bandeira", bandeira);
+                    cmdCartao.Parameters.AddWithValue("p_ultimos4", ultimos4);
+                    cmdCartao.Parameters.AddWithValue("p_nome_titular", vm.NomeTitular.ToUpper());
+                    cmdCartao.Parameters.AddWithValue("p_validade", vm.Validade);
+                    cmdCartao.Parameters.AddWithValue("p_principal", 0);
+                    cmdCartao.ExecuteNonQuery();
+                }
+
                 int idVenda;
-                using (var cmd = new MySqlCommand("sp_venda_criar", conn, tx)
-                { CommandType = CommandType.StoredProcedure })
+                using (var cmd = new MySqlCommand("sp_venda_criar", conn, tx) { CommandType = CommandType.StoredProcedure })
                 {
                     cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
                     cmd.Parameters.AddWithValue("p_valor_total", total);
                     cmd.Parameters.AddWithValue("p_forma_pagamento", formaPgto);
-                    var pOut = new MySqlParameter("p_id_gerado", MySqlDbType.Int32)
-                    { Direction = ParameterDirection.Output };
+                    var pOut = new MySqlParameter("p_id_gerado", MySqlDbType.Int32) { Direction = ParameterDirection.Output };
                     cmd.Parameters.Add(pOut);
                     cmd.ExecuteNonQuery();
                     idVenda = Convert.ToInt32(pOut.Value);
@@ -258,8 +267,7 @@ namespace ProjetoNineGames.Controllers
 
                 foreach (var item in cart)
                 {
-                    using var cmdI = new MySqlCommand("sp_venda_adicionar_item", conn, tx)
-                    { CommandType = CommandType.StoredProcedure };
+                    using var cmdI = new MySqlCommand("sp_venda_adicionar_item", conn, tx) { CommandType = CommandType.StoredProcedure };
                     cmdI.Parameters.AddWithValue("p_id_venda", idVenda);
                     cmdI.Parameters.AddWithValue("p_id_jogo", item.JogoId);
                     cmdI.Parameters.AddWithValue("p_quantidade", 1);
@@ -267,8 +275,7 @@ namespace ProjetoNineGames.Controllers
                     cmdI.ExecuteNonQuery();
                 }
 
-                using (var cmdF = new MySqlCommand("sp_venda_finalizar", conn, tx)
-                { CommandType = CommandType.StoredProcedure })
+                using (var cmdF = new MySqlCommand("sp_venda_finalizar", conn, tx) { CommandType = CommandType.StoredProcedure })
                 {
                     cmdF.Parameters.AddWithValue("p_id_venda", idVenda);
                     cmdF.ExecuteNonQuery();
@@ -276,7 +283,7 @@ namespace ProjetoNineGames.Controllers
 
                 tx.Commit();
                 HttpContext.Session.Remove(CART_KEY);
-                TempData["ok"] = $"Compra #{idVenda} realizada com sucesso! 🎮";
+                TempData["ok"] = total == 0 ? "Jogo resgatado com sucesso! Já está na sua biblioteca. 🎮" : $"Compra #{idVenda} realizada com sucesso! 🎮";
                 TempData["idVenda"] = idVenda;
                 return RedirectToAction(nameof(Confirmacao));
             }

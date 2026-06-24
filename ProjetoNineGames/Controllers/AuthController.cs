@@ -50,6 +50,10 @@ namespace ProjetoNineGames.Controllers
             var senhaHash = rd["senha_hash"] as string ?? "";
             var twoFaEnabled = rd.GetBoolean("two_factor_enabled");
             var twoFaSecret = rd["two_factor_secret"] as string ?? "";
+
+            // Lendo a foto do usuário
+            var fotoUrl = rd.IsDBNull(rd.GetOrdinal("foto_url")) ? null : rd.GetString("foto_url");
+
             rd.Close();
 
             if (ativo == 0)
@@ -74,7 +78,8 @@ namespace ProjetoNineGames.Controllers
                 return RedirectToAction("Verificar2Fa", new { returnUrl });
             }
 
-            SetarSessao(id, nome, email, role);
+            // Repassando a fotoUrl para salvar na sessão
+            SetarSessao(id, nome, email, role, fotoUrl);
             return RedirectLocal(returnUrl);
         }
 
@@ -122,6 +127,10 @@ namespace ProjetoNineGames.Controllers
             var email = rd.GetString("email");
             var role = rd.GetString("role");
             var twoFaSecret = rd["two_factor_secret"] as string ?? "";
+
+            // Lendo a foto do usuário também no 2FA
+            var fotoUrl = rd.IsDBNull(rd.GetOrdinal("foto_url")) ? null : rd.GetString("foto_url");
+
             rd.Close();
 
             var secretBytes = Base32Encoding.ToBytes(twoFaSecret);
@@ -139,7 +148,9 @@ namespace ProjetoNineGames.Controllers
             }
 
             HttpContext.Session.Remove(SessionKeys.TwoFaPendingUserId);
-            SetarSessao(id, nome, email, role);
+
+            // Repassando a fotoUrl para salvar na sessão
+            SetarSessao(id, nome, email, role, fotoUrl);
             return RedirectLocal(returnUrl);
         }
 
@@ -283,12 +294,23 @@ namespace ProjetoNineGames.Controllers
         // HELPERS PRIVADOS
         // ======================================================
 
-        private void SetarSessao(int id, string nome, string email, string role)
+        // Parâmetro fotoUrl adicionado para gravar na sessão
+        private void SetarSessao(int id, string nome, string email, string role, string? fotoUrl)
         {
             HttpContext.Session.SetInt32(SessionKeys.UserId, id);
             HttpContext.Session.SetString(SessionKeys.UserName, nome);
             HttpContext.Session.SetString(SessionKeys.UserEmail, email);
             HttpContext.Session.SetString(SessionKeys.UserRole, role);
+
+            // Grava a URL da foto na Sessão se o usuário tiver uma cadastrada
+            if (!string.IsNullOrEmpty(fotoUrl))
+            {
+                HttpContext.Session.SetString("UserPhotoUrl", fotoUrl);
+            }
+            else
+            {
+                HttpContext.Session.Remove("UserPhotoUrl");
+            }
         }
 
         private IActionResult RedirectLocal(string? returnUrl)

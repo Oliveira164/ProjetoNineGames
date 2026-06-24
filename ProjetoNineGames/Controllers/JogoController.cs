@@ -29,6 +29,10 @@ namespace ProjetoNineGames.Controllers
             while (rd.Read()) lista.Add(MapearJogo(rd));
             rd.Close();
 
+            // Pega o ID do usuário logado e busca os jogos da biblioteca dele
+            var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId);
+            ViewBag.JogosAdquiridos = idUsuario.HasValue ? ObterJogosAdquiridos(idUsuario.Value, conn) : new List<int>();
+
             ViewBag.Categorias = ObterCategorias(conn);
             ViewBag.CategoriaAtual = categoria ?? "";
             ViewBag.Busca = busca ?? "";
@@ -56,6 +60,10 @@ namespace ProjetoNineGames.Controllers
                 if (!rd.Read()) return NotFound();
                 jogo = MapearJogo(rd);
             }
+
+            // Pega o ID do usuário logado e busca os jogos da biblioteca dele
+            var idUsuario = HttpContext.Session.GetInt32(SessionKeys.UserId);
+            ViewBag.JogosAdquiridos = idUsuario.HasValue ? ObterJogosAdquiridos(idUsuario.Value, conn) : new List<int>();
 
             // Busca sugestões da mesma categoria (4 jogos aleatórios)
             var sugestoes = new List<Jogo>();
@@ -214,22 +222,18 @@ namespace ProjetoNineGames.Controllers
                 Preco = rd.GetDecimal("preco")
             };
 
-            // Proteção: Só lê a descrição se a coluna existir no SELECT
             if (HasColumn(rd, "descricao"))
                 jogo.Descricao = rd["descricao"] as string;
 
-            // Proteção: Só lê a categoria se a coluna existir no SELECT
             if (HasColumn(rd, "categoria"))
                 jogo.Categoria = rd["categoria"] as string;
 
-            // Proteção: Só lê a imagem_url se a coluna existir no SELECT
             if (HasColumn(rd, "imagem_url"))
                 jogo.ImagemUrl = rd["imagem_url"] as string;
 
             return jogo;
         }
 
-        // Função auxiliar que checa se a coluna existe no leitor do MySql
         private static bool HasColumn(MySqlDataReader rd, string columnName)
         {
             for (int i = 0; i < rd.FieldCount; i++)
@@ -275,6 +279,21 @@ namespace ProjetoNineGames.Controllers
             using var fs = new FileStream(Path.Combine(dir, fileName), FileMode.Create);
             imagem.CopyTo(fs);
             return "jogos/" + fileName;
+        }
+
+        // Método que busca no banco as IDs que o usuário já comprou
+        private static List<int> ObterJogosAdquiridos(int idUsuario, MySqlConnection conn)
+        {
+            var lista = new List<int>();
+            using var cmd = new MySqlCommand("sp_biblioteca_obter_ids", conn)
+            { CommandType = CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id_usuario", idUsuario);
+            using var rd = cmd.ExecuteReader();
+            while (rd.Read())
+            {
+                lista.Add(rd.GetInt32("jogo_id"));
+            }
+            return lista;
         }
     }
 }

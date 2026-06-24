@@ -7,7 +7,7 @@
 
 @section Styles {
     <style>
-        /* ── Layout Lateral Genérico (Pode remover se já estiver no site.css) ── */
+        /* ── Layout Lateral  ── */
         .layout-lateral {
             display: flex;
             gap: 24px;
@@ -192,12 +192,18 @@
                             }
 
                             <div class="ng-jogo-acoes">
-                                <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
-                                    Ver detalhes
-                                </a>
 
                                 @if (jogosAdquiridos.Contains(j.Id))
                                 {
+
+                                    @if (j.Preco == 0)
+                                    {
+                                        <p class="ng-jogo-gratis">Jogo já possuído</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="ng-jogo-preco">Jogo já possuído</p>
+                                    }
                                     <a class="btn-ng btn-ng-success btn-ng-sm btn-ng-full" asp-controller="Biblioteca" asp-action="MinhaBiblioteca">
                                         Ver Na Biblioteca
                                     </a>
@@ -219,6 +225,9 @@
                                         <button class="btn-ng btn-ng-primary btn-ng-sm btn-ng-full">+ Carrinho</button>
                                     </form>
                                 }
+                                <a class="btn-ng btn-ng-outline btn-ng-sm" asp-action="Detalhe" asp-route-id="@j.Id">
+                                    Ver detalhes
+                                </a>
                             </div>
                         </div>
                     </div>

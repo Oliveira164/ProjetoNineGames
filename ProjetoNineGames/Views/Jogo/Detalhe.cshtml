@@ -1,6 +1,7 @@
 @model ProjetoNineGames.Models.Jogo
 @{
     ViewData["Title"] = Model.Titulo;
+    var jogosAdquiridos = ViewBag.JogosAdquiridos as List<int> ?? new List<int>();
     var sugestoes = ViewBag.Sugestoes as List<ProjetoNineGames.Models.Jogo> ?? new();
 }
 
@@ -9,16 +10,16 @@
         /* ── Detalhe principal ──────────────────────────────────── */
         .detalhe-wrap {
             display: grid;
-            grid-template-columns: 460px 1fr; /* Largura ajustada para imagens horizontais */
+            grid-template-columns: 460px 1fr; 
             gap: 36px;
-            max-width: 920px; /* Limite aumentado para acomodar a nova imagem */
+            max-width: 920px; 
             margin-bottom: 56px;
         }
 
         .detalhe-capa {
             width: 100%;
             max-width: 460px;
-            aspect-ratio: 16 / 9; /* Formato paisagem (deitado) */
+            aspect-ratio: 16 / 9;
             border-radius: 14px;
             overflow: hidden;
             border: 1px solid #2a2a2a;
@@ -33,7 +34,7 @@
             .detalhe-capa img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; /* Como a caixa e a foto são horizontais, o cover preenche perfeito sem cortes grosseiros */
+                object-fit: cover; 
             }
 
         .detalhe-info h1 {
@@ -271,19 +272,28 @@
         }
 
         <div class="detalhe-acoes">
-            <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="jogoId" value="@Model.Id" />
-                <button class="btn-carrinho-det"> Adicionar ao Carrinho</button>
-            </form>
-
-            @if (Context.Session.GetInt32("UserId").HasValue)
+            @if (jogosAdquiridos.Contains(Model.Id))
             {
-                <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                <a class="btn-ng btn-ng-success btn-ng-sm btn-ng-full" asp-controller="Biblioteca" asp-action="MinhaBiblioteca" style="text-align: center; padding: 12px 0; background: rgba(249, 115, 22, 0.1); color: #F96300; text-decoration: none; border-radius: 9px; font-weight: 600; border: 1px solid rgba(249, 115, 22, .2);">
+                     Ver Na Biblioteca
+                </a>
+            }
+            else
+            {
+                <form asp-controller="Carrinho" asp-action="Adicionar" method="post">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="jogoId" value="@Model.Id" />
-                    <button class="btn-wish-det">❤ Adicionar à Wishlist</button>
+                    <button class="btn-carrinho-det">Adicionar ao Carrinho</button>
                 </form>
+
+                @if (Context.Session.GetInt32("UserId").HasValue)
+                {
+                    <form asp-controller="Biblioteca" asp-action="AdicionarWishlist" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="jogoId" value="@Model.Id" />
+                        <button class="btn-wish-det">❤ Adicionar à Wishlist</button>
+                    </form>
+                }
             }
         </div>
     </div>

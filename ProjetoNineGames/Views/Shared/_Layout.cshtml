@@ -1,11 +1,9 @@
 @using ProjetoNineGames.Autenticacao
 @{
-	var isLogged = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
-	var role = Context.Session.GetString(SessionKeys.UserRole) ?? "";
-	var userName = Context.Session.GetString(SessionKeys.UserName) ?? "";
-
-	// Páginas que usam layout nulo (login/2fa) não chegam aqui,
-	// então o footer aparece em TODAS as outras páginas automaticamente.
+    var isLogged = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
+    var role = Context.Session.GetString(SessionKeys.UserRole) ?? "";
+    var userName = Context.Session.GetString(SessionKeys.UserName) ?? "";
+    var fotoUrl = Context.Session.GetString("UserPhotoUrl");
 }
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -79,10 +77,34 @@
 		}
 
 		.topnav-user {
-		color: #a1a1aa;
-		font-size: 13px;
-		padding: 0 8px;
+			color: #a1a1aa;
+			font-size: 13px;
+			padding: 0 8px;
+			display: flex; 
+			align-items: center;
+			gap: 8px; 
+			text-decoration: none;
 		}
+
+		.nav-avatar-mini {
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			object-fit: cover;
+			border: 1px solid #3a3a3a;
+			background: #222;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 16px;
+			overflow: hidden;
+		}
+
+			.nav-avatar-mini img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
 
 		.btn-sair {
 		background: none;
@@ -100,7 +122,6 @@
 		color: #F96300;
 		}
 
-		/* Main cresce para empurrar o footer para baixo */
 		main.container {
 		flex: 1;
 		padding: 28px 24px;
@@ -233,7 +254,6 @@
 			</a>
 			<a asp-controller="Home" asp-action="Index">Home</a>
 			<a asp-controller="Jogo" asp-action="Index">Vitrine</a>
-			<a asp-controller="Carrinho" asp-action="Index">Carrinho</a>
 
 			@if (isLogged)
 			{
@@ -258,7 +278,17 @@
 			@if (isLogged)
 			{
 				<a asp-controller="Usuario" asp-action="Perfil" class="topnav-user">
-					 Meu Perfil
+					<div class="nav-avatar-mini">
+						@if (!string.IsNullOrEmpty(fotoUrl))
+						{
+							<img src="~/@fotoUrl" alt="Avatar" />
+						}
+						else
+						{
+							<span>👤</span>
+						}
+					</div>
+					Meu Perfil
 				</a>
 				<form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline">
 					@Html.AntiForgeryToken()

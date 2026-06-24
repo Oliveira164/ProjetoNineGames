@@ -227,6 +227,7 @@ namespace ProjetoNineGames.Controllers
             cmd.Parameters.AddWithValue("p_id", id);
             cmd.Parameters.AddWithValue("p_foto_url", fotoUrl);
             cmd.ExecuteNonQuery();
+            HttpContext.Session.SetString("UserPhotoUrl", fotoUrl);
 
             TempData["ok"] = "Foto atualizada!";
             return RedirectToAction(nameof(Perfil));
