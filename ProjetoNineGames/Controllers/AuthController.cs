@@ -64,7 +64,7 @@ namespace ProjetoNineGames.Controllers
 
             if (!senhaOk)
             {
-                ViewBag.Error = "Senha inválida.";
+                ViewBag.Error = "Senha ou e-mail inválidos.";
                 return View();
             }
 

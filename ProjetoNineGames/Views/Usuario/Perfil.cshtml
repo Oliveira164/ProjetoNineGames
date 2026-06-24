@@ -1,56 +1,1036 @@
-@model ProjetoNineGames.Models.Usuario
-@{ ViewData["Title"] = "Meu Perfil"; }
+@model ProjetoNineGames.Models.Perfil
+@{
+    ViewData["Title"] = "Meu Perfil";
+    var aba = ViewBag.Aba as string ?? "minha-conta";
+    var idUsuario = Context.Session.GetInt32("UserId") ?? 0;
+}
 
-<h2 style="margin-bottom:20px">Meu Perfil</h2>
-
-@if (TempData["ok"] != null) { <div class="ng-alert ng-alert-ok">@TempData["ok"]</div> }
-
-<div class="ng-form-card ng-perfil-card">
-    <div style="margin-bottom:20px">
-        <p style="font-size:14px;color:var(--ng-text-muted);margin-bottom:6px">Nome</p>
-        <p style="font-size:16px;font-weight:600">@Model.Nome</p>
-    </div>
-    <div style="margin-bottom:20px">
-        <p style="font-size:14px;color:var(--ng-text-muted);margin-bottom:6px">E-mail</p>
-        <p style="font-size:16px">@Model.Email</p>
-    </div>
-    <div style="margin-bottom:24px">
-        <p style="font-size:14px;color:var(--ng-text-muted);margin-bottom:6px">Role</p>
-        @{
-            var roleCls = Model.Role == "Admin" ? "ng-badge-blue"
-                        : Model.Role == "Funcionario" ? "ng-badge-amber"
-                        : "ng-badge-gray";
+@section Styles {
+    <style>
+        /* ── Layout ─────────────────────────────────────────────── */
+        .perfil-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 24px;
+            align-items: start;
         }
-        <span class="ng-badge @roleCls">@Model.Role</span>
-    </div>
 
-    <hr class="divider" />
+        /* ── Sidebar ────────────────────────────────────────────── */
+        .perfil-sidebar {
+            background: var(--ng-bg-card);
+            border: 1px solid var(--ng-border);
+            border-radius: var(--ng-radius-lg);
+            overflow: hidden;
+            position: sticky;
+            top: calc(var(--ng-nav-h) + 16px);
+        }
 
-    <h3 style="font-size:1rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">
-        Autenticação em 2 Etapas
-    </h3>
+        .perfil-avatar-wrap {
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--ng-border);
+            background: linear-gradient(135deg, #181818, #1f1200);
+        }
 
-    @if (Model.TwoFactorEnabled)
-    {
-        <div class="ng-twofa-box ng-twofa-on">
-            🔒 O 2FA está <strong>ativado</strong>. Ao fazer login você precisará confirmar com o app.
-        </div>
-        <form asp-action="Desativar2Fa" method="post">
-            @Html.AntiForgeryToken()
-            <button class="btn-ng btn-ng-danger"
-                    onclick="return confirm('Desativar o 2FA? Sua conta ficará menos protegida.')">
-                Desativar 2FA
+        .perfil-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            border: 2px solid var(--ng-border-o);
+            object-fit: cover;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            overflow: hidden;
+        }
+
+            .perfil-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .perfil-nome-sidebar {
+            font-family: var(--ng-font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--ng-text);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .perfil-email-sidebar {
+            font-size: 11px;
+            color: var(--ng-text-dim);
+            text-align: center;
+            word-break: break-all;
+        }
+
+        .btn-trocar-foto-small {
+            background: transparent;
+            border: 1px solid var(--ng-border);
+            color: var(--ng-text-muted);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: var(--ng-font-body);
+            transition: border-color var(--ng-tr), color var(--ng-tr);
+        }
+
+            .btn-trocar-foto-small:hover {
+                border-color: var(--ng-orange);
+                color: var(--ng-orange);
+            }
+
+        .sidebar-nav {
+            padding: 8px 0;
+        }
+
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ng-text-muted);
+            text-decoration: none;
+            transition: background var(--ng-tr), color var(--ng-tr);
+            border-left: 2px solid transparent;
+        }
+
+            .sidebar-nav-item:hover {
+                background: var(--ng-orange-subtle);
+                color: var(--ng-text);
+            }
+
+            .sidebar-nav-item.ativo {
+                background: var(--ng-orange-subtle);
+                color: var(--ng-orange);
+                border-left-color: var(--ng-orange);
+                font-weight: 600;
+            }
+
+            .sidebar-nav-item .nav-icon {
+                font-size: 15px;
+                flex-shrink: 0;
+            }
+
+        /* ── Conteúdo ───────────────────────────────────────────── */
+        .perfil-content {
+        }
+
+        .perfil-section {
+            background: var(--ng-bg-card);
+            border: 1px solid var(--ng-border);
+            border-radius: var(--ng-radius-lg);
+            padding: 26px;
+            margin-bottom: 16px;
+        }
+
+            .perfil-section:last-child {
+                margin-bottom: 0;
+            }
+
+        .perfil-section-title {
+            font-family: var(--ng-font-display);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--ng-text);
+            margin-bottom: 4px;
+        }
+
+        .perfil-section-desc {
+            font-size: 13px;
+            color: var(--ng-text-muted);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+            .form-row.single {
+                grid-template-columns: 1fr;
+            }
+
+        /* ── Upload de foto ─────────────────────────────────────── */
+        .foto-upload-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: var(--ng-bg-input);
+            border: 1px solid var(--ng-border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .foto-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--ng-border-o);
+            object-fit: cover;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: #222;
+            flex-shrink: 0;
+        }
+
+            .foto-preview img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .foto-info {
+            flex: 1;
+        }
+
+            .foto-info p {
+                font-size: 13px;
+                color: var(--ng-text);
+                margin-bottom: 4px;
+                font-weight: 500;
+            }
+
+            .foto-info span {
+                font-size: 11px;
+                color: var(--ng-text-dim);
+            }
+
+        /* ── Cartões ────────────────────────────────────────────── */
+        .cartao-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--ng-bg-input);
+            border: 1px solid var(--ng-border);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: border-color var(--ng-tr);
+        }
+
+            .cartao-item:hover {
+                border-color: var(--ng-border-o);
+            }
+
+        .cartao-icone {
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .cartao-info {
+            flex: 1;
+        }
+
+        .cartao-numero {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ng-text);
+            letter-spacing: 2px;
+        }
+
+        .cartao-meta {
+            font-size: 12px;
+            color: var(--ng-text-muted);
+            margin-top: 2px;
+        }
+
+        .cartao-principal {
+            font-size: 11px;
+            font-weight: 600;
+            background: var(--ng-orange-subtle);
+            color: var(--ng-orange);
+            border: 1px solid var(--ng-border-o);
+            border-radius: 20px;
+            padding: 2px 8px;
+        }
+
+        /* ── Formulário de cartão ───────────────────────────────── */
+        .cartao-form-wrap {
+            background: var(--ng-bg-input);
+            border: 1px solid var(--ng-border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .cartao-form-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ng-text-muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 14px;
+        }
+
+        /* ── Pedidos ────────────────────────────────────────────── */
+        .pedido-card {
+            background: var(--ng-bg-input);
+            border: 1px solid var(--ng-border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            transition: border-color var(--ng-tr);
+        }
+
+            .pedido-card:hover {
+                border-color: var(--ng-border-o);
+            }
+
+        .pedido-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            cursor: pointer;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pedido-id {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ng-orange);
+        }
+
+        .pedido-data {
+            font-size: 12px;
+            color: var(--ng-text-muted);
+        }
+
+        .pedido-valor {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--ng-text);
+        }
+
+        .pedido-status {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-fin {
+            background: rgba(34,197,94,.1);
+            color: #4ade80;
+        }
+
+        .status-abt {
+            background: rgba(245,158,11,.1);
+            color: #fbbf24;
+        }
+
+        .status-can {
+            background: rgba(239,68,68,.1);
+            color: #f87171;
+        }
+
+        .pedido-itens {
+            display: none;
+            padding: 0 18px 14px;
+            border-top: 1px solid var(--ng-border);
+        }
+
+            .pedido-itens.aberto {
+                display: block;
+            }
+
+        .pedido-item-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+        }
+
+            .pedido-item-row:last-child {
+                border-bottom: none;
+            }
+
+        .pedido-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #111;
+            border: 1px solid var(--ng-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+            .pedido-thumb img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        /* ── Segurança ──────────────────────────────────────────── */
+        .twofa-box {
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 14px;
+            border: 1px solid;
+        }
+
+        .twofa-on {
+            background: var(--ng-orange-subtle);
+            border-color: var(--ng-border-o);
+            color: #ffb07a;
+        }
+
+        .twofa-off {
+            background: var(--ng-bg-input);
+            border-color: var(--ng-border);
+            color: var(--ng-text-muted);
+        }
+
+        /* ── Responsive ─────────────────────────────────────────── */
+        @@media (max-width: 800px) {
+            .perfil-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .perfil-sidebar {
+                position: static;
+            }
+
+            .sidebar-nav {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 8px;
+                gap: 4px;
+            }
+
+            .sidebar-nav-item {
+                border-left: none;
+                border-radius: 8px;
+                padding: 8px 14px;
+            }
+
+                .sidebar-nav-item.ativo {
+                    border-left: none;
+                }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .kpi-icon {
+            display: flex;
+            align-items: center;
+            height: 32px;
+            margin-bottom: 4px;
+        }
+
+            .kpi-icon img {
+                height: 28px;
+                width: auto;
+                object-fit: contain;
+            }
+
+    </style>
+}
+
+@if (ViewBag.Ok != null)
+{
+     <div class="ng-alert ng-alert-ok" style="margin-bottom:16px">@ViewBag.Ok</div>
+}
+@if (ViewBag.Erro != null)
+{
+     <div class="ng-alert ng-alert-erro" style="margin-bottom:16px">@ViewBag.Erro</div>
+}
+
+<div class="perfil-layout">
+
+    <!-- ══ Sidebar ════════════════════════════════════════════ -->
+    <aside class="perfil-sidebar">
+
+        <!-- Avatar + nome -->
+        <div class="perfil-avatar-wrap">
+            <div class="perfil-avatar">
+                @if (!string.IsNullOrWhiteSpace(Model.FotoUrl))
+                {
+                    <img src="~/@Model.FotoUrl" alt="Avatar" />
+                }
+                else
+                {
+                    <span>👤</span>
+                }
+            </div>
+            <p class="perfil-nome-sidebar">@Model.Nome</p>
+            <p class="perfil-email-sidebar">@Model.Email</p>
+
+            <!-- Botão de trocar foto inline -->
+            <form asp-action="TrocarFoto" method="post" enctype="multipart/form-data"
+                  id="formFoto" style="display:none">
+                @Html.AntiForgeryToken()
+                <input type="file" name="foto" id="inputFoto" accept="image/*"
+                       onchange="document.getElementById('formFoto').submit()" />
+            </form>
+            <button class="btn-trocar-foto-small"
+                    onclick="document.getElementById('inputFoto').click()">
+                 Trocar foto
             </button>
-        </form>
-    }
-    else
-    {
-        <div class="ng-twofa-box ng-twofa-off">
-            🔓 O 2FA está <strong>desativado</strong>. Ative para proteger sua conta com o app NineGames.
         </div>
-        <form asp-action="Ativar2Fa" method="post">
-            @Html.AntiForgeryToken()
-            <button class="btn-ng btn-ng-primary">Ativar 2FA</button>
-        </form>
-    }
+
+        <!-- Links de navegação -->
+        <nav class="sidebar-nav">
+            <a class="sidebar-nav-item @(aba == "minha-conta"   ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="minha-conta">
+                <div class="kpi-icon"><img src="~/images/usuario_emoji.png" alt="Clientes Ativos" /></div> Minha Conta
+            </a>
+            <a class="sidebar-nav-item @(aba == "alterar-senha"  ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="alterar-senha">
+                <div class="kpi-icon"><img src="~/images/chave-emoji.png" alt="Alterar Senha" /></div> Alterar Senha
+            </a>
+            <a class="sidebar-nav-item @(aba == "alterar-email"  ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="alterar-email">
+                <div class="kpi-icon"><img src="~/images/email-emoji.png" alt="Alterar E-mail" /></div> Alterar E-mail
+            </a>
+            <a class="sidebar-nav-item @(aba == "cartoes"        ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="cartoes">
+                <div class="kpi-icon"><img src="~/images/cartao-emoji.png" alt="Ver cartões" /></div> Cartões
+            </a>
+            <a class="sidebar-nav-item @(aba == "meus-pedidos"   ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="meus-pedidos">
+                <div class="kpi-icon"><img src="~/images/itens_vendidos_emoji.png" alt="Meus pedidos" /></div> Meus Pedidos
+            </a>
+            <a class="sidebar-nav-item @(aba == "seguranca"      ? "ativo" : "")"
+               asp-action="Perfil" asp-route-aba="seguranca">
+                <div class="kpi-icon"><img src="~/images/segurança-emoji.png" alt="Seguraça" /></div> Segurança
+            </a>
+        </nav>
+    </aside>
+
+    <!-- ══ Conteúdo ═══════════════════════════════════════════ -->
+    <div class="perfil-content">
+
+        @* ── ABA: Minha Conta ─────────────────────────────── *@
+        @if (aba == "minha-conta")
+        {
+            <!-- Foto -->
+            <div class="perfil-section">
+                <p class="perfil-section-title">Foto de perfil</p>
+                <p class="perfil-section-desc">Será exibida no seu perfil e na navbar.</p>
+
+                <div class="foto-upload-wrap">
+                    <div class="foto-preview">
+                        @if (!string.IsNullOrWhiteSpace(Model.FotoUrl))
+                        {
+                            <img src="~/@Model.FotoUrl" alt="Avatar" />
+                        }
+                        else
+                        {
+                            <span>👤</span>
+                        }
+                    </div>
+                    <div class="foto-info">
+                        <p>Escolha uma foto</p>
+                        <span>JPG, PNG ou WebP · máx. 2 MB</span>
+                    </div>
+                    <button class="btn-ng btn-ng-ghost btn-ng-sm"
+                            onclick="document.getElementById('inputFoto').click()">
+                        <div class="kpi-icon"><img src="~/images/camera-emoji.png" alt="Trocar Foto" /></div> Alterar foto
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dados pessoais -->
+            <div class="perfil-section">
+                <p class="perfil-section-title">Informações pessoais</p>
+                <p class="perfil-section-desc">Seus dados cadastrais.</p>
+
+                <form asp-action="AtualizarDados" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="ng-field">
+                        <label class="ng-label">Nome completo *</label>
+                        <input class="ng-input" type="text" name="nome"
+                               value="@Model.Nome" required maxlength="100" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="ng-field">
+                            <label class="ng-label">Telefone</label>
+                            <input class="ng-input" type="tel" name="telefone"
+                                   value="@Model.Telefone" placeholder="(11) 99999-9999"
+                                   maxlength="20" id="inputTelefone"
+                                   oninput="mascaraTelefone(this)" />
+                        </div>
+                        <div class="ng-field">
+                            <label class="ng-label">Data de nascimento</label>
+                            <input class="ng-input" type="date" name="dataNasc"
+                                   value="@Model.DataNasc" />
+                        </div>
+                    </div>
+
+                    <div class="ng-field">
+                        <label class="ng-label">CPF</label>
+                        <input class="ng-input" type="text" name="cpf"
+                               value="@Model.Cpf" placeholder="000.000.000-00"
+                               maxlength="14" oninput="mascaraCpf(this)" />
+                    </div>
+
+                    <div class="ng-field">
+                        <label class="ng-label">E-mail</label>
+                        <input class="ng-input" type="email" value="@Model.Email"
+                               disabled style="opacity:.5;cursor:not-allowed" />
+                        <span class="ng-hint">
+                            Para trocar o e-mail, acesse
+                            <a asp-action="Perfil" asp-route-aba="alterar-email"
+                               style="color:var(--ng-orange)">Alterar E-mail</a>.
+                        </span>
+                    </div>
+
+                    <div class="ng-field">
+                        <label class="ng-label">Membro desde</label>
+                        <input class="ng-input" value="@Model.CriadoEm.ToString("dd/MM/yyyy")"
+                               disabled style="opacity:.5;cursor:not-allowed" />
+                    </div>
+
+                    <div class="ng-form-actions">
+                        <button type="submit" class="btn-ng btn-ng-primary">Salvar alterações</button>
+                    </div>
+                </form>
+            </div>
+        }
+
+        @* ── ABA: Alterar Senha ───────────────────────────── *@
+        else if (aba == "alterar-senha")
+        {
+            <div class="perfil-section">
+                <p class="perfil-section-title">Alterar Senha</p>
+                <p class="perfil-section-desc">
+                    Escolha uma senha forte com pelo menos 6 caracteres.
+                </p>
+
+                <form asp-action="TrocarSenha" method="post" style="max-width:440px">
+                    @Html.AntiForgeryToken()
+
+                    <div class="ng-field">
+                        <label class="ng-label">Senha atual</label>
+                        <input class="ng-input" type="password" name="senhaAtual"
+                               required placeholder="••••••••" />
+                    </div>
+                    <div class="ng-field">
+                        <label class="ng-label">Nova senha</label>
+                        <input class="ng-input" type="password" name="novaSenha"
+                               required minlength="6" placeholder="••••••••"
+                               id="novaSenhaInput" />
+                    </div>
+                    <div class="ng-field">
+                        <label class="ng-label">Confirmar nova senha</label>
+                        <input class="ng-input" type="password" name="confirmarSenha"
+                               required minlength="6" placeholder="••••••••"
+                               oninput="validarSenhas(this)" />
+                        <span class="ng-hint" id="senhaHint"></span>
+                    </div>
+
+                    <button type="submit" class="btn-ng btn-ng-primary">Alterar senha</button>
+                </form>
+            </div>
+        }
+
+        @* ── ABA: Alterar E-mail ──────────────────────────── *@
+        else if (aba == "alterar-email")
+        {
+            <div class="perfil-section">
+                <p class="perfil-section-title">Alterar E-mail</p>
+                <p class="perfil-section-desc">
+                    E-mail atual: <strong style="color:var(--ng-text)">@Model.Email</strong>
+                </p>
+
+                <form asp-action="TrocarEmail" method="post" style="max-width:440px">
+                    @Html.AntiForgeryToken()
+
+                    <div class="ng-field">
+                        <label class="ng-label">Novo e-mail</label>
+                        <input class="ng-input" type="email" name="novoEmail"
+                               required placeholder="novo@email.com" />
+                    </div>
+                    <div class="ng-field">
+                        <label class="ng-label">Confirme sua senha atual</label>
+                        <input class="ng-input" type="password" name="senhaAtual"
+                               required placeholder="••••••••" />
+                        <span class="ng-hint">Precisamos confirmar sua identidade.</span>
+                    </div>
+
+                    <button type="submit" class="btn-ng btn-ng-primary">Salvar novo e-mail</button>
+                </form>
+            </div>
+        }
+
+        @* ── ABA: Cartões ─────────────────────────────────── *@
+        else if (aba == "cartoes")
+        {
+            <div class="perfil-section">
+                <p class="perfil-section-title">Cartões de Crédito/Débito</p>
+                <p class="perfil-section-desc">Seus métodos de pagamento salvos.</p>
+
+                @{
+                    var cartoes = new List<ProjetoNineGames.Models.Cartao>();
+                    using var connC = new ProjetoNineGames.Data.Database().GetConnection();
+                    using var cmdC = new MySql.Data.MySqlClient.MySqlCommand("sp_cartao_listar", connC)
+                { CommandType = System.Data.CommandType.StoredProcedure };
+                    cmdC.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                    using var rdC = cmdC.ExecuteReader();
+                    while (rdC.Read())
+                    {
+                        cartoes.Add(new ProjetoNineGames.Models.Cartao
+                    {
+                        Id = rdC.GetInt32("id"),
+                        Bandeira = rdC.GetString("bandeira"),
+                        Ultimos4 = rdC.GetString("ultimos4"),
+                        NomeTitular = rdC.GetString("nome_titular"),
+                        Validade = rdC.GetString("validade"),
+                        Principal = rdC.GetBoolean("principal"),
+                        CriadoEm = rdC.GetDateTime("criado_em"),
+                    });
+                    }
+                }
+
+                @if (!cartoes.Any())
+                {
+                    <div style="text-align:center;padding:30px 0;color:var(--ng-text-dim)">
+                        <p style="font-size:14px">Nenhum cartão cadastrado ainda.</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var c in cartoes)
+                    {
+                        <div class="cartao-item">
+                            <div class="cartao-icone">@c.Icone</div>
+                            <div class="cartao-info">
+                                <div class="cartao-numero">
+                                    @c.Bandeira  •••• •••• •••• @c.Ultimos4
+                                </div>
+                                <div class="cartao-meta">
+                                    @c.NomeTitular · Validade @c.Validade
+                                </div>
+                            </div>
+                            @if (c.Principal)
+                            {
+                                <span class="cartao-principal">Principal</span>
+                            }
+                            <form asp-action="RemoverCartao" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartaoId" value="@c.Id" />
+                                <button class="btn-ng btn-ng-danger btn-ng-sm"
+                                        onclick="return confirm('Remover cartão?')">
+                                    Remover
+                                </button>
+                            </form>
+                        </div>
+                    }
+                }
+
+                <!-- Formulário para adicionar cartão -->
+                <div class="cartao-form-wrap">
+                    <p class="cartao-form-title">+ Adicionar novo cartão</p>
+                    <form asp-action="AdicionarCartao" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="ng-field">
+                            <label class="ng-label">Número do cartão</label>
+                            <input class="ng-input" type="text" name="numeroCartao"
+                                   placeholder="0000 0000 0000 0000" maxlength="19"
+                                   required oninput="mascaraCartaoPerfil(this)"
+                                   autocomplete="cc-number" />
+                        </div>
+                        <div class="ng-field">
+                            <label class="ng-label">Nome do titular</label>
+                            <input class="ng-input" type="text" name="nomeTitular"
+                                   placeholder="FULANO DA SILVA" maxlength="100"
+                                   required style="text-transform:uppercase"
+                                   autocomplete="cc-name" />
+                        </div>
+                        <div class="form-row">
+                            <div class="ng-field">
+                                <label class="ng-label">Validade</label>
+                                <input class="ng-input" type="text" name="validade"
+                                       placeholder="MM/AA" maxlength="5" required
+                                       oninput="mascaraValidadePerfil(this)"
+                                       autocomplete="cc-exp" />
+                            </div>
+                            <div class="ng-field">
+                                <label class="ng-label">CVV</label>
+                                <input class="ng-input" type="password"
+                                       placeholder="•••" maxlength="4"
+                                       autocomplete="cc-csc" />
+                                <span class="ng-hint">O CVV não é armazenado.</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-ng btn-ng-primary">Adicionar cartão</button>
+                    </form>
+                </div>
+            </div>
+        }
+
+        @* ── ABA: Meus Pedidos ───────────────────────────── *@
+        else if (aba == "meus-pedidos")
+        {
+            <div class="perfil-section">
+                <p class="perfil-section-title">Meus Pedidos</p>
+                <p class="perfil-section-desc">Histórico completo das suas compras.</p>
+
+                @{
+                    var pedidos = new List<ProjetoNineGames.Models.Pedido>();
+                    using var connP = new ProjetoNineGames.Data.Database().GetConnection();
+                    using var cmdP = new MySql.Data.MySqlClient.MySqlCommand("sp_pedidos_usuario", connP)
+                { CommandType = System.Data.CommandType.StoredProcedure };
+                    cmdP.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                    using var rdP = cmdP.ExecuteReader();
+                    while (rdP.Read())
+                    {
+                        pedidos.Add(new ProjetoNineGames.Models.Pedido
+                    {
+                        Id = rdP.GetInt32("id"),
+                        DataHora = rdP.GetDateTime("data_hora"),
+                        ValorTotal = rdP.GetDecimal("valor_total"),
+                        FormaPagamento = rdP["forma_pagamento"] as string,
+                        Status = rdP.GetString("status"),
+                        QtdItens = rdP.GetInt32("qtd_itens"),
+                    });
+                    }
+                    rdP.Close();
+
+                    // Busca itens de cada pedido
+                    foreach (var p in pedidos)
+                    {
+                        using var cmdI = new MySql.Data.MySqlClient.MySqlCommand("sp_pedido_itens", connP)
+                    { CommandType = System.Data.CommandType.StoredProcedure };
+                        cmdI.Parameters.AddWithValue("p_id_venda", p.Id);
+                        cmdI.Parameters.AddWithValue("p_id_usuario", idUsuario);
+                        using var rdI = cmdI.ExecuteReader();
+                        while (rdI.Read())
+                        {
+                            p.Itens.Add(new ProjetoNineGames.Models.PedidoItem
+                        {
+                            Id = rdI.GetInt32("id"),
+                            Titulo = rdI.GetString("titulo"),
+                            ImagemUrl = rdI["imagem_url"] as string,
+                            Quantidade = rdI.GetInt32("quantidade"),
+                            PrecoUnitario = rdI.GetDecimal("preco_unitario"),
+                            Subtotal = rdI.GetDecimal("subtotal"),
+                        });
+                        }
+                    }
+                }
+
+                @if (!pedidos.Any())
+                {
+                    <div style="text-align:center;padding:40px 0;color:var(--ng-text-dim)">
+                        <div class="kpi-icon"><img src="~/images/itens_vendidos_emoji.png" alt="Pedidos" /></div>
+                        <p style="font-size:14px;margin-bottom:16px">Você ainda não fez nenhuma compra.</p>
+                        <a asp-controller="Jogo" asp-action="Index" class="btn-ng btn-ng-primary">
+                            Explorar jogos
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var p in pedidos)
+                    {
+                        var stCls = p.Status == "Finalizada" ? "status-fin"
+                        : p.Status == "Cancelada" ? "status-can"
+                        : "status-abt";
+                        <div class="pedido-card">
+                            <div class="pedido-header"
+                                 onclick="togglePedido(@p.Id)">
+                                <div>
+                                    <div class="pedido-id">#@p.Id</div>
+                                    <div class="pedido-data">
+                                        @p.DataHora.ToString("dd/MM/yyyy HH:mm") ·
+                                        @p.QtdItens item@(p.QtdItens != 1 ? "s" : "")
+                                        @if (!string.IsNullOrWhiteSpace(p.FormaPagamento))
+                                        {
+                                            <text> · @p.FormaPagamento</text>
+                                        }
+                                    </div>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:12px">
+                                    <span class="pedido-status @stCls">@p.Status</span>
+                                    <span class="pedido-valor">R$ @p.ValorTotal.ToString("N2")</span>
+                                    <span style="color:var(--ng-text-dim);font-size:12px"
+                                          id="seta-@p.Id">▼</span>
+                                </div>
+                            </div>
+
+                            <div class="pedido-itens" id="pedido-itens-@p.Id">
+                                @foreach (var item in p.Itens)
+                                {
+                                    <div class="pedido-item-row">
+                                        <div class="pedido-thumb">
+                                            @if (!string.IsNullOrWhiteSpace(item.ImagemUrl))
+                                            {
+                                                <img src="~/@item.ImagemUrl" alt="@item.Titulo" />
+                                            }
+                                            else
+                                            {
+                                                <span>🎮</span>
+                                            }
+                                        </div>
+                                        <div style="flex:1">
+                                            <div style="font-size:13px;font-weight:600;color:var(--ng-text)">
+                                                @item.Titulo
+                                            </div>
+                                            <div style="font-size:12px;color:var(--ng-text-muted)">
+                                                Qtd: @item.Quantidade · R$ @item.PrecoUnitario.ToString("N2") un.
+                                            </div>
+                                        </div>
+                                        <div style="font-weight:700;color:var(--ng-orange);font-size:14px">
+                                            R$ @item.Subtotal.ToString("N2")
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        }
+
+        @* ── ABA: Segurança ──────────────────────────────── *@
+        else if (aba == "seguranca")
+        {
+            <div class="perfil-section">
+                <p class="perfil-section-title">Autenticação em 2 Etapas</p>
+                <p class="perfil-section-desc">
+                    Proteja sua conta com o app NineGames.
+                </p>
+
+                @if (Model.TwoFactorEnabled)
+                {
+                    <div class="twofa-box twofa-on">
+                        <div class="kpi-icon"><img src="~/images/cadeado-emoji.png" alt="2FA Ativo" /></div> O 2FA está <strong>ativado</strong>. Ao fazer login você precisará
+                        confirmar com o código gerado pelo app NineGames.
+                    </div>
+                    <form asp-action="Desativar2Fa" method="post">
+                        @Html.AntiForgeryToken()
+                        <button class="btn-ng btn-ng-danger"
+                                onclick="return confirm('Desativar o 2FA? Sua conta ficará menos protegida.')">
+                            Desativar 2FA
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <div class="twofa-box twofa-off">
+                        <div class="kpi-icon"><img src="~/images/cadeado-aberto-emoji.png" alt="2FA" /></div> O 2FA está <strong>desativado</strong>. Recomendamos ativar para
+                        maior segurança da sua conta.
+                    </div>
+                    <form asp-action="Ativar2Fa" method="post">
+                        @Html.AntiForgeryToken()
+                        <button class="btn-ng btn-ng-primary"><div class="kpi-icon"><img src="~/images/cadeado-preto-emoji.png" alt="2FA Ativo" /></div> Ativar 2FA</button>
+                    </form>
+                }
+            </div>
+
+            <!-- Informações da conta -->
+            <div class="perfil-section">
+                <p class="perfil-section-title">Informações da conta</p>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                        <span class="text-muted">Membro desde</span>
+                        <span>@Model.CriadoEm.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+                        <span class="text-muted">Role</span>
+                        <span class="ng-badge @(Model.Role == "Admin" ? "ng-badge-blue" : Model.Role == "Funcionario" ? "ng-badge-amber" : "ng-badge-gray")">
+                            @Model.Role
+                        </span>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;padding:10px 0">
+                        <span class="text-muted">Status</span>
+                        <span class="ng-badge ng-badge-green">Ativo</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Máscara telefone
+        function mascaraTelefone(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 11);
+            if (v.length <= 10)
+                v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            else
+                v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+            input.value = v;
+        }
+
+        // Máscara CPF
+        function mascaraCpf(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 11);
+            v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, '$1.$2.$3-$4');
+            input.value = v;
+        }
+
+        // Máscara cartão
+        function mascaraCartaoPerfil(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 16);
+            input.value = v.replace(/(.{4})/g, '$1 ').trim();
+        }
+
+        // Máscara validade
+        function mascaraValidadePerfil(input) {
+            let v = input.value.replace(/\D/g, '').substring(0, 4);
+            if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+            input.value = v;
+        }
+
+        // Validar senhas em tempo real
+        function validarSenhas(input) {
+            const nova  = document.getElementById('novaSenhaInput').value;
+            const hint  = document.getElementById('senhaHint');
+            if (!hint) return;
+            if (input.value === nova) {
+                hint.textContent = '✓ Senhas conferem';
+                hint.style.color = '#4ade80';
+            } else {
+                hint.textContent = '✗ Senhas não conferem';
+                hint.style.color = '#f87171';
+            }
+        }
+
+        // Abrir/fechar pedido
+        function togglePedido(id) {
+            const itens = document.getElementById('pedido-itens-' + id);
+            const seta  = document.getElementById('seta-' + id);
+            if (!itens) return;
+            const aberto = itens.classList.toggle('aberto');
+            if (seta) seta.textContent = aberto ? '▲' : '▼';
+        }
+    </script>
+}
