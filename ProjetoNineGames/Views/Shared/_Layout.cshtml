@@ -619,6 +619,10 @@
         </div>
     </footer>
 
+    <button id="btnVoltarTopo" onclick="voltarAoTopo()" title="Voltar ao topo">
+        ↑
+    </button>
+
     <!-- ══ Script do menu hamburguer ══════════════════════════ -->
     <script>
         (function () {
@@ -665,6 +669,28 @@
                 if (window.innerWidth > 860) fechar();
             });
         })();
+
+            // Seleciona o botão
+        let btnTopo = document.getElementById("btnVoltarTopo");
+
+        // Fica "escutando" o scroll da tela
+        window.onscroll = function() {
+            // Se desceu mais de 300 pixels, mostra o botão
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btnTopo.classList.add("mostrar");
+                btnTopo.style.display = "flex"; // Garante que ele apareça
+            } else {
+                btnTopo.classList.remove("mostrar");
+            }
+        };
+
+        // Função executada ao clicar no botão
+        function voltarAoTopo() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // Faz a rolagem ser suave e elegante
+            });
+        }
     </script>
 
     @RenderSection("Scripts", required: false)

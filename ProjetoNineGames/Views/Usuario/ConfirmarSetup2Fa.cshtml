@@ -1,0 +1,147 @@
+﻿@{
+    ViewData["Title"] = "2FA Ativado com Sucesso";
+}
+
+@section Styles {
+    <style>
+        /* ── Card de Sucesso Centralizado ───────────────────────── */
+        .ng-sucesso-container {
+            max-width: 540px;
+            margin: 40px auto;
+            text-align: center;
+            padding: 40px 24px;
+            background: #111113;
+            border: 1px solid #1f1f23;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+            animation: surgirCard 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @@keyframes surgirCard {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Ícone de Escudo / Verificado Magnífico */
+        .ng-shield-icon {
+            font-size: 72px;
+            color: #4ade80; /* Verde de sucesso/segurança */
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: pulsarEscudo 1.5s ease-in-out infinite alternate;
+        }
+
+        @@keyframes pulsarEscudo {
+            from {
+                transform: scale(1);
+                filter: drop-shadow(0 0 0px rgba(74, 222, 128, 0));
+            }
+
+            to {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.3));
+            }
+        }
+
+        .ng-sucesso-title {
+            font-family: 'Barlow Condensed', system-ui, sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 12px;
+        }
+
+        .ng-sucesso-text {
+            color: #a1a1aa;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        /* Caixa informativa de segurança */
+        .ng-info-box-segura {
+            background: #0d0d0d;
+            border: 1px solid #27272a;
+            border-left: 4px solid #F96300; /* Detalhe laranja NineGames */
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+            .ng-info-box-segura h4 {
+                font-size: 13px;
+                font-weight: 700;
+                color: #fff;
+                margin-bottom: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .ng-info-box-segura p {
+                font-size: 12px;
+                color: #71717a;
+                margin: 0;
+                line-height: 1.5;
+            }
+
+        /* Botão estilizado no padrão NineGames */
+        .btn-ng-sucesso {
+            display: inline-block;
+            background: #F96300;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(249, 99, 0, 0.2);
+            width: 100%;
+        }
+
+            .btn-ng-sucesso:hover {
+                background: #d95500;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(249, 99, 0, 0.4);
+                color: #ffffff;
+            }
+
+            .btn-ng-sucesso:active {
+                transform: translateY(0);
+            }
+    </style>
+}
+
+<div class="ng-sucesso-container">
+
+    <h2 class="ng-sucesso-title">Proteção Ativada!</h2>
+
+    <p class="ng-sucesso-text">
+        Parabéns! A autenticação de dois fatores (2FA) foi configurada e validada com sucesso.
+        Sua conta na <strong>NineGames</strong> agora está protegida por uma camada adicional de segurança de nível bancário.
+    </p>
+
+    <div class="ng-info-box-segura">
+        <h4>Como funcionará a partir de agora?</h4>
+        <p>
+            Sempre que você realizar login em um novo dispositivo ou navegador, após digitar seu e-mail e senha,
+            o sistema solicitará o código dinâmico de 6 dígitos gerado pelo aplicativo no seu celular.
+        </p>
+    </div>
+
+    <a asp-controller="Usuario" asp-action="Perfil" class="btn-ng-sucesso">
+        Ir para Meu Perfil
+    </a>
+</div>

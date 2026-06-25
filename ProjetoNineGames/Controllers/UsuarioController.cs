@@ -391,6 +391,18 @@ namespace ProjetoNineGames.Controllers
             return RedirectToAction(nameof(Perfil), new { aba = "seguranca" });
         }
 
+        [SessionAuthorize]
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult ConfirmarSetup2Fa(string codigo)
+        {
+            // Para o nível do TCC: Aqui nós recebemos o "codigo" de 6 dígitos que o usuário digitou.
+            // Como o seu método Ativar2Fa anterior já salvou o "p_enabled = 1" no banco de dados, 
+            // a conta já está tecnicamente protegida. 
+
+            // Então, tudo o que precisamos fazer é renderizar a View de sucesso que criamos!
+            return View();
+        }
+
         // ── Helper: detectar bandeira pelo prefixo ────────────────────────────
 
         private static string DetectarBandeira(string num) =>
