@@ -84,5 +84,17 @@ namespace ProjetoNineGames.Controllers
             }
             return false;
         }
+
+        [HttpGet]
+        public IActionResult Privacidade()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Termos()
+        {
+            return View();
+        }
     }
 }

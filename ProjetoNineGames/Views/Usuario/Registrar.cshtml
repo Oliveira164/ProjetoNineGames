@@ -74,6 +74,15 @@
                 </div>
                 <p class="ng-hint" id="hint-confirma" style="margin-top:-10px; margin-bottom:18px;"></p>
 
+                <div class="ng-field" style="display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; margin-bottom: 24px;">
+                    <input type="checkbox" id="concordaTermos" name="concordaTermos" required style="margin-top: 3px; width: 16px; height: 16px; accent-color: var(--ng-orange);" />
+                    <label for="concordaTermos" style="font-size: 13px; color: var(--ng-text-muted); cursor: pointer; line-height: 1.5;">
+                        Eu li e concordo com os
+                        <a asp-controller="Home" asp-action="Termos" target="_blank" style="color: var(--ng-orange); text-decoration: none; font-weight: 600;">Termos de Uso</a> e a
+                        <a asp-controller="Home" asp-action="Privacidade" target="_blank" style="color: var(--ng-orange); text-decoration: none; font-weight: 600;">Política de Privacidade</a> da NineGames.
+                    </label>
+                </div>
+
                 <button type="submit" class="btn-ng btn-ng-primary btn-ng-full btn-ng-lg">
                     Criar conta
                 </button>

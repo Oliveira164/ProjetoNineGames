@@ -7,7 +7,7 @@
 
 @section Styles {
     <style>
-        /* ── Layout Lateral Genérico ────────────────────────────── */
+        /* ── Layout Lateral ────────────────────────────── */
         .layout-lateral {
             display: flex;
             gap: 24px;
@@ -15,7 +15,7 @@
         }
 
         .sidebar-filtros {
-            width: 240px; /* Largura fixa da barra lateral */
+            width: 240px;
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
@@ -76,6 +76,142 @@
                     background: #1a1a1a;
                     color: #ffffff;
                 }
+
+        /* ── MODAL DE ATIVAÇÃO DE CHAVE ──────────── */
+        .ng-bib-card {
+            cursor: pointer; /* Indica que o card é clicável */
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: none; /* Escondido por padrão */
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #181818;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid #2a2a2a;
+            background: #111;
+        }
+
+        .modal-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .btn-fechar {
+            background: transparent;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+            .btn-fechar:hover {
+                color: #F96300;
+            }
+
+        .modal-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .modal-game-img {
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .modal-instructions {
+            font-size: 13px;
+            color: #a0a0a0;
+            line-height: 1.5;
+        }
+
+        .key-box-wrapper {
+            width: 100%;
+            background: #0d0d0d;
+            border: 2px dashed #333;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            transition: border-color 0.2s;
+        }
+
+            .key-box-wrapper:hover {
+                border-color: #F96300;
+            }
+
+        .key-text {
+            font-family: monospace;
+            font-size: 22px;
+            font-weight: 700;
+            color: #4ade80; 
+            letter-spacing: 2px;
+        }
+
+        .btn-copiar {
+            background: #2a2a2a;
+            color: #f0f0f0;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .btn-copiar:hover {
+                background: #F96300;
+                color: #fff;
+            }
 
         /* ── Responsividade ─────────────────────────────────────── */
         @@media (max-width: 850px) {
@@ -151,7 +287,8 @@
                 {
                     <div class="ng-bib-card"
                          data-categoria="@(j.Categoria ?? "")"
-                         data-busca="@j.Titulo.ToLower()">
+                         data-busca="@j.Titulo.ToLower()"
+                         onclick="abrirModalChave('@j.Titulo', '@j.ImagemUrl')">
 
                         <div class="ng-bib-thumb">
                             @if (!string.IsNullOrWhiteSpace(j.ImagemUrl))
@@ -184,6 +321,29 @@
         }
     </div>
 
+</div>
+
+<div class="modal-overlay" id="modalChave" onclick="fecharModalFora(event)">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalNomeJogo">Nome do Jogo</h3>
+            <button class="btn-fechar" onclick="fecharModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <img id="modalImgJogo" src="" alt="Capa do Jogo" class="modal-game-img" style="display: none;" />
+
+            <p class="modal-instructions">
+                Utilize a chave de ativação abaixo para resgatar o seu jogo na plataforma correspondente (Steam, Epic Games, etc).
+            </p>
+
+            <div class="key-box-wrapper">
+                <span class="key-text" id="modalTextoChave">XXXXX-YYYYY-ZZZZZ</span>
+                <button class="btn-copiar" onclick="copiarChave()" id="btnCopiarText">
+                    📋 Copiar Chave
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -239,6 +399,79 @@
 
             const btnTodos = document.querySelector('.tab-bar-vert .tab-btn');
             if (btnTodos) filtrarCategoria('todos', btnTodos);
+        }
+
+        // ── LÓGICA DO MODAL ──────────────────────────────────────
+        function abrirModalChave(titulo, imgUrl) {
+            const modal = document.getElementById('modalChave');
+            const imgElement = document.getElementById('modalImgJogo');
+
+            // Preenche os dados visuais
+            document.getElementById('modalNomeJogo').innerText = titulo;
+
+            if(imgUrl) {
+                imgElement.src = '/' + imgUrl;
+                imgElement.style.display = 'block';
+            } else {
+                imgElement.style.display = 'none';
+            }
+
+            // Geração de uma chave Fictícia Baseada no Título (Para demonstração)
+            // No futuro, isso virá do seu Banco de Dados!
+            const fakeKey = gerarChaveFicticia(titulo);
+            document.getElementById('modalTextoChave').innerText = fakeKey;
+
+            // Mostra o Modal com animação
+            modal.style.display = 'flex';
+            // Pequeno delay para a animação CSS rodar
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+
+            // Reseta o botão de copiar
+            document.getElementById('btnCopiarText').innerHTML = '📋 Copiar Chave';
+        }
+
+        function fecharModal() {
+            const modal = document.getElementById('modalChave');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300); // Tempo da transição CSS
+        }
+
+        function fecharModalFora(event) {
+            if (event.target === document.getElementById('modalChave')) {
+                fecharModal();
+            }
+        }
+
+        // Função nativa do navegador para copiar texto
+        function copiarChave() {
+            const chave = document.getElementById('modalTextoChave').innerText;
+            navigator.clipboard.writeText(chave).then(() => {
+                const btn = document.getElementById('btnCopiarText');
+                btn.innerHTML = '✔ Copiada!';
+                btn.style.background = '#4ade80'; // Fica verde
+                btn.style.color = '#111';
+
+                setTimeout(() => {
+                    btn.innerHTML = ' Copiar Chave';
+                    btn.style.background = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+
+        // Apenas para fingir que temos chaves únicas por enquanto
+        function gerarChaveFicticia(seed) {
+            let hash = 0;
+            for (let i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+            const num = Math.abs(hash);
+            const part1 = (num.toString(36).substring(0, 5) + "ABCDE").substring(0, 5).toUpperCase();
+            const part2 = ((num * 7).toString(36).substring(0, 5) + "12345").substring(0, 5).toUpperCase();
+            const part3 = ((num * 13).toString(36).substring(0, 5) + "XYZ99").substring(0, 5).toUpperCase();
+            return `${part1}-${part2}-${part3}`;
         }
     </script>
 }
